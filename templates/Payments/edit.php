@@ -15,11 +15,11 @@ $rates = array(1 => "HTG", 2 => "USD");
     </ol>
 </div>
 <?= $this->Flash->render() ?>
-<?= $this->Form->create($payment, array('id' => "customerform")) ?>
+<?= $this->Form->create($payment, array('id' => "customerform", 'enctype' => 'multipart/form-data')) ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            New Payment
+            Edit Payment
         </div>
         <div class="panel-body articles-container">
             <div class="row">   
@@ -58,7 +58,7 @@ $rates = array(1 => "HTG", 2 => "USD");
                     <?= $this->Form->control('rate_id', array('class' => 'form-control', "empty" => "-- Currency --", "options" => $rates, "label" => 'Currency', "style" => "margin-left:4px;height:46px", "required" => true, 'value' => 2)); ?>
                 </div>
                 <div class="col-md-4">
-                    <?= $this->Form->control('daily_rate', array('class' => 'form-control', "label" => 'Daily Rate', "style" => "margin-left:4px;height:46px", "required" => true, 'placeholder' => "Daily Rate")); ?>
+                    <?= $this->Form->control('daily_rate', array('type' => 'hidden')); ?>
                 </div>
             </div>   
             <div class="row">
@@ -72,6 +72,19 @@ $rates = array(1 => "HTG", 2 => "USD");
                     <?= $this->Form->control('confirmed', array('class' => 'form-control', 'options' => array(0=> "No", 1=> 'Yes'), "label" => 'Confirmed')); ?>
                 </div>
             </div>
+                <hr>    
+            <div class="row" style="margin-top:10px">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exampleInputFile">Photo</label>
+                    <input type="file" id="exampleInputFile" name="certificate">
+                    <p class="help-block">Upload payment photo here.</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                      <?php echo $this->Html->image('payments/'.$payment->path_to_photo, array('width' => '500px','alt'=>'aswq', 'style' => "float:right")); ?>
+                </div>
+            </div> 
             
             <?= $this->Form->button(__('Update'), array('class'=>'btn btn-success', "style" => "height: 46px;border-radius: 0px;margin-top:20px;margin-right:15px;float:right")) ?>
             

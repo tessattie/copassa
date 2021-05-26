@@ -39,5 +39,11 @@ class Option extends Entity
         'company' => true,
         'user' => true,
         'policies' => true,
+        'option_name' => true, 
+        'deductible' => true
     ];
+
+    protected function _getFull(){
+        return $this->name." - ".$this->option_name;
+    }
 }

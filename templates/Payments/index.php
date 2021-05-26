@@ -96,7 +96,7 @@
                         <?php if($p->confirmed == 1) : ?>
                             <td class="text-center"><span class="label label-success">YES</span></td>
                         <?php else : ?>
-                            <td class="text-center"><span class="label label-success">NO</span></td>
+                            <td class="text-center"><span class="label label-danger">NO</span></td>
                         <?php endif; ?>
                         <td class="text-right">
                             <a href="<?= ROOT_DIREC ?>/payments/edit/<?= $p->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a> 

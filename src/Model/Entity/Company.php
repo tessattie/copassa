@@ -39,5 +39,8 @@ class Company extends Entity
         'user' => true,
         'options' => true,
         'policies' => true,
+        'address' => true, 
+        'phone' => true, 
+        'email' => true
     ];
 }

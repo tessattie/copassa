@@ -50,6 +50,7 @@ class Payment extends Entity
         'user' => true,
         'rate' => true,
         'memo' => true, 
-        'confirmed' => true
+        'confirmed' => true, 
+        'path_to_photo' => true
     ];
 }

@@ -41,7 +41,7 @@ class CustomersController extends AppController
     public function view($id = null)
     {
         $customer = $this->Customers->get($id, [
-            'contain' => ['Users', 'Payments', 'Policies'],
+            'contain' => ['Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users']],
         ]);
 
         $this->set(compact('customer'));
@@ -58,11 +58,11 @@ class CustomersController extends AppController
         if ($this->request->is('post')) {
             $customer = $this->Customers->patchEntity($customer, $this->request->getData());
             $customer->user_id = $this->Auth->user()['id'];
-            if ($this->Customers->save($customer)) {
+            if ($ident = $this->Customers->save($customer)) {
                 $this->savelog(200, "Created policy holder", 1, 1, "", json_encode($customer));
                 $this->Flash->success(__('The policy holder has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['controller' => 'policies', 'action' => 'add', $ident['id']]);
             }
             $this->savelog(500, "Tempted to create policy holder", 0, 1, "", json_encode($customer));
             $this->Flash->error(__('The policy holder could not be saved. Please, try again.'));

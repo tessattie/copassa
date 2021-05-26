@@ -49,6 +49,7 @@
                     <th class="text-center">P</th>
                     <th class="text-center">GP</th>
                     <th class="text-center">C</th>
+                    <th class="text-center">Certificate</th>
                     <th>    </th>
                 </thead>
             <tbody> 
@@ -89,9 +90,15 @@
                 <?php else : ?>
                     <td class="text-center"><span class="label label-danger">No</span></td>
                 <?php endif; ?>
+                <td class="text-center">
+                    <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
+                </td>
 
-                <td class="text-right"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
-                <a href="<?= ROOT_DIREC ?>/policies/delete/<?= $policy->id ?>" onclick="return confirm('Are you sure you would like to delete the policy <?= $policy->policy_number ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                <td class="text-right">
+
+                    <a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                
+                    <a href="<?= ROOT_DIREC ?>/policies/delete/<?= $policy->id ?>" onclick="return confirm('Are you sure you would like to delete the policy <?= $policy->policy_number ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                 </td>
 
             </tr>

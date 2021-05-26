@@ -54,6 +54,25 @@ class PaymentsController extends AppController
         
         if ($this->request->is(["patch", "put", 'post'])){
             if(!empty($this->request->getData()['amount'])){
+                $data = $this->request->getData();
+                $certificate = $this->request->getData('certificate');
+                $name = $certificate->getClientFilename();
+                $type = $certificate->getClientMediaType();
+                $targetPath = WWW_ROOT. 'img'. DS . 'payments'. DS. $name;
+                if ($type == 'image/jpeg' || $type == 'image/jpg' || $type == 'image/png') {
+                    if (!empty($name)) {
+                        if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
+                            $certificate->moveTo($targetPath); 
+                            $data['certificate'] = $name;
+                        }else{
+                                $data['certificate'] = '';
+                        }
+                    }else{
+                        $data['certificate'] = '';
+                    }
+                }else{
+                    $data['certificate'] = '';
+                }
                 $payment = $this->Payments->newEmptyEntity();
                 $payment->amount = $this->request->getData()['amount']; 
                 $payment->memo = $this->request->getData()['memo'];  
@@ -64,6 +83,7 @@ class PaymentsController extends AppController
                 $payment->policy_id = $policy->id;
                 $payment->user_id = $this->Auth->user()['id'];
                 $payment->status = 1;
+                $payment->path_to_photo = $data['certificate'];
                 if($pm = $this->Payments->save($payment)){
                     $this->update_paid_until($policy);
                     $this->savelog(200, "Created payment for policy: ".$policy->policy_number, 1, 1, "", json_encode($payment));
@@ -99,7 +119,26 @@ class PaymentsController extends AppController
         ]);
         $old_data = json_encode($payment);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $payment = $this->Payments->patchEntity($payment, $this->request->getData());
+            $data = $this->request->getData();
+            $certificate = $this->request->getData('certificate');
+            $name = $certificate->getClientFilename();
+            $type = $certificate->getClientMediaType();
+            $targetPath = WWW_ROOT. 'img'. DS . 'payments'. DS. $name;
+            if ($type == 'image/jpeg' || $type == 'image/jpg' || $type == 'image/png') {
+                if (!empty($name)) {
+                    if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
+                        $certificate->moveTo($targetPath); 
+                        $data['certificate'] = $name;
+                    }else{
+                            $data['certificate'] = '';
+                    }
+                }else{
+                    $data['certificate'] = '';
+                }
+            }else{
+                $data['certificate'] = '';
+            }
+            $payment = $this->Payments->patchEntity($payment, $data);
             if ($this->Payments->save($payment)) {
                 $this->savelog(200, "Edited payment for policy: ".$payment->policy->policy_number, 1, 2, $old_data, json_encode($payment));
                 $this->Flash->success(__('The payment has been saved.'));

@@ -41,6 +41,12 @@
                         <?= $this->Form->control('type', array('class' => 'form-control', 'options' => $company_types, "label" => "Type", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
                     </div>
                 </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4"><?= $this->Form->control('address', array('class' => 'form-control', "label" => "Address", "placeholder" => "Address")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('phone', array('class' => 'form-control', "placeholder" => 'Phone', "label" => "Phone")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('email', array('class' => 'form-control', "placeholder" => 'Email', "label" => "Email")); ?></div>   
+                </div>
                 <div class="row">
                     <div class="col-md-12">
                         <?= $this->Form->button(__('Update'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right;height:44px")) ?>
@@ -63,9 +69,15 @@
         <div class="panel-body articles-container">       
             <?= $this->Form->create($option, array("url" => "/options/add")) ?>
                 <div class="row">
-                    <div class="col-md-11">
+                    <div class="col-md-4">
                         <?= $this->Form->control('company_id', array('type' => 'hidden', "value" => $company->id)); ?>
-                        <?= $this->Form->control('name', array('class' => 'form-control', "label" => "Add Option", "placeholder" => "Name")); ?>
+                        <?= $this->Form->control('name', array('class' => 'form-control', "label" => "Add Option", "placeholder" => "Product Name")); ?>
+                    </div>
+                    <div class="col-md-4">
+                        <?= $this->Form->control('option_name', array('class' => 'form-control', "label" => false, "placeholder" => "Option", 'style' => 'margin-top:25px')); ?>
+                    </div>
+                    <div class="col-md-3">
+                        <?= $this->Form->control('deductible', array('class' => 'form-control', "label" => false, "placeholder" => "Deductible", 'style' => 'margin-top:25px')); ?>
                     </div>
                     <div class="col-md-1">
                         <?= $this->Form->button(__('Add'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right;height:44px;width:100%")) ?>
@@ -76,7 +88,9 @@
                         <table class="table table-bordered" style="margin-top:15px">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Name</th>
+                                    <th class="text-center">Product Name</th>
+                                    <th class="text-center">Option</th>
+                                    <th class="text-center">Deductible</th>
                                     <th class="text-center">Created by</th>
                                     <th class="text-center">Created at</th>
                                     <th class="text-center">Last modified</th>
@@ -87,6 +101,8 @@
                                 <?php foreach($company->options as $option) : ?>
                                     <tr>
                                         <td class="text-center"><?= $option->name ?></td>
+                                        <td class="text-center"><?= $option->option_name ?></td>
+                                        <td class="text-center"><?= $option->deductible ?> USD</td>
                                         <td class="text-center"><?= $option->user->name ?></td>
                                         <td class="text-center"><?= date("M d Y", strtotime($option->created)) ?></td>
                                         <td class="text-center"><?= date("M d Y H:i", strtotime($option->modified)) ?></td>

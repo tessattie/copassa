@@ -38,6 +38,9 @@
                 <thead> 
                     <th>Name</th>
                     <th class="text-center">Type</th>
+                    <th class="text-center">Address</th>
+                    <th class="text-center">Phone</th>
+                    <th class="text-center">Email</th>
                     <th class="text-center">Options</th>
                     <th class="text-center">Created by</th>
                     <th class="text-center">Created at</th>
@@ -49,6 +52,9 @@
                 <tr>
                     <td><?= $company->name ?></td>
                     <td class="text-center"><?= $company_types[$company->type] ?></td>
+                    <td class="text-center"><?= $company->address ?></td>
+                    <td class="text-center"><?= $company->phone ?></td>
+                    <td class="text-center"><?= $company->email ?></td>
                     <td class="text-center"><?= count($company->options) ?></td>
                     <td class="text-center"><?= $company->user->name ?></td>
                     <td class="text-center"><?= date("M d Y", strtotime($company->created)) ?></td>

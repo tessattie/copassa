@@ -34,8 +34,13 @@
     <div class="panel-body articles-container">       
             <?= $this->Form->create($option) ?>
                 <div class="row">
-                <div class="col-md-12"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?></div>
-                    
+                <div class="col-md-4"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Product Name *", "placeholder" => "Product Name")); ?></div>
+                <div class="col-md-4">
+                        <?= $this->Form->control('option_name', array('class' => 'form-control', "label" => 'Option', "placeholder" => "Option")); ?>
+                </div>
+                <div class="col-md-4">
+                        <?= $this->Form->control('deductible', array('class' => 'form-control', "label" => 'Deductible', "placeholder" => "Deductible")); ?>
+                </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12"><?= $this->Form->button(__('Update'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>

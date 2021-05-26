@@ -50,13 +50,29 @@ class PoliciesController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($customer_id = false)
     {
         $policy = $this->Policies->newEmptyEntity();
         if ($this->request->is('post')) {
-            $policy = $this->Policies->patchEntity($policy, $this->request->getData());
+            $data = $this->request->getData();
+            $certificate = $this->request->getData('certificate');
+            $name = $certificate->getClientFilename();
+            $type = $certificate->getClientMediaType();
+            $targetPath = WWW_ROOT. 'img'. DS . 'certificates'. DS. $name;
+            if ($type == 'image/jpeg' || $type == 'image/jpg' || $type == 'image/png') {
+                if (!empty($name)) {
+                    if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
+                        $certificate->moveTo($targetPath); 
+                        $data['certificate'] = $name;
+                    }
+                }else{
+                    $data['certificate'] = '';
+                }
+            }else{
+                $data['certificate'] = '';
+            }
+            $policy = $this->Policies->patchEntity($policy, $data);
             $policy->user_id = $this->Auth->user()['id'];
-            $policy->paid_until = $policy->effective_date;
             $customer = $this->Policies->Customers->get($policy->customer_id);
             if ($this->Policies->save($policy)) {
                 $this->savelog(200, "Created policy for customer: ".$customer->name, 1, 1, "", json_encode($policy));
@@ -68,7 +84,7 @@ class PoliciesController extends AppController
         }
         $companies = $this->Policies->Companies->find('list');
         $customers = $this->Policies->Customers->find('list', ['order' => ['name ASC']]);
-        $this->set(compact('policy', 'companies', 'customers'));
+        $this->set(compact('policy', 'companies', 'customers', 'customer_id'));
     }
 
     /**
@@ -85,7 +101,26 @@ class PoliciesController extends AppController
         ]);
         $old_data = json_encode($policy);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $policy = $this->Policies->patchEntity($policy, $this->request->getData());
+            $data = $this->request->getData();
+            $certificate = $this->request->getData('certificate');
+            $name = $certificate->getClientFilename();
+            $type = $certificate->getClientMediaType();
+            $targetPath = WWW_ROOT. 'img'. DS . 'certificates'. DS. $name;
+            if ($type == 'image/jpeg' || $type == 'image/jpg' || $type == 'image/png' || $type == 'application/pdf') {
+                if (!empty($name)) {
+                    if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
+                        $certificate->moveTo($targetPath); 
+                        $data['certificate'] = $name;
+                    }else{
+                            $data['certificate'] = $policy->certificate;
+                    }
+                }else{
+                    $data['certificate'] = $policy->certificate;
+                }
+            }else{
+                $data['certificate'] = $policy->certificate;
+            }
+            $policy = $this->Policies->patchEntity($policy, $data);
             $customer = $this->Policies->Customers->get($policy->customer_id);
             if ($this->Policies->save($policy)) {
                 $this->savelog(200, "Edited policy for customer: ".$customer->name, 1, 2, $old_data, json_encode($policy));
@@ -97,7 +132,13 @@ class PoliciesController extends AppController
             $this->Flash->error(__('The policy could not be saved. Please, try again.'));
         }
         $companies = $this->Policies->Companies->find('list', ['limit' => 200]);
-        $options = $this->Policies->Options->find('list', ['limit' => 200, 'conditions' => ['company_id' => $policy->company_id]]);
+        $options = $this->Policies->Options->find('list', [
+            'keyField' => 'id',
+            'valueField' => function ($option) {
+                return $option->get('full');
+            }, 
+            'conditions' => array('company_id' => $policy->company_id)
+        ]);
         $customers = $this->Policies->Customers->find('list', ['limit' => 200]);
         $users = $this->Policies->Users->find('list', ['limit' => 200]);
         $this->set(compact('policy', 'companies', 'options', 'customers', 'users'));

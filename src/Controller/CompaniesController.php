@@ -112,4 +112,13 @@ class CompaniesController extends AppController
         }
         die();
     }
+
+
+    public function option(){
+        if($this->request->is(['ajax'])){
+            $option = $this->Companies->Options->get($this->request->getData()['option_id']);
+            echo json_encode($option); 
+        }
+        die();
+    }
 }

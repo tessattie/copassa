@@ -51,7 +51,7 @@
             <tbody> 
         <?php foreach($customers as $customer) : ?>
                 <tr>
-                    <td><?= $customer->name ?></td>
+                    <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $customer->id ?>"><?= $customer->name ?></a></td>
                     <td class="text-center"><?= $customer->email ?></td>
                     <?php if(!empty($customer->home_phone)) : ?>
                         <td class="text-center">+(<?= $customer->home_area_code ?>)-<?= $customer->home_phone ?></td>

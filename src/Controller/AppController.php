@@ -59,6 +59,8 @@ class AppController extends Controller
 
         define('ROOT_DIREC', '/copassa');
 
+        define('DOCUMENT_DIRECTORY', 'C:/wamp/www/copassa/webroot/img/');
+
         date_default_timezone_set("America/New_York");
 
         $this->loadComponent('RequestHandler');
@@ -82,6 +84,7 @@ class AppController extends Controller
     }
 
     public function beforeFilter(EventInterface $event){
+
         $this->session = $this->getRequest()->getSession();
         if($this->Auth->user()){
             $this->from = $this->session->read("from")." 00:00:00";
@@ -132,6 +135,26 @@ class AppController extends Controller
         $log->old_data = $old_data; 
         $log->new_data = $new_data; 
         $this->Logs->save($log); 
+    }
+
+
+    protected function checkfile($file, $name, $directory){
+        $allowed_extensions = array('jpg', "JPG", "jpeg", "JPEG", "png", "PNG", 'pdf', 'PDF');
+        if(!$file['error']){
+            $extension = explode("/", $file['type'])[1];
+            if(in_array($extension, $allowed_extensions)){
+                $dossier = DOCUMENT_DIRECTORY.$directory.'/';
+                if(move_uploaded_file($file['tmp_name'], $dossier . $name . "." . $extension)){
+                    return $name . "." . $extension;
+                }else{
+                    return 'not moved';
+                }
+            }else{
+                return 'bad extension';
+            }
+        }else{
+            return 'file error';
+        }
     }
 
 }

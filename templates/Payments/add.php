@@ -16,7 +16,7 @@ $rates = array(1 => "HTG", 2 => "USD");
     </ol>
 </div>
 <?= $this->Flash->render() ?>
-<?= $this->Form->create($payment, array('id' => "customerform")) ?>
+<?= $this->Form->create($payment, array('id' => "customerform", 'enctype' => 'multipart/form-data')) ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
@@ -59,15 +59,19 @@ $rates = array(1 => "HTG", 2 => "USD");
                 <?= $this->Form->control('rate_id', array('class' => 'form-control', "empty" => "-- Currency --", "options" => $rates, "label" => 'Currency', "style" => "margin-left:4px;height:46px", "required" => true, 'value' => 2)); ?>
             </div>
             <div class="col-md-4">
-                <?= $this->Form->control('daily_rate', array('class' => 'form-control', "label" => 'Daily Rate', "style" => "margin-left:4px;height:46px", "required" => true, 'placeholder' => "Daily Rate", 'value' => 0)); ?>
+                <?= $this->Form->control('memo', array('class' => 'form-control', "placeholder" => "Memo", "label" => 'Memo', "style" => "margin-left:4px")); ?>
+                <?= $this->Form->control('daily_rate', array('type' => 'hidden', 'value' => 0)); ?>
             </div>
-            </div>   
-            <div class="row">
-               <div class="col-md-8">
-                    <?= $this->Form->control('memo', array('class' => 'form-control', "placeholder" => "Memo", "label" => 'Memo', "style" => "margin-left:4px")); ?>
+            </div>  
+            <div class="row" style="margin-top:10px">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="exampleInputFile">Photo</label>
+                    <input type="file" id="exampleInputFile" name="certificate">
+                    <p class="help-block">Upload payment photo here.</p>
+                  </div>
                 </div>
-            </div>
-            
+            </div> 
 
         
          <?= $this->Form->button(__('Add'), array('class'=>'btn btn-success', "style" => "height: 46px;border-radius: 0px;margin-top:20px;margin-right:15px;float:right")) ?>

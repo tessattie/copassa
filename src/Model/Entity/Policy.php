@@ -67,5 +67,7 @@ class Policy extends Entity
         'customer' => true,
         'user' => true,
         'payments' => true,
+        'deductible' => true,
+        'certificate' => true
     ];
 }

@@ -22,7 +22,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Edit Policy Holder <?= $customer->name ?>
-            <a href="<?= ROOT_DIREC ?>/policies/add"><button style="float:right" class="btn btn-warning" type="button">New Policy</button></a>
+            <a href="<?= ROOT_DIREC ?>/policies/add/<?= $customer->id ?>"><button style="float:right" class="btn btn-warning" type="button">New Policy</button></a>
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($customer) ?>
@@ -100,31 +100,35 @@
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
+                                <th class="text-center">Type</th>
                                 <th class="text-center">Company</th>
                                 <th class="text-center">Option</th>
                                 <th class="text-center">Premium</th>
                                 <th class="text-center">Fee</th>
+                                <th class="text-center">Deductible</th>
                                 <th class="text-center">Mode</th>
                                 <th class="text-center">Effective date</th>
                                 <th class="text-center">Paid until</th>
-                                <th class="text-center">Active</th>
-                                <th class="text-center">Lapse</th>
-                                <th class="text-center">Pending</th>
-                                <th class="text-center">Grace Period</th>
-                                <th class="text-center">Canceled</th>
-                                <th class="text-center">Created by</th>
-                                <th class="text-center">Created at</th>
-                                <th class="text-center">Last modified</th>
+                                <th class="text-center">A</th>
+                                <th class="text-center">L</th>
+                                <th class="text-center">P</th>
+                                <th class="text-center">GP</th>
+                                <th class="text-center">C</th>
+                                <th class="text-center">Created By</th>
+                                <th class="text-center">Certificate</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach($customer->policies as $policy) : ?>
                                 <tr>
                                 <td class="text-center"><?= $policy->policy_number ?></td>
+                                <td class="text-center"><?= $company_types[$policy->company->type] ?></td>
                                 <td class="text-center"><?= $policy->company->name ?></td>
                                 <td class="text-center"><?= $policy->option->name ?></td>
                                 <td class="text-center"><?= number_format($policy->premium,2,".",",") ?> USD</td>
                                 <td class="text-center"><?= number_format($policy->fee,2,".",",") ?> USD</td>
+                                <td class="text-center"><?= number_format($policy->deductible,2,".",",") ?> USD</td>
                                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
                                 <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
                                 <td class="text-center"><?= date("M d Y", strtotime($policy->paid_until)) ?></td>
@@ -157,8 +161,10 @@
                                     <td class="text-center"><span class="label label-danger">No</span></td>
                                 <?php endif; ?>
                                 <td class="text-center"><?= $policy->user->name ?></td>
-                                <td class="text-center"><?= date("M d Y", strtotime($policy->created)) ?></td>
-                                <td class="text-center"><?= date("M d Y H:i", strtotime($policy->modified)) ?></td>
+                                <td class="text-center">
+                                    <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
+                                </td>
+                                <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a></td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
