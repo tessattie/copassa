@@ -91,7 +91,7 @@
             </li>
 
             <li class="parent <?= ($this->request->getParam('controller') == 'Users' || $this->request->getParam('controller') == 'Roles' || $this->request->getParam('controller') == 'Cards') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-2">
-                <em class="fa fa-lock">&nbsp;</em> Security <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="fa fa-plus"></em></span>
+                <em class="fa fa-lock">&nbsp;</em> Settings <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="fa fa-plus"></em></span>
                 </a>
                 <ul class="children collapse" id="sub-item-2">
                     <li class="<?= ($this->request->getParam('controller') == 'Users' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/users">
@@ -99,6 +99,9 @@
                     </a></li>
                     <li class="<?= ($this->request->getParam('controller') == 'Roles') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/roles">
                         <span class="fa fa-arrow-right">&nbsp;</span> Roles
+                    </a></li>
+                    <li class="<?= ($this->request->getParam('controller') == 'Riders') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/riders">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Riders
                     </a></li>
                     <li class="<?= ($this->request->getParam('controller') == 'Logs') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/logs">
                         <span class="fa fa-arrow-right">&nbsp;</span> Activity

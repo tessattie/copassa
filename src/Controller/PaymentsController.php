@@ -14,8 +14,6 @@ use FPDF;
 class PaymentsController extends AppController
 {
 
-    private $modes = array(12 => "Annual", 6 => "Semi-Annual", 4 => "Trimestrial", 3 => 'Quarterly', 1 => 'Monthly');
-
     /**
      * Index method
      *
@@ -59,7 +57,6 @@ class PaymentsController extends AppController
                 $name = $certificate->getClientFilename();
                 $type = $certificate->getClientMediaType();
                 $targetPath = WWW_ROOT. 'img'. DS . 'payments'. DS. $name;
-                if ($type == 'image/jpeg' || $type == 'image/jpg' || $type == 'image/png') {
                     if (!empty($name)) {
                         if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
                             $certificate->moveTo($targetPath); 
@@ -70,9 +67,6 @@ class PaymentsController extends AppController
                     }else{
                         $data['certificate'] = '';
                     }
-                }else{
-                    $data['certificate'] = '';
-                }
                 $payment = $this->Payments->newEmptyEntity();
                 $payment->amount = $this->request->getData()['amount']; 
                 $payment->memo = $this->request->getData()['memo'];  
@@ -124,7 +118,6 @@ class PaymentsController extends AppController
             $name = $certificate->getClientFilename();
             $type = $certificate->getClientMediaType();
             $targetPath = WWW_ROOT. 'img'. DS . 'payments'. DS. $name;
-            if ($type == 'image/jpeg' || $type == 'image/jpg' || $type == 'image/png') {
                 if (!empty($name)) {
                     if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
                         $certificate->moveTo($targetPath); 
@@ -135,9 +128,6 @@ class PaymentsController extends AppController
                 }else{
                     $data['certificate'] = '';
                 }
-            }else{
-                $data['certificate'] = '';
-            }
             $payment = $this->Payments->patchEntity($payment, $data);
             if ($this->Payments->save($payment)) {
                 $this->savelog(200, "Edited payment for policy: ".$payment->policy->policy_number, 1, 2, $old_data, json_encode($payment));

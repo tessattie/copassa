@@ -38,21 +38,27 @@
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>Name</th>
-                    <th class="text-center">E-mail</th>
                     <th class="text-center">Home Phone</th>
                     <th class="text-center">Cell Phone</th>
                     <th class="text-center">Other Phone</th>
-                    <th class="text-center">Created By</th>
-                    <th class="text-center">Created at</th>
-                    <th class="text-center">Last Modified</th>
+                    <th class="text-center">DOB</th>
+                    <th class="text-center">Age</th>
                     <th class="text-center">Status</th>
                     <th class="text-center"></th>
                 </thead>
             <tbody> 
         <?php foreach($customers as $customer) : ?>
+            <?php 
+                $age = "N/A";
+                if(!empty($customer->dob)){
+                    $dob = $customer->dob->year."-".$customer->dob->month."-".$customer->dob->day;
+                    $today = date("Y-m-d");
+                    $diff = date_diff(date_create($dob), date_create($today));
+                    $age = $diff->format('%y');
+                }
+            ?>
                 <tr>
                     <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $customer->id ?>"><?= $customer->name ?></a></td>
-                    <td class="text-center"><?= $customer->email ?></td>
                     <?php if(!empty($customer->home_phone)) : ?>
                         <td class="text-center">+(<?= $customer->home_area_code ?>)-<?= $customer->home_phone ?></td>
                     <?php else : ?>
@@ -70,10 +76,17 @@
                     <?php else : ?>
                         <td class="text-center">-</td>
                     <?php endif; ?>
-                    
-                    <td class="text-center"><?= $customer->user->name ?></td>
-                    <td class="text-center"><?= date("M d Y", strtotime($customer->created)) ?></td>
-                    <td class="text-center"><?= date("M d Y H:i", strtotime($customer->modified)) ?></td>
+                    <?php if(!empty($customer->dob)) : ?>
+                        <td class="text-center"><?= $customer->dob->month."/".$customer->dob->day."/".$customer->dob->year ?></td>
+                    <?php else : ?>
+                        <td class="text-center"></td>
+                    <?php endif; ?>
+
+                    <?php if(!empty($age)) : ?>
+                        <td class="text-center"><?= $age ?></td>
+                    <?php else : ?>
+                        <td class="text-center"></td>
+                    <?php endif; ?>
                     <?php if($customer->status == 1) : ?>
                         <td class="text-center"><span class="label label-success"><?= $status[$customer->status] ?></span></td>
                     <?php else : ?>

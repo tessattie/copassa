@@ -32,11 +32,13 @@
     <div class="panel-body articles-container">       
             <?= $this->Form->create($customer) ?>
                 <div class="row">
-                    <div class="col-md-4"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?>
                     </div>
-                    <div class="col-md-4"><?= $this->Form->control('email', array('class' => 'form-control', "label" => "E-mail *", "placeholder" => "E-mail")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('email', array('class' => 'form-control', "label" => "E-mail *", "placeholder" => "E-mail")); ?>
                     </div>
-                    <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('status', array('class' => 'form-control', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
+                    </div>
+                    <div class="col-md-3"><?= $this->Form->control('dob', array('class' => 'form-control', "type" => "date", "label" => "Date of Birth *")); ?>
                     </div>
                 </div>
                 <hr>

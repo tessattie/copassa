@@ -69,15 +69,24 @@
         <div class="panel-body articles-container">       
             <?= $this->Form->create($option, array("url" => "/options/add")) ?>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <?= $this->Form->control('company_id', array('type' => 'hidden', "value" => $company->id)); ?>
                         <?= $this->Form->control('name', array('class' => 'form-control', "label" => "Add Option", "placeholder" => "Product Name")); ?>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <?= $this->Form->control('option_name', array('class' => 'form-control', "label" => false, "placeholder" => "Option", 'style' => 'margin-top:25px')); ?>
                     </div>
-                    <div class="col-md-3">
-                        <?= $this->Form->control('deductible', array('class' => 'form-control', "label" => false, "placeholder" => "Deductible", 'style' => 'margin-top:25px')); ?>
+                    <div class="col-md-1">
+                        <?= $this->Form->control('plan', array('class' => 'form-control', "label" => false, 'style' => 'margin-top:25px', "empty" => "-- Plan --", 'options' => $plans)); ?>
+                    </div>
+                    <div class="col-md-2">
+                        <?= $this->Form->control('deductible', array('class' => 'form-control', "label" => false, "placeholder" => "Outside USA Deductible", 'style' => 'margin-top:25px', 'value' => '')); ?>
+                    </div>
+                    <div class="col-md-2">
+                        <?= $this->Form->control('usa_deductible', array('class' => 'form-control', "label" => false, "placeholder" => "Inside USA Deductible", 'style' => 'margin-top:25px')); ?>
+                    </div>
+                    <div class="col-md-2">
+                        <?= $this->Form->control('max_coverage', array('class' => 'form-control', "label" => false, "placeholder" => "Max Coverage", 'style' => 'margin-top:25px')); ?>
                     </div>
                     <div class="col-md-1">
                         <?= $this->Form->button(__('Add'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right;height:44px;width:100%")) ?>
@@ -90,10 +99,10 @@
                                 <tr>
                                     <th class="text-center">Product Name</th>
                                     <th class="text-center">Option</th>
-                                    <th class="text-center">Deductible</th>
-                                    <th class="text-center">Created by</th>
-                                    <th class="text-center">Created at</th>
-                                    <th class="text-center">Last modified</th>
+                                    <th class="text-center">Outside USA Deductible</th>
+                                    <th class="text-center">Inside USA Deductible</th>
+                                    <th class="text-center">Maximum Coverage</th>
+                                    <th class="text-center">Plan</th>
                                     <th style="width:70px"></th>
                                 </tr>
                             </thead>
@@ -102,10 +111,27 @@
                                     <tr>
                                         <td class="text-center"><?= $option->name ?></td>
                                         <td class="text-center"><?= $option->option_name ?></td>
-                                        <td class="text-center"><?= $option->deductible ?> USD</td>
-                                        <td class="text-center"><?= $option->user->name ?></td>
-                                        <td class="text-center"><?= date("M d Y", strtotime($option->created)) ?></td>
-                                        <td class="text-center"><?= date("M d Y H:i", strtotime($option->modified)) ?></td>
+                                        <?php if(!empty($option->deductible)) : ?>
+                                            <td class="text-center"><?= number_format($option->deductible) ?> USD</td>
+                                        <?php else : ?>
+                                            <td class="text-center"></td>
+                                        <?php endif; ?>
+                                        <?php if(!empty($option->usa_deductible)) : ?>
+                                            <td class="text-center"><?= number_format($option->usa_deductible) ?> USD</td>
+                                        <?php else : ?>
+                                            <td class="text-center"></td>
+                                        <?php endif; ?>
+                                        <?php if(!empty($option->max_coverage)) : ?>
+                                            <td class="text-center"><?= number_format($option->max_coverage) ?> USD</td>
+                                        <?php else : ?>
+                                            <td class="text-center"></td>
+                                        <?php endif; ?>
+                                        <?php if(!empty($option->plan)) : ?>
+                                            <td><?= $plans[$option->plan] ?></td>
+                                            <?php else : ?>
+                                                <td></td>
+                                            <?php endif; ?>
+                                            
                                         <td class="text-right">
                                             <a href="<?= ROOT_DIREC ?>/options/edit/<?= $option->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                                             <a href="<?= ROOT_DIREC ?>/options/delete/<?= $option->id ?>" onclick="return confirm('Are you sure you would like to delete the option <?= $option->name ?>')" style="font-size:1.3em!important;margin-left:10px"><span class="fa fa-xl fa-trash color-red"></span></a></td>

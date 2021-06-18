@@ -41,10 +41,11 @@ class CustomersController extends AppController
     public function view($id = null)
     {
         $customer = $this->Customers->get($id, [
-            'contain' => ['Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users']],
+            'contain' => ['Notes' => ['sort' => 'Notes.created DESC', 'Users'], 'Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users']],
         ]);
+        $note = $this->Customers->Notes->newEmptyEntity();
 
-        $this->set(compact('customer'));
+        $this->set(compact('customer', 'note'));
     }
 
     /**

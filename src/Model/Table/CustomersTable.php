@@ -272,6 +272,9 @@ class CustomersTable extends Table
         $this->hasMany('Payments', [
             'foreignKey' => 'customer_id',
         ]);
+        $this->hasMany('Notes', [
+            'foreignKey' => 'customer_id',
+        ]);
         $this->hasMany('Policies', [
             'foreignKey' => 'customer_id',
         ]);
@@ -350,7 +353,6 @@ class CustomersTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'), ['errorField' => 'user_id']);
-
         return $rules;
     }
 }

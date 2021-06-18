@@ -68,6 +68,9 @@ class Policy extends Entity
         'user' => true,
         'payments' => true,
         'deductible' => true,
-        'certificate' => true
+        'certificate' => true, 
+        'usa_deductible' => true, 
+        'max_coverage' => true, 
+        'exclusions' => true
     ];
 }

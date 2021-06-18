@@ -40,7 +40,10 @@ class Option extends Entity
         'user' => true,
         'policies' => true,
         'option_name' => true, 
-        'deductible' => true
+        'deductible' => true,
+        'usa_deductible' => true, 
+        'max_coverage' => true, 
+        'plan' => true
     ];
 
     protected function _getFull(){

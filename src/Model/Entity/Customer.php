@@ -55,5 +55,6 @@ class Customer extends Entity
         'user' => true,
         'payments' => true,
         'policies' => true,
+        'dob' => true
     ];
 }

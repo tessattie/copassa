@@ -27,11 +27,13 @@
     <div class="panel-body articles-container">       
             <?= $this->Form->create($customer) ?>
                 <div class="row">
-                    <div class="col-md-4"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?>
                     </div>
-                    <div class="col-md-4"><?= $this->Form->control('email', array('class' => 'form-control', "label" => "E-mail *", "placeholder" => "E-mail")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('email', array('class' => 'form-control', "label" => "E-mail *", "placeholder" => "E-mail")); ?>
                     </div>
-                    <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('status', array('class' => 'form-control', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
+                    </div>
+                    <div class="col-md-3"><?= $this->Form->control('dob', array('class' => 'form-control', "type" => "date", "label" => "Date of Birth *")); ?>
                     </div>
                 </div>
                 <hr>
@@ -121,8 +123,20 @@
                         </thead>
                         <tbody>
                             <?php foreach($customer->policies as $policy) : ?>
+
+                                <?php 
+                                //Today's date.
+                                $pu = new \DateTime($policy->paid_until);
+
+                                //Subtract a day using DateInterval
+                                $yesterday = $pu->sub(new \DateInterval('P1D'));
+
+                                //Get the date in a YYYY-MM-DD format.
+                                $paiduntil = $yesterday->format('Y-m-d');
+
+                                ?>
                                 <tr>
-                                <td class="text-center"><?= $policy->policy_number ?></td>
+                                <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
                                 <td class="text-center"><?= $company_types[$policy->company->type] ?></td>
                                 <td class="text-center"><?= $policy->company->name ?></td>
                                 <td class="text-center"><?= $policy->option->name ?></td>
@@ -131,7 +145,7 @@
                                 <td class="text-center"><?= number_format($policy->deductible,2,".",",") ?> USD</td>
                                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
                                 <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
-                                <td class="text-center"><?= date("M d Y", strtotime($policy->paid_until)) ?></td>
+                                <td class="text-center"><?= date("M d Y", strtotime($paiduntil)) ?></td>
                                 <?php if($policy->active == 1) : ?>
                                     <td class="text-center"><span class="label label-success">Yes</span></td>
                                 <?php else : ?>
@@ -161,9 +175,15 @@
                                     <td class="text-center"><span class="label label-danger">No</span></td>
                                 <?php endif; ?>
                                 <td class="text-center"><?= $policy->user->name ?></td>
-                                <td class="text-center">
-                                    <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
+                                <?php if(!empty($policy->certificate)) : ?>
+                                    <td class="text-center">
+                                        <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
+                                    </td>
+                                <?php else : ?>
+                                    <td class="text-center">
                                 </td>
+                                <?php endif; ?>
+                                
                                 <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a></td>
                             </tr>
                             <?php endforeach; ?>

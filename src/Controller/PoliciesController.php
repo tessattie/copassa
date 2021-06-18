@@ -38,11 +38,20 @@ class PoliciesController extends AppController
      */
     public function view($id = null)
     {
-        $policy = $this->Policies->get($id, [
-            'contain' => ['Companies', 'Options', 'Customers', 'Users', 'Payments'],
-        ]);
+        $this->loadModel('Riders');
+        
 
-        $this->set(compact('policy'));
+        if($this->request->is(['patch', 'put', 'post'])){
+            $this->updateriders($this->request->getData()['policy_id'], $this->request->getData()['has_rider']);
+        }
+
+        $policy = $this->Policies->get($id, [
+            'contain' => ['Companies', 'Options', 'Customers', 'Users', 'Payments', 'Dependants', 'PoliciesRiders' => ['Riders']],
+        ]);
+        $riders = $this->Riders->find("all");
+        $dependant = $this->Policies->Dependants->newEmptyEntity();
+
+        $this->set(compact('policy', 'dependant', 'riders'));
     }
 
     /**
@@ -59,14 +68,10 @@ class PoliciesController extends AppController
             $name = $certificate->getClientFilename();
             $type = $certificate->getClientMediaType();
             $targetPath = WWW_ROOT. 'img'. DS . 'certificates'. DS. $name;
-            if ($type == 'image/jpeg' || $type == 'image/jpg' || $type == 'image/png') {
-                if (!empty($name)) {
-                    if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
-                        $certificate->moveTo($targetPath); 
-                        $data['certificate'] = $name;
-                    }
-                }else{
-                    $data['certificate'] = '';
+            if (!empty($name)) {
+                if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
+                    $certificate->moveTo($targetPath); 
+                    $data['certificate'] = $name;
                 }
             }else{
                 $data['certificate'] = '';
@@ -106,16 +111,12 @@ class PoliciesController extends AppController
             $name = $certificate->getClientFilename();
             $type = $certificate->getClientMediaType();
             $targetPath = WWW_ROOT. 'img'. DS . 'certificates'. DS. $name;
-            if ($type == 'image/jpeg' || $type == 'image/jpg' || $type == 'image/png' || $type == 'application/pdf') {
-                if (!empty($name)) {
-                    if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
-                        $certificate->moveTo($targetPath); 
-                        $data['certificate'] = $name;
-                    }else{
-                            $data['certificate'] = $policy->certificate;
-                    }
+            if (!empty($name)) {
+                if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
+                    $certificate->moveTo($targetPath); 
+                    $data['certificate'] = $name;
                 }else{
-                    $data['certificate'] = $policy->certificate;
+                        $data['certificate'] = $policy->certificate;
                 }
             }else{
                 $data['certificate'] = $policy->certificate;
@@ -165,10 +166,57 @@ class PoliciesController extends AppController
     }
 
     public function report(){
+        // Set Dates
+        $from = $this->session->read("from"); 
+        $to = $this->session->read("to");
+        // Get each company 
+        $comps = $this->Policies->Companies->find("list");
+        // loop through each company and get policies that have due for date interval
         
+
+        if($this->request->is(['patch', 'put', 'post'])){
+            if(!empty($this->request->getData()['type'])){
+                if(!empty($this->request->getData()['company_id'])){
+                    $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $this->request->getData()['type'], "id" => $this->request->getData()['company_id']), "order" => array("name ASC")));
+                }else{
+                    $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $this->request->getData()['type']), "order" => array("name ASC")));
+                }
+            }else{
+                if(!empty($this->request->getData()['company_id'])){
+                    $companies = $this->Policies->Companies->find("all", array("conditions" => array("company_id" => $this->request->getData()['company_id']), "order" => array("name ASC")));
+                }else{
+                    $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC")));
+                }
+            }
+        }else{
+            $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC")));
+        }
+
+        foreach($companies as $company){
+            $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "paid_until >=" => $from, "paid_until <=" => $to), "order" => array("paid_until ASC")))->contain(['Customers', 'Options']);
+        }
+        // Add a filter for life or health 
+
+        $this->set(compact("companies", 'comps'));
     }
 
     public function alerts(){
         
+    }
+
+    private function updateriders($policy, $riders){
+        $this->loadModel('PoliciesRiders'); 
+        // delete old riders
+        $pr = $this->PoliciesRiders->find("all", array('conditions' => array("policy_id" => $policy))); 
+        foreach($pr as $p){
+            $this->PoliciesRiders->delete($p);
+        }
+        // create new entity for the riders and save them
+        foreach($riders as $key => $rider){
+            $new = $this->PoliciesRiders->newEmptyEntity();
+            $new->policy_id = $policy; 
+            $new->rider_id = $rider;
+            $this->PoliciesRiders->save($new);
+        }
     }
 }

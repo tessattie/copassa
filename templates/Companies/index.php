@@ -42,9 +42,7 @@
                     <th class="text-center">Phone</th>
                     <th class="text-center">Email</th>
                     <th class="text-center">Options</th>
-                    <th class="text-center">Created by</th>
-                    <th class="text-center">Created at</th>
-                    <th class="text-center">Last modified</th>
+                    <th class="text-center">Policies</th>
                     <th class="text-center"></th>
                 </thead>
             <tbody> 
@@ -56,9 +54,7 @@
                     <td class="text-center"><?= $company->phone ?></td>
                     <td class="text-center"><?= $company->email ?></td>
                     <td class="text-center"><?= count($company->options) ?></td>
-                    <td class="text-center"><?= $company->user->name ?></td>
-                    <td class="text-center"><?= date("M d Y", strtotime($company->created)) ?></td>
-                    <td class="text-center"><?= date("M d Y H:i", strtotime($company->modified)) ?></td>
+                    <td class="text-center"><?= count($company->policies) ?></td>
                     <td class="text-right"><a href="<?= ROOT_DIREC ?>/companies/edit/<?= $company->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                     <a href="<?= ROOT_DIREC ?>/companies/delete/<?= $company->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= $company->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                     </td>

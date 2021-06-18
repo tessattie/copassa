@@ -30,13 +30,19 @@ use Cake\Event\EventInterface;
 class AppController extends Controller
 {
 
-    private $company_types = array(1 => "Life", 2 => "Health");
+    public $company_types = array(1 => "Life", 2 => "Health");
 
-    private $status = array(0 => "Inactive", 1 => "Active");
+    public $status = array(0 => "Inactive", 1 => "Active");
 
-    private $modes = array(12 => "Annual", 6 => "Semi-Annual", 4 => "Trimestrial", 3 => 'Quarterly', 1 => 'Monthly');
+    public $modes = array(12 => "A", 6 => "SA", 4 => "T", 3 => 'Q', 1 => 'M');
 
-    private $premium_status = array(1 => "Yes", 0 => "No");
+    public $premium_status = array(1 => "Yes", 0 => "No");
+
+    public $sexe = array(1 => "Male", 2 => "Female", 3 => "Other"); 
+
+    public $relations = array(1 => "Spouse", 2 => "Child", 3  => "Other");
+
+    public $plans = array(1 => 'Open', 2 => 'Network');
 
     protected $session;
 
@@ -58,8 +64,6 @@ class AppController extends Controller
         parent::initialize();
 
         define('ROOT_DIREC', '/copassa');
-
-        define('DOCUMENT_DIRECTORY', 'C:/wamp/www/copassa/webroot/img/');
 
         date_default_timezone_set("America/New_York");
 
@@ -97,6 +101,9 @@ class AppController extends Controller
             $this->set('status', $this->status);
             $this->set('premium_status', $this->premium_status);
             $this->set("modes", $this->modes);
+            $this->set('sexe', $this->sexe);
+            $this->set("relations", $this->relations);
+            $this->set('plans', $this->plans);
         }
     }
 
@@ -136,25 +143,4 @@ class AppController extends Controller
         $log->new_data = $new_data; 
         $this->Logs->save($log); 
     }
-
-
-    protected function checkfile($file, $name, $directory){
-        $allowed_extensions = array('jpg', "JPG", "jpeg", "JPEG", "png", "PNG", 'pdf', 'PDF');
-        if(!$file['error']){
-            $extension = explode("/", $file['type'])[1];
-            if(in_array($extension, $allowed_extensions)){
-                $dossier = DOCUMENT_DIRECTORY.$directory.'/';
-                if(move_uploaded_file($file['tmp_name'], $dossier . $name . "." . $extension)){
-                    return $name . "." . $extension;
-                }else{
-                    return 'not moved';
-                }
-            }else{
-                return 'bad extension';
-            }
-        }else{
-            return 'file error';
-        }
-    }
-
 }

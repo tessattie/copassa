@@ -26,7 +26,7 @@ class CompaniesController extends AppController
     public function index()
     {
         $this->savelog(200, "Accessed company page", 1, 3, "", "");
-        $companies = $this->Companies->find("all")->contain(['Users', 'Options']);
+        $companies = $this->Companies->find("all")->contain(['Users', 'Options', 'Policies']);
 
         $this->set(compact('companies'));
     }
