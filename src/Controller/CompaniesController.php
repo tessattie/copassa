@@ -84,6 +84,15 @@ class CompaniesController extends AppController
         $this->set(compact('company', 'option'));
     }
 
+    public function view($id = null)
+    {
+        $company = $this->Companies->get($id, [
+            'contain' => ['Policies' => ['Customers', "Options", "Users"]],
+        ]);
+
+        $this->set(compact('company'));
+    }
+
     /**
      * Delete method
      *

@@ -40,9 +40,13 @@
                     <th class="text-center">Number</th>
                     <th class="text-center">Holder</th>
                     <th class="text-center">Company</th>
+                    <th class="text-center">Last Premium</th>
                     <th class="text-center">Premium</th>
+
                     <th class="text-center">Mode</th>
                     <th class="text-center">Paid until</th>
+                    <th class="text-center">Last Renewal</th>
+                    <th class="text-center">Next Renewal</th>
                     <th class="text-center">Certificate</th>
                     <th></th>
                 </thead>
@@ -52,9 +56,12 @@
                 <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
                 <td class="text-center"><?= $policy->customer->name ?></td>
                 <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
+                <td class="text-center"><?= number_format($policy->last_premium,2,".",",") ?></td>
                 <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
                 <td class="text-center"><?= date("M d Y", strtotime($policy->paid_until)) ?></td>
+                <td class="text-center"><?= date("F Y", strtotime($policy->last_renewal)) ?></td>
+                <td class="text-center"><?= date("F Y", strtotime($policy->next_renewal)) ?></td>
                 <?php if(!empty($policy->certificate)) : ?>
                     <td class="text-center">
                     <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
@@ -66,7 +73,6 @@
                 
 
                 <td class="text-right">
-
                     <a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                 
                     <a href="<?= ROOT_DIREC ?>/policies/delete/<?= $policy->id ?>" onclick="return confirm('Are you sure you would like to delete the policy <?= $policy->policy_number ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>

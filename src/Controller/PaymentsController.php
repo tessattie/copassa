@@ -26,7 +26,7 @@ class PaymentsController extends AppController
         if(!empty($policy_id)){
             $policy = $this->Payments->Policies->get($policy_id, ['contain' => ['Customers']]);
             $this->savelog(200, "Accessed payments for policy #".$policy->policy_number, 1, 3, "", "");
-            $payments = $this->Payments->find("all", array('order' => array('Payments.created DESC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users']);
+            $payments = $this->Payments->find("all", array('order' => array('Payments.created DESC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to, 'Payments.policy_id' => $policy_id)))->contain(['Rates', 'Users']);
         }else{
             $this->savelog(200, "Accessed payments page", 1, 3, "", "");
             $policy = '';
@@ -80,6 +80,7 @@ class PaymentsController extends AppController
                 $payment->path_to_photo = $data['certificate'];
                 if($pm = $this->Payments->save($payment)){
                     $this->update_paid_until($policy);
+                    $this->update_next_renewal($policy, $this->request->getData()['next_renewal'], $this->request->getData()['premium']);
                     $this->savelog(200, "Created payment for policy: ".$policy->policy_number, 1, 1, "", json_encode($payment));
                 }else{
                     $this->savelog(500, "Tempted to create payment for policy: ".$policy->policy_number, 0, 1, "", json_encode($payment));
@@ -96,6 +97,20 @@ class PaymentsController extends AppController
         $months = $policy->mode; 
         $date->add(new \DateInterval("P".$months."M")); 
         $policy->paid_until = $date;
+        $this->Payments->Policies->save($policy);
+    }
+
+    private function update_next_renewal($policy, $next_renewal, $premium){
+        if(!empty($premium)){
+            $policy->last_premium = $policy->premium; 
+            $policy->premium = $premium;
+        }
+
+        if(!empty($next_renewal)){
+            $policy->last_renewal = $policy->next_renewal;
+            $policy->next_renewal = $next_renewal;
+        }
+
         $this->Payments->Policies->save($policy);
     }
 
@@ -167,7 +182,72 @@ class PaymentsController extends AppController
     }
 
     public function report(){
+        $this->savelog(200, "Accessed payments page", 1, 3, "", "");
+        $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies']);
+        $this->set(compact('payments'));
+    }
+
+    public function export(){
+        $this->savelog(200, "Payment Exports Done", 1, 3, "", "");
+        require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
+        $from = $this->session->read("from"); 
+        $to = $this->session->read("to"); 
+
+        $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies']);
+
+        $fpdf = new FPDF();
+        $fpdf->AddPage("L");
+        $fpdf->SetFont('Arial','B',9);
+        $fpdf->Cell(200,0,"Copassa Payments Report",0,0, 'L');
+        $fpdf->Cell(75,0,"From " . date("M d Y", strtotime($from)) . " to " . date("M d Y", strtotime($to)) ,0,0, 'R');
+        $fpdf->Ln(7);
+        $fpdf->Cell(275,0,"",'B',0, 'R');
+        $fpdf->Ln(5);
+
+        $fpdf->SetFont('Arial','B',8);
+        $fpdf->SetFillColor(220,220,220);
+        $fpdf->Cell(275,7,"Payments","T-L-R",0, 'L', 1);
         
+        $fpdf->Ln(7);
+        $fpdf->Cell(20,7,"#",'T-L-B',0, 'C');
+        $fpdf->Cell(75,7,"Customer - Policy",'T-L-B',0, 'L');
+        $fpdf->Cell(30,7,"Amount",'T-L-B',0, 'C');
+        $fpdf->Cell(75,7,"Memo",'T-L-B',0, 'C');
+        $fpdf->Cell(20,7,"Status",'T-L-B',0, 'C');
+        $fpdf->Cell(20,7,"Confirmed",'T-L-B',0, 'C');
+        $fpdf->Cell(35,7,"Date",'T-L-B-R',0, 'C');
+        $fpdf->Ln(7);
+        $fpdf->SetFont('Arial','',7);
+
+        foreach($payments as $p){
+            $date = $p->created->year."-".$p->created->month."-".$p->created->day;
+            $fpdf->Cell(20,7,(4000+$p->id),'T-L-B',0, 'C');
+            $fpdf->Cell(75,7,$p->customer->name." - ".$p->policy->policy_number,'T-L-B',0, 'L');
+            $fpdf->Cell(30,7,(number_format($p->amount, 2, ".", ",")." ".$p->rate->name),'T-L-B',0, 'C');
+            $fpdf->Cell(75,7,$p->memo,'T-L-B',0, 'C');
+
+            if($p->status == 1){
+                $fpdf->SetFillColor(220,247,230);
+                $fpdf->Cell(20,7,"Active",'T-L-B',0, 'C',1);
+            }else{
+                $fpdf->SetFillColor(255,192,203);
+                $fpdf->Cell(20,7,"Inactive",'T-L-B',0, 'C',1);
+            }
+            if($p->confirmed == 1){
+                $fpdf->SetFillColor(220,247,230);
+                $fpdf->Cell(20,7,"YES",'T-L-B',0, 'C',1);
+            }else{
+                $fpdf->SetFillColor(255,192,203);
+               $fpdf->Cell(20,7,"NO",'T-L-B',0, 'C',1); 
+            }
+            $fpdf->SetFillColor(255,255,255);
+
+            $fpdf->Cell(35,7,date('d M Y', strtotime($date)),'T-L-B-R',0, 'C');
+            $fpdf->Ln(7);
+        }
+
+        $fpdf->Output('I');
+        die();
     }
 
     public function receipt($id){

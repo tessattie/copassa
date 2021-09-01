@@ -22,6 +22,9 @@
                     <div class="col-md-1">
                         <?= $this->Form->button(__('Valider'), array('class'=>'btn btn-success', "style"=>"margin-top:24px;height:46px")) ?>
                     </div>
+                    <div class="col-md-5 text-right">
+                        <a href="<?= ROOT_DIREC ?>/policies/export/<?= $type_filter ?>/<?= $company_filter ?>"><button type="button" class="btn btn-warning" style="margin-top:24px;height:46px">Export</button></a>
+                    </div>
                 </div>
 
             <?= $this->Form->end() ?>
@@ -43,7 +46,9 @@
                     <th class="text-center">Policy Number</th>
                     <th class="text-center">Plan</th>
                     <th class="text-center">Mode</th>
+                    <th class="text-center">Last Premium</th>
                     <th class="text-center">Premium Due</th>
+                    <th class="text-center">%</th>
                     <th class="text-center">Effective Date</th>
                     <th class="text-right">Due Date</th>
                 </thead>
@@ -57,8 +62,18 @@
                             $diff = date_diff(date_create($dob), date_create($today));
                             $age = $diff->format('%y');
                         }
+
+                        $percentage = ""; 
+                        if(!empty($policy->last_premium)){
+                            $percentage = ($policy->premium - $policy->last_premium)*100/$policy->last_premium;
+                            $percentage = number_format($percentage, 2, ".",",");
+                            $percentage .="%";
+                        }
+                        $next_renewal = $policy->next_renewal->year."-".$policy->next_renewal->month."-".$policy->next_renewal->day;
+                        
                     ?>
-                    <tr>
+                    <tr <?= (date("Y-m-d", strtotime($next_renewal)) >= date("Y-m-t", strtotime($from))) ? "style='background:#FFF8DC
+'" : '' ?>>
                         <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
 
                         <?php if(!empty($age)) : ?>
@@ -69,9 +84,11 @@
                         <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
                         <td class="text-center"><?= $policy->option->name." / ".$policy->option->option_name ?></td>
                         <td class="text-center"><?= $modes[$policy->mode] ?></td>
+                        <td class="text-center"><?= number_format(($policy->last_premium+$policy->fee), 2, ".", ",") ?> USD</td>
                         <td class="text-center"><?= number_format(($policy->premium+$policy->fee), 2, ".", ",") ?> USD</td>
+                        <td class="text-center"><?= $percentage ?></td>
                         <td class="text-center"><?= date('M d Y', strtotime($policy->effective_date)) ?></td>
-                        <td class="text-right"><?= date('M d Y', strtotime($policy->paid_until)) ?></td>
+                        <td class="text-right"><?= date('M d Y', strtotime($next_renewal)) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

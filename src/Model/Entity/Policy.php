@@ -71,6 +71,9 @@ class Policy extends Entity
         'certificate' => true, 
         'usa_deductible' => true, 
         'max_coverage' => true, 
-        'exclusions' => true
+        'exclusions' => true,
+        'last_premium' => true,
+        'next_renewal' => true, 
+        'last_renewal' => true
     ];
 }

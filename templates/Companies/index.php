@@ -18,20 +18,20 @@
         <div class="panel-heading">
             Companies
             <ul class="pull-right panel-settings panel-button-tab-right">
-                            <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                                <em class="fa fa-plus"></em>
-                            </a>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li>
-                                        <ul class="dropdown-settings">
-                                            <li><a href="<?= ROOT_DIREC ?>/companies/add">
-                                                <em class="fa fa-plus"></em> New Company
-                                            </a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
+                <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
+                    <em class="fa fa-plus"></em>
+                </a>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li>
+                            <ul class="dropdown-settings">
+                                <li><a href="<?= ROOT_DIREC ?>/companies/add">
+                                    <em class="fa fa-plus"></em> New Company
+                                </a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     <div class="panel-body articles-container">
             <table class="table table-stripped datatable">
@@ -46,21 +46,22 @@
                     <th class="text-center"></th>
                 </thead>
             <tbody> 
-        <?php foreach($companies as $company) : ?>
+            <?php foreach($companies as $company) : ?>
                 <tr>
-                    <td><?= $company->name ?></td>
+                    <td><a href="<?= ROOT_DIREC ?>/companies/view/<?= $company->id ?>"><?= $company->name ?></a></td>
                     <td class="text-center"><?= $company_types[$company->type] ?></td>
                     <td class="text-center"><?= $company->address ?></td>
                     <td class="text-center"><?= $company->phone ?></td>
                     <td class="text-center"><?= $company->email ?></td>
                     <td class="text-center"><?= count($company->options) ?></td>
                     <td class="text-center"><?= count($company->policies) ?></td>
-                    <td class="text-right"><a href="<?= ROOT_DIREC ?>/companies/edit/<?= $company->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
-                    <a href="<?= ROOT_DIREC ?>/companies/delete/<?= $company->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= $company->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                    <td class="text-right">
+                        <a href="<?= ROOT_DIREC ?>/companies/edit/<?= $company->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                        <a href="<?= ROOT_DIREC ?>/companies/delete/<?= $company->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= $company->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                     </td>
                 </tr>
-        <?php endforeach; ?>
-        </tbody>
+            <?php endforeach; ?>
+            </tbody>
         </table>
             <!--End .article-->
         </div>

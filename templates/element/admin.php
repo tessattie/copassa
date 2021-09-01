@@ -47,25 +47,17 @@
         <div class="divider"></div>
 
         <ul class="nav menu" style="margin-top:0px">
-            <li class="<?= ($this->request->getParam('controller') == 'Policies' && $this->request->getParam('action') == 'dashboard') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/policies/dashboard"><em class="fa fa-bar-chart">&nbsp;</em> Dashboard</a></li>
             <li class="parent <?= ($this->request->getParam('action') == 'report' || $this->request->getParam('action') == 'alerts') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-4">
                 <em class="fa fa-bars">&nbsp;</em> Reports <span data-toggle="collapse" href="#sub-item-4" class="icon pull-right"><em class="fa fa-plus"></em></span>
                 </a>
                 <ul class="children collapse" id="sub-item-4">
-                    <li><a class="" href="<?= ROOT_DIREC ?>/users/report">
-                        <span class="fa fa-arrow-right">&nbsp;</span> Comissions
-                    </a></li>
-                    <li><a class="" href="<?= ROOT_DIREC ?>/customers/report">
-                        <span class="fa fa-arrow-right">&nbsp;</span> Policy Holders
-                    </a></li>
                     <li><a class="" href="<?= ROOT_DIREC ?>/policies/report">
                         <span class="fa fa-arrow-right">&nbsp;</span> Policies
                     </a></li>
+                </ul>
+                <ul class="children collapse" id="sub-item-4">
                     <li><a class="" href="<?= ROOT_DIREC ?>/payments/report">
                         <span class="fa fa-arrow-right">&nbsp;</span> Payments
-                    </a></li>
-                    <li><a class="" href="<?= ROOT_DIREC ?>/policies/alerts">
-                        <span class="fa fa-arrow-right">&nbsp;</span> Alerts
                     </a></li>
                 </ul>
             </li>
@@ -80,8 +72,12 @@
                         <span class="fa fa-arrow-right">&nbsp;</span> Policy Holders
                     </a></li>
 
-                    <li class="<?= ($this->request->getParam('controller') == 'Policies') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/policies">
+                    <li class="<?= ($this->request->getParam('controller') == 'Policies' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/policies">
                         <span class="fa fa-arrow-right">&nbsp;</span> Policies
+                    </a></li>
+
+                    <li class="<?= ($this->request->getParam('controller') == 'Policies' && $this->request->getParam('action') == 'update') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/policies/update">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Updates
                     </a></li>
 
                     <li class="<?= ($this->request->getParam('controller') == 'Payments') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/payments">

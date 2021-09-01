@@ -4,134 +4,124 @@
  * @var \App\Model\Entity\Company $company
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('Edit Company'), ['action' => 'edit', $company->id], ['class' => 'side-nav-item']) ?>
-            <?= $this->Form->postLink(__('Delete Company'), ['action' => 'delete', $company->id], ['confirm' => __('Are you sure you want to delete # {0}?', $company->id), 'class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('List Companies'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('New Company'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
-        </div>
-    </aside>
-    <div class="column-responsive column-80">
-        <div class="companies view content">
-            <h3><?= h($company->name) ?></h3>
-            <table>
-                <tr>
-                    <th><?= __('Name') ?></th>
-                    <td><?= h($company->name) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('User') ?></th>
-                    <td><?= $company->has('user') ? $this->Html->link($company->user->name, ['controller' => 'Users', 'action' => 'view', $company->user->id]) : '' ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <td><?= $this->Number->format($company->id) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Type') ?></th>
-                    <td><?= $this->Number->format($company->type) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Created') ?></th>
-                    <td><?= h($company->created) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Modified') ?></th>
-                    <td><?= h($company->modified) ?></td>
-                </tr>
-            </table>
-            <div class="related">
-                <h4><?= __('Related Options') ?></h4>
-                <?php if (!empty($company->options)) : ?>
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th><?= __('Id') ?></th>
-                            <th><?= __('Name') ?></th>
-                            <th><?= __('Company Id') ?></th>
-                            <th><?= __('User Id') ?></th>
-                            <th><?= __('Created') ?></th>
-                            <th><?= __('Modified') ?></th>
-                            <th class="actions"><?= __('Actions') ?></th>
-                        </tr>
-                        <?php foreach ($company->options as $options) : ?>
-                        <tr>
-                            <td><?= h($options->id) ?></td>
-                            <td><?= h($options->name) ?></td>
-                            <td><?= h($options->company_id) ?></td>
-                            <td><?= h($options->user_id) ?></td>
-                            <td><?= h($options->created) ?></td>
-                            <td><?= h($options->modified) ?></td>
-                            <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'Options', 'action' => 'view', $options->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'Options', 'action' => 'edit', $options->id]) ?>
-                                <?= $this->Form->postLink(__('Delete'), ['controller' => 'Options', 'action' => 'delete', $options->id], ['confirm' => __('Are you sure you want to delete # {0}?', $options->id)]) ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </table>
+
+<div class="row" style="margin-bottom:15px">
+    <ol class="breadcrumb">
+        <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
+            <em class="fa fa-home"></em>
+        </a></li>
+        <li><a href="<?= ROOT_DIREC ?>/companies">Companies</a></li>
+        <li><?= $company->name ?></li>
+    </ol>
+</div>
+<?= $this->Flash->render() ?>
+<div class="container-fluid"> 
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default articles">
+                <div class="panel-heading">
+                    Company <?= $company->name ?>
+                    <ul class="pull-right panel-settings panel-button-tab-right">
+                        <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
+                            <em class="fa fa-plus"></em>
+                        </a>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li>
+                                    <ul class="dropdown-settings">
+                                        <li><a href="<?= ROOT_DIREC ?>/companies/add">
+                                            <em class="fa fa-plus"></em> New Company
+                                        </a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
-                <?php endif; ?>
+            <div class="panel-body articles-container">
+                 <table class="table table-striped">
+                    <tr>
+                        <th><?= __('Name') ?></th>
+                        <td class="text-right"><?= h($company->name) ?></td>
+                    </tr>
+                    <tr>
+                        <th><?= __('Type') ?></th>
+                        <td class="text-right"><?= $company_types[$company->type] ?></td>
+                    </tr>
+                    <tr>
+                        <th><?= __('Address') ?></th>
+                        <td class="text-right"><?= h($company->address) ?></td>
+                    </tr>
+                    <tr>
+                        <th><?= __('Email') ?></th>
+                        <td class="text-right"><?= $company->email ?></td>
+                    </tr>
+                    <tr>
+                        <th><?= __('Phone') ?></th>
+                        <td class="text-right"><?= $company->phone ?></td>
+                    </tr>
+                    <tr>
+                        <th><?= __('Policies') ?></th>
+                        <td class="text-right"><?= count($company->policies) ?></td>
+                    </tr>
+                </table>
             </div>
-            <div class="related">
-                <h4><?= __('Related Policies') ?></h4>
-                <?php if (!empty($company->policies)) : ?>
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th><?= __('Id') ?></th>
-                            <th><?= __('Company Id') ?></th>
-                            <th><?= __('Option Id') ?></th>
-                            <th><?= __('Customer Id') ?></th>
-                            <th><?= __('Policy Number') ?></th>
-                            <th><?= __('Mode') ?></th>
-                            <th><?= __('Effective Date') ?></th>
-                            <th><?= __('Paid Until') ?></th>
-                            <th><?= __('Premium') ?></th>
-                            <th><?= __('Fee') ?></th>
-                            <th><?= __('User Id') ?></th>
-                            <th><?= __('Active') ?></th>
-                            <th><?= __('Lapse') ?></th>
-                            <th><?= __('Pending') ?></th>
-                            <th><?= __('Grace Period') ?></th>
-                            <th><?= __('Canceled') ?></th>
-                            <th><?= __('Created') ?></th>
-                            <th><?= __('Modified') ?></th>
-                            <th class="actions"><?= __('Actions') ?></th>
-                        </tr>
-                        <?php foreach ($company->policies as $policies) : ?>
-                        <tr>
-                            <td><?= h($policies->id) ?></td>
-                            <td><?= h($policies->company_id) ?></td>
-                            <td><?= h($policies->option_id) ?></td>
-                            <td><?= h($policies->customer_id) ?></td>
-                            <td><?= h($policies->policy_number) ?></td>
-                            <td><?= h($policies->mode) ?></td>
-                            <td><?= h($policies->effective_date) ?></td>
-                            <td><?= h($policies->paid_until) ?></td>
-                            <td><?= h($policies->premium) ?></td>
-                            <td><?= h($policies->fee) ?></td>
-                            <td><?= h($policies->user_id) ?></td>
-                            <td><?= h($policies->active) ?></td>
-                            <td><?= h($policies->lapse) ?></td>
-                            <td><?= h($policies->pending) ?></td>
-                            <td><?= h($policies->grace_period) ?></td>
-                            <td><?= h($policies->canceled) ?></td>
-                            <td><?= h($policies->created) ?></td>
-                            <td><?= h($policies->modified) ?></td>
-                            <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'Policies', 'action' => 'view', $policies->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'Policies', 'action' => 'edit', $policies->id]) ?>
-                                <?= $this->Form->postLink(__('Delete'), ['controller' => 'Policies', 'action' => 'delete', $policies->id], ['confirm' => __('Are you sure you want to delete # {0}?', $policies->id)]) ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </table>
+                
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default articles">
+                        <div class="panel-heading">
+                            Policies
+                        </div>
+
+                        <div class="panel-body articles-container">
+                            <table class="table table-bordered" style="width:2000px">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">Customer</th>
+                                        <th class="text-center">Option</th>
+                                        <th class="text-center">Premium</th>
+                                        <th class="text-center">Fee</th>
+                                        <th class="text-center">Deductible</th>
+                                        <th class="text-center">Mode</th>
+                                        <th class="text-center">Effective date</th>
+                                        <th class="text-center">Paid until</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($company->policies as $policy) : ?>
+                                        <?php 
+                                        //Today's date.
+                                        $pu = new \DateTime($policy->paid_until);
+
+                                        //Subtract a day using DateInterval
+                                        $yesterday = $pu->sub(new \DateInterval('P1D'));
+
+                                        //Get the date in a YYYY-MM-DD format.
+                                        $paiduntil = $yesterday->format('Y-m-d');
+
+                                        ?>
+                                    <tr>
+                                        <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
+                                        <td class="text-center"><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
+                                        <td class="text-center"><?= $policy->option->name ?></td>
+                                        <td class="text-center"><?= number_format($policy->premium,2,".",",") ?> USD</td>
+                                        <td class="text-center"><?= number_format($policy->fee,0,".",",") ?> USD</td>
+                                        <td class="text-center"><?= number_format($policy->deductible,0,".",",") ?> USD</td>
+                                        <td class="text-center"><?= $modes[$policy->mode] ?></td>
+                                        <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
+                                        <td class="text-center"><?= date("M d Y", strtotime($policy->paid_until)) ?></td>
+                                        <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a></td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <?php endif; ?>
             </div>
         </div>
     </div>

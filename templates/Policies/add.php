@@ -3,6 +3,20 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\User $user
  */
+$months = array(
+  1 => "January", 
+  2 => "February", 
+  3 => "March", 
+  4 => "April", 
+  5 => "May", 
+  6 => 'June', 
+  7 => "July", 
+  8 => "August", 
+  9 => "September", 
+  10 => "October", 
+  11 => "November", 
+  12 => "December"
+)
 ?>
 
 <div class="row" style="margin-bottom:15px">
@@ -64,11 +78,20 @@
                 </div>
                 <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Payments</h4>
                 <div class="row">
-                  <div class="col-md-4"><?= $this->Form->control('mode', array('class' => 'form-control', 'options' => $modes, "label" => "Mode", "multiple" => false, 'required' => true, 'style' => "height:46px", 'empty' => "-- Choose --")); ?>
+                  <div class="col-md-3"><?= $this->Form->control('mode', array('class' => 'form-control', 'options' => $modes, "label" => "Mode", "multiple" => false, 'required' => true, 'style' => "height:46px", 'empty' => "-- Choose --")); ?>
                     </div>
-                    <div class="col-md-4"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Premium *", 'required' => true, 'style' => "height:46px", 'placeholder' => "Premium")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Premium *", 'required' => true, 'style' => "height:46px", 'placeholder' => "Premium")); ?>
                     </div>
-                    <div class="col-md-4"><?= $this->Form->control('fee', array('class' => 'form-control', "label" => "Fee *", 'required' => true, 'style' => "height:46px", 'placeholder' => "Fee")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('last_premium', array('class' => 'form-control', "label" => "Last Premium", 'required' => false, 'style' => "height:46px", 'placeholder' => "Last Premium")); ?>
+                    </div>
+                    <div class="col-md-3"><?= $this->Form->control('fee', array('class' => 'form-control', "label" => "Fee *", 'required' => true, 'style' => "height:46px", 'placeholder' => "Fee")); ?>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3"><?= $this->Form->control('last_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Last Renewal Month", 'required' => true, 'style' => "height:46px")); ?>
+                    </div>
+                    <div class="col-md-3"><?= $this->Form->control('next_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Next Renewal Month", 'required' => true, 'style' => "height:46px",)); ?>
                     </div>
                 </div>
                 <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Status</h4>
