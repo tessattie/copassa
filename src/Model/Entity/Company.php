@@ -41,6 +41,7 @@ class Company extends Entity
         'policies' => true,
         'address' => true, 
         'phone' => true, 
-        'email' => true
+        'email' => true,
+        'country_id' => true
     ];
 }

@@ -267,7 +267,9 @@ class CustomersTable extends Table
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
-            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('Countries', [
+            'foreignKey' => 'country_id',
         ]);
         $this->hasMany('Payments', [
             'foreignKey' => 'customer_id',

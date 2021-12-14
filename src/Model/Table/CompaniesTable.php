@@ -53,6 +53,10 @@ class CompaniesTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->belongsTo('Countries', [
+            'foreignKey' => 'country_id',
+        ]);
         $this->hasMany('Options', [
             'foreignKey' => 'company_id',
         ]);

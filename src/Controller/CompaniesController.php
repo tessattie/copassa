@@ -26,7 +26,7 @@ class CompaniesController extends AppController
     public function index()
     {
         $this->savelog(200, "Accessed company page", 1, 3, "", "");
-        $companies = $this->Companies->find("all")->contain(['Users', 'Options', 'Policies']);
+        $companies = $this->Companies->find("all")->contain(['Users', 'Options', 'Policies', 'Countries']);
 
         $this->set(compact('companies'));
     }
@@ -43,6 +43,7 @@ class CompaniesController extends AppController
         if ($this->request->is('post')) {
             $company = $this->Companies->patchEntity($company, $this->request->getData());
             $company->user_id = $this->Auth->user()['id'];
+            $company->country_id = 1;
             if ($this->Companies->save($company)) {
                 $this->savelog(200, "Created company", 1, 1, "", json_encode($company));
                 $this->Flash->success(__('The company has been saved.'));
@@ -53,7 +54,8 @@ class CompaniesController extends AppController
             }
             $this->Flash->error(__('The company could not be saved. Please, try again.'));
         }
-        $this->set(compact('company'));
+        $countries = $this->Companies->Countries->find("list");
+        $this->set(compact('company', 'countries'));
     }
 
     /**
@@ -81,7 +83,8 @@ class CompaniesController extends AppController
             $this->savelog(500, "Tempted to edit company", 0, 2, $old_data, json_encode($company));
             $this->Flash->error(__('The company could not be saved. Please, try again.'));
         }
-        $this->set(compact('company', 'option'));
+        $countries = $this->Companies->Countries->find("list");
+        $this->set(compact('company', 'option', 'countries'));
     }
 
     public function view($id = null)

@@ -40,6 +40,7 @@
                 </thead>
             <tbody> 
             <?php foreach($policies as $policy) : ?>
+                <?php if($policy->company->country_id == $filter_country || empty($filter_country)) : ?>
                 <tr class="<?= $policy->company_id ?>">
                     <?= $this->Form->control('policy_id[]', array("type" => "hidden", "value" => $policy->id)) ?>
                     <td class="text-left"><?= $policy->policy_number ?> - <?= $policy->customer->name ?> - <?= $policy->company->name . " / ".  $policy->option->name ?></td>
@@ -55,6 +56,7 @@
                     <td class="text-center"><?= $this->Form->control('last_renewal[]', array('class' => 'form-control', "label" => false, 'style' => "height:35px;width:175px", 'type' => "date", 'value' => $policy->last_renewal)); ?></td>
                     <td class="text-center"><?= $this->Form->control('next_renewal[]', array('class' => 'form-control', "label" => false, 'style' => "height:35px;width:175px", 'type' => "date", 'value' => $policy->next_renewal)); ?></td>
                 </tr>
+            <?php endif; ?>
             <?php endforeach; ?>
             </tbody>
         </table>

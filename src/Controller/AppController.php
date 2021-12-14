@@ -91,11 +91,13 @@ class AppController extends Controller
 
         $this->session = $this->getRequest()->getSession();
         if($this->Auth->user()){
+            $this->loadModel('Countries');
             $this->from = $this->session->read("from")." 00:00:00";
             $this->to = $this->session->read("to")." 23:59:59";
             $this->initializeSessionVariables();
             $this->set("filterfrom", $this->session->read("from"));
             $this->set("filterto", $this->session->read("to"));
+            $this->set("filter_country", $this->session->read("filter_country"));
             $this->set('user_connected', $this->Auth->user());
             $this->set('company_types', $this->company_types);
             $this->set('status', $this->status);
@@ -104,6 +106,7 @@ class AppController extends Controller
             $this->set('sexe', $this->sexe);
             $this->set("relations", $this->relations);
             $this->set('plans', $this->plans);
+            $this->set('filter_countries', $this->Countries->find("list"));
         }
     }
 
@@ -114,6 +117,10 @@ class AppController extends Controller
 
         if(empty($this->session->read("to"))){
             $this->session->write("to", date("Y-m-d"));
+        }
+
+        if(empty($this->session->read("filter_country"))){
+            $this->session->write("filter_country", '');
         }
     }
 
@@ -126,6 +133,8 @@ class AppController extends Controller
             if(!empty($this->request->getData()["to"])){
                 $this->session->write("to", $this->request->getData()["to"]);
             }
+
+            $this->session->write("filter_country", $this->request->getData()["filter_country"]);
         }
 
         return $this->redirect($this->referer());

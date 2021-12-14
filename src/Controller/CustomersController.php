@@ -26,7 +26,13 @@ class CustomersController extends AppController
     public function index()
     {
         $this->savelog(200, "Accessed policy holder page", 1, 3, "", "");
-        $customers = $this->Customers->find("all")->contain(['Users']);
+        $filter_country = $this->session->read("filter_country");
+        if(!empty($filter_country)){
+            $customers = $this->Customers->find("all", array("conditions" => array("Customers.country_id" => $filter_country)))->contain(['Users', 'Countries', 'Policies' => 'Companies']);
+        }else{
+          $customers = $this->Customers->find("all")->contain(['Users', 'Countries', 'Policies' => 'Companies']);  
+        }
+        
 
         $this->set(compact('customers'));
     }
@@ -41,7 +47,7 @@ class CustomersController extends AppController
     public function view($id = null)
     {
         $customer = $this->Customers->get($id, [
-            'contain' => ['Notes' => ['sort' => 'Notes.created DESC', 'Users'], 'Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users']],
+            'contain' => ['Notes' => ['sort' => 'Notes.created DESC', 'Users'], 'Countries', 'Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users']],
         ]);
         $note = $this->Customers->Notes->newEmptyEntity();
 
@@ -68,7 +74,8 @@ class CustomersController extends AppController
             $this->savelog(500, "Tempted to create policy holder", 0, 1, "", json_encode($customer));
             $this->Flash->error(__('The policy holder could not be saved. Please, try again.'));
         }
-        $this->set(compact('customer'));
+        $countries = $this->Countries->find("list");
+        $this->set(compact('customer', 'countries'));
     }
 
     /**
@@ -94,7 +101,8 @@ class CustomersController extends AppController
             $this->savelog(500, "Tempted to edit policy holder", 0, 2, $old_data, json_encode($customer));
             $this->Flash->error(__('The customer could not be saved. Please, try again.'));
         }
-        $this->set(compact('customer'));
+        $countries = $this->Countries->find("list");
+        $this->set(compact('customer', 'countries'));
     }
 
     /**
