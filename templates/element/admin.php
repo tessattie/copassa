@@ -26,6 +26,12 @@
                 <ul class="nav navbar-top-links navbar-right">
                     <li>
                     <?= $this->Form->create(null, array("url" => "/app/update_session_variables")) ?>
+                    <select name="filter_country" style="margin-top: 16px;height: 31px!important;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;border:none!important">
+                        <option value="">-- All --</option>
+                        <?php foreach($filter_countries as $id => $name) : ?>
+                            <option value="<?= $id ?>" <?= ($filter_country == $id) ? 'selected' : "" ?>><?= strtoupper($name) ?></option>
+                        <?php endforeach; ?>
+                    </select>
                     <input value="<?= $filterfrom  ?>" type="date" name="from" style="margin-top: 15px;height: 30px;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
                     <input value="<?= $filterto  ?>" type="date" name="to" style="height: 30px;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
                     <button class="btn btn-success" style="padding: 5px 12px!important;
@@ -62,7 +68,8 @@
                 </ul>
             </li>
 
-            <li class="<?= ($this->request->getParam('controller') == 'Policies' && $this->request->getParam('action') == 'dashboard') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-bank">&nbsp;</em> Companies</a></li>
+            <li class="<?= ($this->request->getParam('controller') == 'Companies') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-bank">&nbsp;</em> Companies</a></li>
+            <li class="<?= ($this->request->getParam('controller') == 'Countries' && $this->request->getParam('action') == 'dashboard') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/countries"><em class="fa fa-bank">&nbsp;</em> Countries</a></li>
 
             <li class="parent <?= ( ($this->request->getParam('controller') == 'Customers' || $this->request->getParam('controller') == 'Policies') && $this->request->getParam('action') != 'dashboard' ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-111">
                 <em class="fa fa-users">&nbsp;</em> Policy Holders <span data-toggle="collapse" href="#sub-item-111" class="icon pull-right"><em class="fa fa-plus"></em></span>

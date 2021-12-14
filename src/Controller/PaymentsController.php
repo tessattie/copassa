@@ -21,8 +21,16 @@ class PaymentsController extends AppController
      */
     public function index($policy_id = false)
     {
+        $filter_country = $this->session->read("filter_country");
+        if(!empty($filter_country)){
+            $policies = $this->Payments->Policies->find("all")->contain(['Customers', 'Companies'])->matching('Customers', function ($q) use ($filter_country) {
+                return $q->where(['Customers.country_id' => $filter_country]);
+            });
+            
+        }else{
+            $policies = $this->Payments->Policies->find("all")->contain(['Customers', 'Companies']);
+        }
         
-        $policies = $this->Payments->Policies->find("all")->contain(['Customers']);
         if(!empty($policy_id)){
             $policy = $this->Payments->Policies->get($policy_id, ['contain' => ['Customers']]);
             $this->savelog(200, "Accessed payments for policy #".$policy->policy_number, 1, 3, "", "");
@@ -183,7 +191,15 @@ class PaymentsController extends AppController
 
     public function report(){
         $this->savelog(200, "Accessed payments page", 1, 3, "", "");
-        $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies']);
+        $filter_country = $this->session->read("filter_country");
+        if(!empty($filter_country)){
+            $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']])->matching('Customers', function ($q) use ($filter_country) {
+                        return $q->where(['Customers.country_id' => $filter_country]);
+                    });
+        }else{
+           $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']]); 
+        }
+        
         $this->set(compact('payments'));
     }
 
@@ -192,8 +208,14 @@ class PaymentsController extends AppController
         require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
         $from = $this->session->read("from"); 
         $to = $this->session->read("to"); 
-
-        $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies']);
+        $filter_country = $this->session->read("filter_country");
+        if(!empty($filter_country)){
+            $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']])->matching('Customers', function ($q) use ($filter_country) {
+                        return $q->where(['Customers.country_id' => $filter_country]);
+                    });
+        }else{
+           $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']]); 
+        }
 
         $fpdf = new FPDF();
         $fpdf->AddPage("L");
@@ -209,41 +231,32 @@ class PaymentsController extends AppController
         $fpdf->Cell(275,7,"Payments","T-L-R",0, 'L', 1);
         
         $fpdf->Ln(7);
-        $fpdf->Cell(20,7,"#",'T-L-B',0, 'C');
-        $fpdf->Cell(75,7,"Customer - Policy",'T-L-B',0, 'L');
-        $fpdf->Cell(30,7,"Amount",'T-L-B',0, 'C');
-        $fpdf->Cell(75,7,"Memo",'T-L-B',0, 'C');
-        $fpdf->Cell(20,7,"Status",'T-L-B',0, 'C');
-        $fpdf->Cell(20,7,"Confirmed",'T-L-B',0, 'C');
-        $fpdf->Cell(35,7,"Date",'T-L-B-R',0, 'C');
+        $fpdf->Cell(10,7,"#",'T-L-B',0, 'C');
+        $fpdf->Cell(17,7,"Date",'T-L-B-R',0, 'C');
+        $fpdf->Cell(60,7,"Customer",'T-L-B',0, 'C');
+        $fpdf->Cell(35,7,"Company",'T-L-B',0, 'C');
+        $fpdf->Cell(25,7,"Policy",'T-L-B',0, 'C');
+        $fpdf->Cell(25,7,"Amount",'T-L-B',0, 'C');
+        $fpdf->Cell(25,7,"Due Date",'T-L-B',0, 'C');
+        $fpdf->Cell(78,7,"Memo",'T-L-B-R',0, 'C');
+        
         $fpdf->Ln(7);
         $fpdf->SetFont('Arial','',7);
 
         foreach($payments as $p){
-            $date = $p->created->year."-".$p->created->month."-".$p->created->day;
-            $fpdf->Cell(20,7,(4000+$p->id),'T-L-B',0, 'C');
-            $fpdf->Cell(75,7,$p->customer->name." - ".$p->policy->policy_number,'T-L-B',0, 'L');
-            $fpdf->Cell(30,7,(number_format($p->amount, 2, ".", ",")." ".$p->rate->name),'T-L-B',0, 'C');
-            $fpdf->Cell(75,7,$p->memo,'T-L-B',0, 'C');
-
-            if($p->status == 1){
-                $fpdf->SetFillColor(220,247,230);
-                $fpdf->Cell(20,7,"Active",'T-L-B',0, 'C',1);
-            }else{
-                $fpdf->SetFillColor(255,192,203);
-                $fpdf->Cell(20,7,"Inactive",'T-L-B',0, 'C',1);
+            if($p->policy->company->country_id == $filter_country || empty($filter_country)){
+                $date = $p->created->year."-".$p->created->month."-".$p->created->day;
+                $due_date = $p->policy->last_renewal->year."-".$p->policy->last_renewal->month."-".$p->policy->last_renewal->day;
+                $fpdf->Cell(10,7,(4000+$p->id),'T-L-B',0, 'C');
+                $fpdf->Cell(17,7,date('d M Y', strtotime($date)),'T-L-B-R',0, 'C');
+                $fpdf->Cell(60,7,$p->customer->name,'T-L-B',0, 'L');
+                $fpdf->Cell(35,7,$p->policy->company->name,'T-L-B',0, 'L');
+                $fpdf->Cell(25,7,$p->policy->policy_number,'T-L-B',0, 'L');
+                $fpdf->Cell(25,7,(number_format($p->amount, 2, ".", ",")." ".$p->rate->name),'T-L-B',0, 'C');
+                $fpdf->Cell(25,7,date('d M Y', strtotime($due_date)),'T-L-B-R',0, 'C');
+                $fpdf->Cell(78,7,$p->memo,'T-L-B-R',0, 'C');            
+                $fpdf->Ln(7);
             }
-            if($p->confirmed == 1){
-                $fpdf->SetFillColor(220,247,230);
-                $fpdf->Cell(20,7,"YES",'T-L-B',0, 'C',1);
-            }else{
-                $fpdf->SetFillColor(255,192,203);
-               $fpdf->Cell(20,7,"NO",'T-L-B',0, 'C',1); 
-            }
-            $fpdf->SetFillColor(255,255,255);
-
-            $fpdf->Cell(35,7,date('d M Y', strtotime($date)),'T-L-B-R',0, 'C');
-            $fpdf->Ln(7);
         }
 
         $fpdf->Output('I');

@@ -38,6 +38,7 @@
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>Name</th>
+                    <th class="text-center">Country</th>
                     <th class="text-center">Home Phone</th>
                     <th class="text-center">Cell Phone</th>
                     <th class="text-center">Other Phone</th>
@@ -48,6 +49,14 @@
                 </thead>
             <tbody> 
         <?php foreach($customers as $customer) : ?>
+            <?php  
+                $conditions = false; 
+                foreach($customer->policies as $policy){
+                    if($policy->company->country_id == $filter_year || empty($filter_year)){
+                        $condition = true;
+                    }
+                }
+            ?>
             <?php 
                 $age = "N/A";
                 if(!empty($customer->dob)){
@@ -57,13 +66,24 @@
                     $age = $diff->format('%y');
                 }
             ?>
+            <?php if($condition) : ?>
                 <tr>
+
                     <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $customer->id ?>"><?= $customer->name ?></a></td>
+
+                    <?php if(!empty($customer->country_id)) : ?>
+                        <td class="text-center"><?= $customer->country->name ?></td>
+                    <?php else : ?>
+                        <td class="text-center">N/A</td>
+                    <?php endif; ?>
+                    
                     <?php if(!empty($customer->home_phone)) : ?>
                         <td class="text-center">+(<?= $customer->home_area_code ?>)-<?= $customer->home_phone ?></td>
                     <?php else : ?>
                         <td class="text-center">-</td>
                     <?php endif; ?>
+
+                    
 
                     <?php if(!empty($customer->cell_phone)) : ?>
                         <td class="text-center">+(<?= $customer->cell_area_code ?>)-<?= $customer->cell_phone ?></td>
@@ -97,6 +117,7 @@
                     <a href="<?= ROOT_DIREC ?>/customers/delete/<?= $customer->id ?>" onclick="return confirm('Are you sure you would like to delete the customer <?= $customer->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                     </td>
                 </tr>
+            <?php endif; ?>
         <?php endforeach; ?>
         </tbody>
         </table>

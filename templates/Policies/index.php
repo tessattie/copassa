@@ -39,6 +39,7 @@
                 <thead> 
                     <th class="text-center">Number</th>
                     <th class="text-center">Holder</th>
+                    <th class="text-center">Country</th>
                     <th class="text-center">Company</th>
                     <th class="text-center">Last Premium</th>
                     <th class="text-center">Premium</th>
@@ -55,6 +56,7 @@
             <tr>
                 <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
                 <td class="text-center"><?= $policy->customer->name ?></td>
+                <td class="text-center"><?= $policy->customer->country->name ?></td>
                 <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
                 <td class="text-center"><?= number_format($policy->last_premium,2,".",",") ?></td>
                 <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>

@@ -53,19 +53,15 @@ class PoliciesTable extends Table
 
         $this->belongsTo('Companies', [
             'foreignKey' => 'company_id',
-            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Options', [
             'foreignKey' => 'option_id',
-            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Customers', [
             'foreignKey' => 'customer_id',
-            'joinType' => 'INNER',
         ]);
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
-            'joinType' => 'INNER',
         ]);
         $this->hasMany('Payments', [
             'foreignKey' => 'policy_id',

@@ -28,38 +28,31 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th class="text-left">Customer - Policy</th>
+                <th class="text-center">Date</th>
+                <th class="text-left">Customer</th>
+                <th class="text-center">Company</th>
+                <th class="text-center">Policy</th>
                 <th class="text-center">Amount</th>
-                
+                <th class="text-center">Due Date</th>
                 <th class="text-center">Memo</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Confirmed</th>
-                <th class="text-right">Date</th>
+                
             </tr>
         </thead>
         <tbody>
             <?php if(!empty($payments)) : ?>
                 <?php foreach($payments as $p) : ?>
+                    <?php if($p->policy->company->country_id == $filter_country || empty($filter_country)) : ?>
                     <tr>
                         <td><?= 4000+$p->id ?></td>
-                        <td class="text-left"><?= $p->customer->name ?> - <strong><?= $p->policy->policy_number ?></strong></td>
+                        <td class="text-center"><?= date('d M Y', strtotime($p->created)); ?></td>
+                        <td class="text-left"><?= $p->customer->name ?></td>
+                        <td class="text-center"><?= $p->policy->company->name ?></td>
+                        <td class="text-center"><strong><?= $p->policy->policy_number ?></strong></td>
                         <td class="text-center"><?= number_format($p->amount, 2, ".", ",")." ".$p->rate->name;  ?></td>
-                        
-                        
+                        <td class="text-center"><?= date("M d Y", strtotime($p->policy->last_renewal)) ?></td>
                         <td class="text-center"><?= $p->memo ?></td>
-                        <?php if($p->status == 1) : ?>
-                            <td class="text-center"><span class="label label-success">Active</span></td>
-                        <?php else : ?>
-                            <td class="text-center"><span class="label label-success">Canceled</span></td>
-                        <?php endif; ?>
-
-                        <?php if($p->confirmed == 1) : ?>
-                            <td class="text-center"><span class="label label-success">YES</span></td>
-                        <?php else : ?>
-                            <td class="text-center"><span class="label label-danger">NO</span></td>
-                        <?php endif; ?>
-                        <td class="text-right"><?= date('d M Y', strtotime($p->created)); ?></td>
                     </tr>
+                <?php endif; ?>
                 <?php endforeach; ?>
             <?php endif; ?>
         </tbody>
@@ -72,19 +65,12 @@
     
 </div><!--End .articles-->
 
-
-
-<script type="text/javascript">$(document).ready( function () {
-    $('.datatable').DataTable({
-        scrollY: "400px",
-        scrollCollapse: true,
-        paging: false,
-        "language": {
-            "search": "",
-            "searchPlaceholder": "Search"
-        }
+<script type="text/javascript">
+    $(document).ready( function () {
+        $('.datatable').DataTable({
+        });
     });
-} );</script>
+</script>
 
 <style type="text/css">
     #DataTables_Table_0_filter, #DataTables_Table_0_filter label, #DataTables_Table_0_filter input{

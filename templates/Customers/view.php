@@ -52,6 +52,10 @@ if(!empty($customer->dob)){
                             <td class="text-right"><?= h($customer->name) ?></td>
                         </tr>
                         <tr>
+                            <th><?= __('Country') ?></th>
+                            <td class="text-right"><?= h($customer->country->name) ?></td>
+                        </tr>
+                        <tr>
                             <th><?= __('Email') ?></th>
                             <td class="text-right"><?= h($customer->email) ?></td>
                         </tr>
@@ -111,7 +115,7 @@ if(!empty($customer->dob)){
                     Notes
                     <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-success" style="float:right;padding:3px 10px 5px"><span class="fa fa-plus"></span></button>
                 </div>
-                <div class="panel-body articles-container" style="height: 334px; overflow-y:scroll">       
+                <div class="panel-body articles-container" style="height: 384px; overflow-y:scroll">       
                     <?php foreach($customer->notes as $n) : ?>
                         <p class="bg-info" style="padding:10px">
                             <a href="<?= ROOT_DIREC ?>/notes/delete/<?= $n->id ?>" style="float:right;padding:2px 5px;background:red"><span class="fa fa-remove"></span></a>
