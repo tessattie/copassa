@@ -42,6 +42,8 @@ class AppController extends Controller
 
     public $relations = array(1 => "Spouse", 2 => "Child", 3  => "Other");
 
+    public $relationships = array(1 => "Spouse", 2 => "Child", 3  => "Other", 4 => "Self");
+
     public $plans = array(1 => 'Open', 2 => 'Network');
 
     protected $session;
@@ -105,6 +107,7 @@ class AppController extends Controller
             $this->set("modes", $this->modes);
             $this->set('sexe', $this->sexe);
             $this->set("relations", $this->relations);
+            $this->set("relationships", $this->relationships);
             $this->set('plans', $this->plans);
             $this->set('filter_countries', $this->Countries->find("list"));
         }

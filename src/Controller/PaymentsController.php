@@ -44,6 +44,186 @@ class PaymentsController extends AppController
         $this->set(compact('policies', 'policy_id', 'policy', 'payments'));
     }
 
+    public function renewals(){
+        $this->loadModel('Policies');
+        // Set Dates
+        $from = $this->session->read("from"); 
+        $to = $this->session->read("to");
+        $type_filter="9999";
+        $company_filter = "9999";
+        // Get each company 
+        $comps = $this->Policies->Companies->find("list");
+        
+        if($this->request->is(['patch', 'put', 'post'])){
+            if(!empty($this->request->getData()['type'])){
+                $type_filter = $this->request->getData()['type'];
+            }
+            if(!empty($this->request->getData()['company_id'])){
+                $company_filter = $this->request->getData()['company_id'];
+            }
+            $companies = $this->getPolicies($this->request->getData()['type'], $this->request->getData()['company_id']);
+        }else{
+            $companies = $this->Policies->Companies->find("all", array("order" => array("Companies.name ASC")))->contain(['Countries']);
+            foreach($companies as $company){
+                $filter_country = $this->session->read("filter_country");
+                
+                if(!empty($filter_country)){
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
+                        return $q->where(['Customers.country_id' => $filter_country]);
+                    });
+                }else{
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
+                }
+
+                foreach($company->policies as $policy){
+                    $policy->last_payment = $this->Payments->find("all", array("order" => array("created DESC"), "conditions" => array("policy_id" => $policy->id)))->first();
+                }
+                
+            }
+        }
+        
+        $this->set(compact("companies", 'comps', 'type_filter', 'company_filter', 'from'));
+    }
+
+    private function getPolicies($type = false, $company_id = false){
+        $this->loadModel('Policies');
+        $filter_country = $this->session->read("filter_country");
+        $from = $this->session->read("from"); 
+        $from = date("Y-m-d", strtotime($from." -1 day"));
+        $to = $this->session->read("to");
+        $to = date("Y-m-d", strtotime($to." -1 day"));
+        if(!empty($type)){
+            if(!empty($company_id)){
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type, "id" => $company_id), "order" => array("name ASC")));
+            }else{
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type), "order" => array("name ASC")));
+            }
+        }else{
+            if(!empty($company_id)){
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("company_id" => $company_id), "order" => array("name ASC")));
+            }else{
+                $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC")));
+            }
+        }
+
+        foreach($companies as $company){
+            if(!empty($filter_country)){
+                $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
+                    return $q->where(['Customers.country_id' => $filter_country]);
+                });
+            }else{
+                $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
+            }
+
+            foreach($company->policies as $policy){
+                $policy->last_payment = $this->Payments->find("all", array("order" => array("created DESC"), "conditions" => array("policy_id" => $policy->id)))->first();
+            }
+        }
+
+        
+
+        return $companies;
+    }
+
+
+    public function exportrenewals($type, $company_id){
+        $this->loadModel('Policies');
+        $from = $this->session->read("from"); 
+        $to = $this->session->read("to"); 
+        if($type == '9999'){
+            $type = false;
+        }
+
+        if($company_id == '9999'){
+            $company_id = false;
+        }
+
+        $companies = $this->getPolicies($type, $company_id);
+
+
+        require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
+        
+        $fpdf = new FPDF();
+        $fpdf->AddPage("L");
+        $fpdf->SetFont('Arial','B',9);
+        $fpdf->Cell(200,0,"Copassa Renewals Report",0,0, 'L');
+        $fpdf->Cell(75,0,"From " . date("M d Y", strtotime($from)) . " to " . date("M d Y", strtotime($to)) ,0,0, 'R');
+        $fpdf->Ln(7);
+        $fpdf->Cell(275,0,"",'B',0, 'R');
+        $fpdf->Ln(5);
+        $filter_country = $this->session->read("filter_country");
+        // do export
+        foreach($companies as $company){
+            if($company->policies->count() > 0){
+                $fpdf->SetFont('Arial','B',8);
+                $fpdf->SetFillColor(220,220,220);
+                $fpdf->Cell(275,7,$company->name,"T-L-R",0, 'L', 1);
+                $fpdf->SetFillColor(255,255,255);
+                $fpdf->Ln(7);
+                $fpdf->Cell(64,7,"Name",'T-L-B',0, 'L');
+                $fpdf->Cell(10,7,"Age",'T-L-B',0, 'C');
+                $fpdf->Cell(19,7,"Policy",'T-L-B',0, 'C');
+                $fpdf->Cell(55,7,"Plan",'T-L-B',0, 'C');
+                $fpdf->Cell(10,7,"Mode",'T-L-B',0, 'C');
+                $fpdf->Cell(20,7,"LP",'T-L-B',0, 'C');
+                $fpdf->Cell(20,7,"Premium",'T-L-B',0, 'C');
+                $fpdf->Cell(10,7,"%",'T-L-B',0, 'C');
+                $fpdf->Cell(22,7,"Effective",'T-L-B',0, 'C');
+                $fpdf->Cell(20,7,"Due",'T-L-R-B',0, 'C');
+                $fpdf->Cell(25,7,"Last Payment",'T-L-R-B',0, 'C');
+                $fpdf->Ln(7);
+                $fpdf->SetFont('Arial','',8);
+                foreach($company->policies as $policy){
+                    $percentage = ""; 
+                    if(!empty($policy->last_premium)){
+                        $percentage = ($policy->premium - $policy->last_premium)*100/$policy->last_premium;
+                        $percentage = number_format($percentage, 2, ".",",");
+                    }
+                    $paid_until = $policy->paid_until->year."-".$policy->paid_until->month."-".$policy->paid_until->day;
+                    $effective_date = $policy->effective_date->year."-".$policy->effective_date->month."-".$policy->effective_date->day;
+                    $next_renewal = $policy->next_renewal->year."-".$policy->next_renewal->month."-".$policy->next_renewal->day;
+                    if(!empty($policy->last_payment)){
+                        $last_payment_date = $policy->last_payment->created->year."-".$policy->last_payment->created->month."-".$policy->last_payment->created->day;
+                    }
+                    $last_renewal = $policy->last_renewal->year."-".$policy->last_renewal->month."-".$policy->last_renewal->day;
+                    $age = "";
+                    if(!empty($policy->customer->dob)){
+                        $dob = $policy->customer->dob->year."-".$policy->customer->dob->month."-".$policy->customer->dob->day;
+                        $today = date("Y-m-d");
+                        $diff = date_diff(date_create($dob), date_create($today));
+                        $age = $diff->format('%y');
+                    }
+                    if(date("Y-m-d", strtotime($next_renewal)) >= $to){
+                        $fpdf->SetFillColor(255,250,205);
+                    }else{
+                        $fpdf->SetFillColor(255,255,255);
+                    }
+
+                    $fpdf->Cell(64,7,$policy->customer->name,'T-L-B',0, 'L',1);
+                    $fpdf->Cell(10,7,$age,'T-L-B',0, 'C',1);
+                    $fpdf->Cell(19,7,$policy->policy_number,'T-L-B',0, 'C',1);
+                    $fpdf->Cell(55,7,$policy->option->name." / ".$policy->option->option_name,'T-L-B',0, 'C',1);
+                    $fpdf->Cell(10,7,$this->modes[$policy->mode],'T-L-B',0, 'C',1);
+                    $fpdf->Cell(20,7,number_format(($policy->last_premium+$policy->fee), 2, ".", ","),'T-L-B',0, 'C',1);
+                    $fpdf->Cell(20,7,number_format(($policy->premium+$policy->fee), 2, ".", ","),'T-L-B',0, 'C',1);
+                    $fpdf->Cell(10,7,$percentage,'T-L-B',0, 'C',1);
+                    $fpdf->Cell(22,7,date('M d Y', strtotime($effective_date)),'T-L-B',0, 'C',1);
+                    $fpdf->Cell(20,7,date('M d Y', strtotime($next_renewal)),'T-L-R-B',0, 'C',1);
+                    if(!empty($policy->last_payment)){
+                        $fpdf->Cell(25,7,date('M d Y', strtotime($last_payment_date)),'T-L-R-B',0, 'C',1); 
+                   }else{
+                        $fpdf->Cell(25,7,'','T-L-R-B',0, 'C',1); 
+                   }
+                    
+                    $fpdf->Ln(7);
+                }
+            }
+            $fpdf->Ln(7); 
+        }
+        $fpdf->Output('I');
+        die();
+    }
+
     /**
      * Add method
      *

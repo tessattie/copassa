@@ -60,16 +60,17 @@
                     <li><a class="" href="<?= ROOT_DIREC ?>/policies/report">
                         <span class="fa fa-arrow-right">&nbsp;</span> Policies
                     </a></li>
-                </ul>
-                <ul class="children collapse" id="sub-item-4">
                     <li><a class="" href="<?= ROOT_DIREC ?>/payments/report">
                         <span class="fa fa-arrow-right">&nbsp;</span> Payments
+                    </a></li>
+                    <li><a class="" href="<?= ROOT_DIREC ?>/payments/renewals">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Renewals
                     </a></li>
                 </ul>
             </li>
 
-            <li class="<?= ($this->request->getParam('controller') == 'Companies') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-bank">&nbsp;</em> Companies</a></li>
-            <li class="<?= ($this->request->getParam('controller') == 'Countries' && $this->request->getParam('action') == 'dashboard') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/countries"><em class="fa fa-bank">&nbsp;</em> Countries</a></li>
+            <li class="<?= ($this->request->getParam('controller') == 'Companies') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-bank">&nbsp;</em> Insurances</a></li>
+            <li class="<?= ($this->request->getParam('controller') == 'Countries' && $this->request->getParam('action') == 'dashboard') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/countries"><em class="fa fa-map">&nbsp;</em> Countries</a></li>
 
             <li class="parent <?= ( ($this->request->getParam('controller') == 'Customers' || $this->request->getParam('controller') == 'Policies') && $this->request->getParam('action') != 'dashboard' ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-111">
                 <em class="fa fa-users">&nbsp;</em> Policy Holders <span data-toggle="collapse" href="#sub-item-111" class="icon pull-right"><em class="fa fa-plus"></em></span>
@@ -89,6 +90,28 @@
 
                     <li class="<?= ($this->request->getParam('controller') == 'Payments') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/payments">
                         <span class="fa fa-arrow-right">&nbsp;</span> Payments
+                    </a></li>
+                </ul>
+            </li>
+
+            <li class="parent <?= ( ($this->request->getParam('controller') == 'Businesses' || $this->request->getParam('controller') == 'Groupings') ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-1111">
+                <em class="fa fa-building">&nbsp;</em> Companies <span data-toggle="collapse" href="#sub-item-1111" class="icon pull-right"><em class="fa fa-plus"></em></span>
+                </a>
+                <ul class="children collapse" id="sub-item-1111">
+                    <li class="<?= ($this->request->getParam('controller') == 'Businesses' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/businesses">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Companies
+                    </a></li>
+
+                    <li class="<?= ($this->request->getParam('controller') == 'Groupings' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/groupings">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Groups
+                    </a></li>
+
+                    <li class="<?= ($this->request->getParam('controller') == 'Employees' && $this->request->getParam('action') == 'update') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/employees">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Employees
+                    </a></li>
+
+                    <li class="<?= ($this->request->getParam('controller') == 'Families') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/families">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Families
                     </a></li>
                 </ul>
             </li>
