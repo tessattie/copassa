@@ -113,11 +113,6 @@
                                 <th class="text-center">Mode</th>
                                 <th class="text-center">Effective date</th>
                                 <th class="text-center">Paid until</th>
-                                <th class="text-center">A</th>
-                                <th class="text-center">L</th>
-                                <th class="text-center">P</th>
-                                <th class="text-center">GP</th>
-                                <th class="text-center">C</th>
                                 <th class="text-center">Created By</th>
                                 <th class="text-center">Certificate</th>
                                 <th></th>
@@ -148,34 +143,7 @@
                                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
                                 <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
                                 <td class="text-center"><?= date("M d Y", strtotime($paiduntil)) ?></td>
-                                <?php if($policy->active == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
-                                <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
-                                <?php endif; ?>
-
-                                <?php if($policy->lapse == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
-                                <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
-                                <?php endif; ?>
-
-                                <?php if($policy->pending == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
-                                <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
-                                <?php endif; ?>
-
-                                <?php if($policy->grace_period == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
-                                <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
-                                <?php endif; ?>
-                                <?php if($policy->canceled == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
-                                <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
-                                <?php endif; ?>
+           
                                 <td class="text-center"><?= $policy->user->name ?></td>
                                 <?php if(!empty($policy->certificate)) : ?>
                                     <td class="text-center">

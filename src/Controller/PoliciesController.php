@@ -23,18 +23,59 @@ class PoliciesController extends AppController
         $this->savelog(200, "Accessed policies page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
         if(!empty($filter_country)){
-           $policies = $this->Policies->find("all")->contain(['Companies', 'Options', 'Customers' => ['Countries']])->matching('Customers', function ($q) use ($filter_country) {
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2)))->contain(['Companies', 'Options', 'Customers' => ['Countries']])->matching('Customers', function ($q) use ($filter_country) {
                 return $q->where(['Customers.country_id' => $filter_country]);
             }); 
         }else{
-           $policies = $this->Policies->find("all")->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2)))->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
+        }
+
+        $this->set(compact('policies'));
+    }
+
+
+    public function pendingbusiness()
+    {
+        $this->savelog(200, "Accessed Pending Business page", 1, 3, "", "");
+        $filter_country = $this->session->read("filter_country");
+        if(!empty($filter_country)){
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 1)))->contain(['Companies', 'Options', 'Customers' => ['Countries']])->matching('Customers', function ($q) use ($filter_country) {
+                return $q->where(['Customers.country_id' => $filter_country]);
+            }); 
+        }else{
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 1)))->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
         }
 
         $this->set(compact('policies'));
     }
 
     public function dashboard(){
+        $this->loadModel("Newborns");
+        $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
 
+
+        $filter_country = $this->session->read("filter_country");
+        if(!empty($filter_country)){
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 1)))->contain(['Companies', 'Options', 'Customers' => ['Countries']])->matching('Customers', function ($q) use ($filter_country) {
+                return $q->where(['Customers.country_id' => $filter_country]);
+            }); 
+        }else{
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 1)))->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
+        }
+
+
+        $all_birthdays = $this->Policies->Customers->find("all")->contain(['Policies']);
+        $birthdays = array();
+        foreach($all_birthdays as $bd){
+            if(!empty($bd->dob)){
+                if($bd->dob->month == date("m") && $bd->dob->day == date('d')){
+                array_push($birthdays, $bd);
+            }
+            }
+            
+        }
+
+        $this->set(compact('newborns', 'policies', 'birthdays'));
     }
 
     /**
@@ -194,11 +235,11 @@ class PoliciesController extends AppController
                 $filter_country = $this->session->read("filter_country");
                 
                 if(!empty($filter_country)){
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
                         return $q->where(['Customers.country_id' => $filter_country]);
                     });
                 }else{
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
                 }
                 
             }
@@ -359,7 +400,7 @@ class PoliciesController extends AppController
             }
         }else{
             if(!empty($company_id)){
-                $companies = $this->Policies->Companies->find("all", array("conditions" => array("company_id" => $company_id), "order" => array("name ASC")));
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("id" => $company_id), "order" => array("name ASC")));
             }else{
                 $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC")));
             }
@@ -367,11 +408,11 @@ class PoliciesController extends AppController
 
         foreach($companies as $company){
             if(!empty($filter_country)){
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
                         return $q->where(['Customers.country_id' => $filter_country]);
                     });
                 }else{
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id,'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
                 }
         }
         return $companies;

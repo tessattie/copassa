@@ -27,6 +27,7 @@
                 </thead>
             <tbody> 
         <?php foreach($newborns as $newborn) : ?>
+          <?php if($newborn->policy->customer->country_id == $filter_country || empty($filter_country)) : ?>
             <tr>
                 <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $newborn->policy->id ?>"><?= $newborn->policy->policy_number ?></a></td>
                 <td class="text-center"><?= $newborn->policy->customer->name ?></td>
@@ -41,6 +42,7 @@
                 </td>
 
             </tr>
+          <?php endif; ?>
         <?php endforeach; ?>
         </tbody>
         </table>

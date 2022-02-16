@@ -27,14 +27,9 @@ class CustomersController extends AppController
     {
         $this->savelog(200, "Accessed policy holder page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
-        if(!empty($filter_country)){
-            $customers = $this->Customers->find("all", array("conditions" => array("Customers.country_id" => $filter_country)))->contain(['Users', 'Countries', 'Policies' => 'Companies']);
-        }else{
           $customers = $this->Customers->find("all")->contain(['Users', 'Countries', 'Policies' => 'Companies']);  
-        }
-        
 
-        $this->set(compact('customers'));
+        $this->set(compact('customers', 'filter_country'));
     }
 
     /**

@@ -165,4 +165,30 @@ class AppController extends Controller
         $log->new_data = $new_data; 
         $this->Logs->save($log); 
     }
+
+
+    protected function checkfile($file, $name, $extensionn){
+        $allowed_extensions = array('pdf', "xls", "xlsx", "doc", "docx");
+        if(!$file['error']){
+            $extension = explode("/", $file['type'])[1];
+            // $dossier = '/home/dhf8co1jhtoy'.ROOT_DIREC.'/webroot/img/'.$directory.'/';
+            $dossier = 'C:/wamp/www'.ROOT_DIREC.'/webroot/tmp/files/';
+            if($extensionn == 2){
+                if(move_uploaded_file($file['tmp_name'], $dossier . $name . ".xlsx")){
+                return $name . ".xlsx";
+            }else{
+                return "move failed";
+            }
+            }else{
+                if(move_uploaded_file($file['tmp_name'], $dossier . $name . "." . $extension)){
+                return $name . "." . $extension;
+            }else{
+                return "move failed";
+            }
+            }
+            
+        }else{
+            return "general error";
+        }
+    }
 }

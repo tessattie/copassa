@@ -53,6 +53,7 @@
         <div class="divider"></div>
 
         <ul class="nav menu" style="margin-top:0px">
+            <li class="<?= ($this->request->getParam('controller') == 'Policies' && ($this->request->getParam('action') == 'dashboard')) ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/policies/dashboard"><em class="fa fa-dashboard">&nbsp;</em> Dashboard</a></li>
             <li class="parent <?= ($this->request->getParam('action') == 'report' || $this->request->getParam('action') == 'alerts') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-4">
                 <em class="fa fa-bars">&nbsp;</em> Reports <span data-toggle="collapse" href="#sub-item-4" class="icon pull-right"><em class="fa fa-plus"></em></span>
                 </a>
@@ -68,6 +69,9 @@
                     </a></li>
                     <li><a class="" href="<?= ROOT_DIREC ?>/employees/report">
                         <span class="fa fa-arrow-right">&nbsp;</span> Companies
+                    </a></li>
+                    <li><a class="" href="<?= ROOT_DIREC ?>/policies/pendingbusiness">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Pending Business
                     </a></li>
                 </ul>
             </li>
@@ -125,6 +129,8 @@
                     </a></li>
                 </ul>
             </li>
+
+            <li class="<?= ($this->request->getParam('controller') == 'Folders') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/folders/show"><em class="fa fa-folder">&nbsp;</em> Ressources</a></li>
 
             <li class="parent <?= ($this->request->getParam('controller') == 'Users' || $this->request->getParam('controller') == 'Roles' || $this->request->getParam('controller') == 'Cards') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-2">
                 <em class="fa fa-lock">&nbsp;</em> Settings <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="fa fa-plus"></em></span>

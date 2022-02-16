@@ -63,6 +63,14 @@ $months = array(
                     <div class="col-md-3"><?= $this->Form->control('paid_until', array('class' => 'form-control', "type" => "date", "label" => "Paid Until *")); ?>
                     </div>
                 </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3"><?= $this->Form->control('pending_business', array('class' => 'form-control', "value" => 2, "label" => "Pending Business *", "options" => array(1 => "Yes", 2 => "No"))); ?>
+                    </div>
+
+                    <div class="col-md-3"><?= $this->Form->control('passport_number', array('class' => 'form-control', 'placeholder' => 'Passport Number', "label" => "Passport Number")); ?>
+                    </div>
+                </div>
                 <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Coverage</h4>
                 <div class="row">
                     <div class="col-md-2"><?= $this->Form->control('company_id', array('class' => 'form-control', "label" => "Company*", "empty" => "-- Choose --", "options" => $companies)); ?>
@@ -89,9 +97,9 @@ $months = array(
                 </div>
                 <hr>
                 <div class="row">
-                    <div class="col-md-3"><?= $this->Form->control('last_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Last Renewal Month", 'required' => true, 'style' => "height:46px")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('last_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Last Renewal", 'required' => true, 'style' => "height:46px")); ?>
                     </div>
-                    <div class="col-md-3"><?= $this->Form->control('next_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Next Renewal Month", 'required' => true, 'style' => "height:46px",)); ?>
+                    <div class="col-md-3"><?= $this->Form->control('next_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Next Renewal", 'required' => true, 'style' => "height:46px",)); ?>
                     </div>
                 </div>
                 <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Status</h4>
@@ -130,6 +138,11 @@ $months = array(
     </div>
 </div><!--End .articles-->
 
+<?php 
+echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
+
+?>
+
 <script type="text/javascript">
     $(document).ready(function(){
 
@@ -138,7 +151,7 @@ $months = array(
             var token =  $('input[name="_csrfToken"]').val();
             var company = $(this).val();
             $.ajax({
-                 url : '/companies/options',
+                 url : ROOT_DIREC+'/companies/options',
                  type : 'POST',
                  data : {company_id : company},
                  headers : {
@@ -168,7 +181,7 @@ $months = array(
             var token =  $('input[name="_csrfToken"]').val();
             var option = $(this).val();
             $.ajax({
-                 url : '/companies/option',
+                 url : ROOT_DIREC+'/companies/option',
                  type : 'POST',
                  data : {option_id : option},
                  headers : {

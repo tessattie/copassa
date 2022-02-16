@@ -18,9 +18,10 @@ class NewbornsController extends AppController
      */
     public function index()
     {
+        $filter_country = $this->session->read("filter_country");
         $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
         $customers = $this->Newborns->Policies->Customers->find("list", array( "order" => array('name ASC') ));
-        $this->set(compact('newborns', 'customers'));
+        $this->set(compact('newborns', 'customers', 'filter_country'));
     }
 
     /**

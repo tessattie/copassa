@@ -32,7 +32,10 @@ $paiduntil = $yesterday->format('Y-m-d');
         <div class="col-md-9">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?>
+                    Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?> 
+                    <?php if($policy->pending_business == 1) : ?>
+                        <span class="label label-warning">Pending Business</span>
+                    <?php endif; ?>
                     <ul class="pull-right panel-settings panel-button-tab-right">
                         <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
                             <em class="fa fa-plus"></em>
@@ -70,6 +73,10 @@ $paiduntil = $yesterday->format('Y-m-d');
                         <tr>
                             <th><?= __('Policy Holder') ?></th>
                             <td class="text-right"><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
+                        </tr>
+                        <tr>
+                            <th><?= __('Passport Number') ?></th>
+                            <td class="text-right"><?= $policy->passport_number ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Effective Date') ?></th>

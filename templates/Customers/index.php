@@ -50,12 +50,10 @@
             <tbody> 
         <?php foreach($customers as $customer) : ?>
             <?php  
-                $conditions = false; 
-                foreach($customer->policies as $policy){
-                    if($policy->company->country_id == $filter_country || empty($filter_country)){
+                $condition = false; 
+                    if($customer->country_id == $filter_country || empty($filter_country)){
                         $condition = true;
                     }
-                }
             ?>
             <?php 
                 $age = "N/A";
