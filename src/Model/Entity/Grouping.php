@@ -39,5 +39,6 @@ class Grouping extends Entity
         'business' => true,
         'company' => true,
         'employees' => true,
+        'effective_date' => true
     ];
 }

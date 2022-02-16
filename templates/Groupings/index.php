@@ -37,16 +37,33 @@
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>#</th>
-                    <th>Company</th>
-                    <th>Insurance</th>
+                    <th class="text-center">Company</th>
+                    <th class="text-center">Insurance</th>
+                    <th class="text-center">Effective Date</th>
+                    <th class="text-center">Premium</th>
                     <th class="text-left"></th>
                 </thead>
             <tbody> 
-            <?php foreach($groupings as $group) : ?>
+            <?php $real_total = 0; foreach($groupings as $group) : ?>
+                <?php  
+                $total = 0;
+                foreach($group->employees as $employee){
+                    if($employee->status == 1){
+                        foreach($employee->families as $family){
+                            if($family->status = 1){
+                                $total = $total + $family->premium;
+                            }
+                        }
+                    }
+                }
+                $real_total = $real_total + $total;
+                ?>
                 <tr>
-                    <td><?= $group->grouping_number ?></td>
-                    <td><?= $group->business->name ?></td>
-                    <td><?= $group->company->name ?></td>
+                    <td><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $group->id ?>"><?= $group->grouping_number ?></a></td>
+                    <td class="text-center"><a href="<?= ROOT_DIREC ?>/businesses/view/<?= $group->business_id ?>"><?= $group->business->name ?></a></td>
+                    <td class="text-center"><?= $group->company->name ?></td>
+                    <td class="text-center"><?= date('F d Y', strtotime($group->effective_date)) ?></td>
+                    <td class="text-center"><?= number_format($total, 2, ".", ",") ?></td>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/groupings/edit/<?= $group->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <a href="<?= ROOT_DIREC ?>/groupings/delete/<?= $group->id ?>" onclick="return confirm('Are you sure you would like to delete the group <?= $group->grouping_number ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
@@ -54,6 +71,9 @@
                 </tr>
             <?php endforeach; ?>
             </tbody>
+            <tfoot>
+                <tr><th colspan="4">Total</th><th class="text-center"><?= number_format($real_total, 2, ".", ",") ?></th><th></th></tr>
+            </tfoot>
         </table>
             <!--End .article-->
         </div>

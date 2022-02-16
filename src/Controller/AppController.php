@@ -32,6 +32,8 @@ class AppController extends Controller
 
     public $company_types = array(1 => "Life", 2 => "Health");
 
+    public $types = array(1 => 'Premium', 2 => 'Payment', 3 => 'Cancelation');
+
     public $status = array(0 => "Inactive", 1 => "Active");
 
     public $modes = array(12 => "A", 6 => "SA", 4 => "T", 3 => 'Q', 1 => 'M');
@@ -42,9 +44,11 @@ class AppController extends Controller
 
     public $relations = array(1 => "Spouse", 2 => "Child", 3  => "Other");
 
-    public $relationships = array(1 => "Spouse", 2 => "Child", 3  => "Other", 4 => "Self");
+    public $relationships = array(1 => "Spouse", 2 => "Child", 3  => "Other", 4 => "Employee");
 
     public $plans = array(1 => 'Open', 2 => 'Network');
+
+    public $genders = array(1 => "Male", 2 => "Female", 3 => "Other");
 
     protected $session;
 
@@ -93,6 +97,9 @@ class AppController extends Controller
 
         $this->session = $this->getRequest()->getSession();
         if($this->Auth->user()){
+            $year = date('Y');
+            $next_year = $year + 1;
+            $years = array($year => $year, $next_year => $next_year);
             $this->loadModel('Countries');
             $this->from = $this->session->read("from")." 00:00:00";
             $this->to = $this->session->read("to")." 23:59:59";
@@ -106,7 +113,10 @@ class AppController extends Controller
             $this->set('premium_status', $this->premium_status);
             $this->set("modes", $this->modes);
             $this->set('sexe', $this->sexe);
+            $this->set('types', $this->types);
             $this->set("relations", $this->relations);
+            $this->set("genders", $this->genders);
+            $this->set("years", $years);
             $this->set("relationships", $this->relationships);
             $this->set('plans', $this->plans);
             $this->set('filter_countries', $this->Countries->find("list"));

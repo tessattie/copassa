@@ -52,7 +52,7 @@
             <?php  
                 $conditions = false; 
                 foreach($customer->policies as $policy){
-                    if($policy->company->country_id == $filter_year || empty($filter_year)){
+                    if($policy->company->country_id == $filter_country || empty($filter_country)){
                         $condition = true;
                     }
                 }

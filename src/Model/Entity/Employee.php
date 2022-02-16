@@ -45,6 +45,8 @@ class Employee extends Entity
         'business' => true,
         'grouping' => true,
         'families' => true,
+        'effective_date' => true, 
+        'status' => true
     ];
 
     protected function _getName()

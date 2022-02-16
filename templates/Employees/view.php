@@ -4,96 +4,174 @@
  * @var \App\Model\Entity\Employee $employee
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('Edit Employee'), ['action' => 'edit', $employee->id], ['class' => 'side-nav-item']) ?>
-            <?= $this->Form->postLink(__('Delete Employee'), ['action' => 'delete', $employee->id], ['confirm' => __('Are you sure you want to delete # {0}?', $employee->id), 'class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('List Employees'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('New Employee'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
+<div class="row" style="margin-bottom:15px">
+    <ol class="breadcrumb">
+        <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
+            <em class="fa fa-home"></em>
+        </a></li>
+        <li><a href="<?= ROOT_DIREC ?>/employees">Employees</a></li>
+        <li>View</li>
+        <li><?= $employee->first_name. " ". $employee->last_name ?></li>
+    </ol>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default articles">
+                <div class="panel-heading">
+            Employee Profile : <?= $employee->first_name. " ". $employee->last_name ?>
         </div>
-    </aside>
-    <div class="column-responsive column-80">
-        <div class="employees view content">
-            <h3><?= h($employee->id) ?></h3>
-            <table>
+        <div class="panel-body articles-container">       
+            <table class="table table-striped">
                 <tr>
+                    <th><?= __('Full Name') ?></th>
+                    <td class="text-right"><?= $employee->first_name. " ". $employee->last_name ?></td>
+                </tr>
+                <tr>
+
                     <th><?= __('Business') ?></th>
-                    <td><?= $employee->has('business') ? $this->Html->link($employee->business->name, ['controller' => 'Businesses', 'action' => 'view', $employee->business->id]) : '' ?></td>
+                    <td class="text-right"><?= $employee->has('business') ? $this->Html->link($employee->business->name, ['controller' => 'Businesses', 'action' => 'view', $employee->business->id]) : '' ?></td>
                 </tr>
+                
                 <tr>
-                    <th><?= __('First Name') ?></th>
-                    <td><?= h($employee->first_name) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Last Name') ?></th>
-                    <td><?= h($employee->last_name) ?></td>
+                    <th><?= __('Group') ?></th>
+                    <td class="text-right"><?= $employee->has('grouping') ? $this->Html->link($employee->grouping->grouping_number, ['controller' => 'Groupings', 'action' => 'view', $employee->grouping->id]) : '' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Membership Number') ?></th>
-                    <td><?= h($employee->membership_number) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Grouping') ?></th>
-                    <td><?= $employee->has('grouping') ? $this->Html->link($employee->grouping->id, ['controller' => 'Groupings', 'action' => 'view', $employee->grouping->id]) : '' ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Id') ?></th>
-                    <td><?= $this->Number->format($employee->id) ?></td>
+                    <td class="text-right"><?= h($employee->membership_number) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Deductible') ?></th>
-                    <td><?= $this->Number->format($employee->deductible) ?></td>
+                    <td class="text-right"><?= $this->Number->format($employee->deductible) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Created') ?></th>
-                    <td><?= h($employee->created) ?></td>
+                    <td class="text-right"><?= date("F d Y", strtotime($employee->created)) ?></td>
                 </tr>
                 <tr>
-                    <th><?= __('Modified') ?></th>
-                    <td><?= h($employee->modified) ?></td>
+                    <th><?= __('Last Modified') ?></th>
+                    <td class="text-right"><?= date("F d Y", strtotime($employee->modified)) ?></td>
                 </tr>
             </table>
-            <div class="related">
-                <h4><?= __('Related Families') ?></h4>
-                <?php if (!empty($employee->families)) : ?>
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th><?= __('Id') ?></th>
-                            <th><?= __('First Name') ?></th>
-                            <th><?= __('Last Name') ?></th>
-                            <th><?= __('Relationship') ?></th>
-                            <th><?= __('Employee Id') ?></th>
-                            <th><?= __('Premium') ?></th>
-                            <th><?= __('Dob') ?></th>
-                            <th><?= __('Created') ?></th>
-                            <th><?= __('Modified') ?></th>
-                            <th class="actions"><?= __('Actions') ?></th>
-                        </tr>
-                        <?php foreach ($employee->families as $families) : ?>
-                        <tr>
-                            <td><?= h($families->id) ?></td>
-                            <td><?= h($families->first_name) ?></td>
-                            <td><?= h($families->last_name) ?></td>
-                            <td><?= h($families->relationship) ?></td>
-                            <td><?= h($families->employee_id) ?></td>
-                            <td><?= h($families->premium) ?></td>
-                            <td><?= h($families->dob) ?></td>
-                            <td><?= h($families->created) ?></td>
-                            <td><?= h($families->modified) ?></td>
-                            <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'Families', 'action' => 'view', $families->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'Families', 'action' => 'edit', $families->id]) ?>
-                                <?= $this->Form->postLink(__('Delete'), ['controller' => 'Families', 'action' => 'delete', $families->id], ['confirm' => __('Are you sure you want to delete # {0}?', $families->id)]) ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </table>
+            </div>
+            
+        </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default articles">
+                <div class="panel-heading">
+                    Family Members
+                    <button class="btn btn-info" style="float:right" data-toggle="modal" data-target="#new_family">New Family Member</button>
                 </div>
-                <?php endif; ?>
+                <div class="panel-body articles-container">       
+                    <div class="table-responsive">
+                     <table class="table table-stripped datatable">
+                <thead> 
+                    <th>Full Name</th>
+                    <th class="text-center">Relationship</th>
+                    <th class="text-center">Gender</th>
+                    <th class="text-center">DOB</th>
+                    <th class="text-center">Residence</th>
+                    <th class="text-center">Premium</th>
+                    <th class="text-center">Status</th>
+                    <th></th>
+
+                </thead>
+            <tbody> 
+            <?php $total =0; foreach($employee->families as $family) : ?>
+            <?php
+            if($family->status ==1){
+                $total = $total + $family->premium ;
+            }
+             ?>
+                <tr>
+                    <td><?= $family->first_name." ".$family->last_name ?></td>
+                    <td class="text-center"><?= $relationships[$family->relationship] ?></td>
+                    <td class="text-center"><?= $genders[$family->gender] ?></td>
+                    <td class="text-center"><?= date("F d Y", strtotime($family->dob)) ?></td>
+                    <td class="text-center"><?= $family->country ?></td>
+                    <td class="text-center"><?= number_format($family->premium,2,".",",") ?></td>
+                    <?php if($family->status == 1) : ?>
+                        <td class="text-center"><span class="label label-success">Active</span></td>
+                    <?php else : ?>
+                        <td class="text-center"><span class="label label-danger">Inactive</span></td>
+                    <?php endif; ?>
+                    <td class="text-right">
+                        <a href="<?= ROOT_DIREC ?>/families/edit/<?= $family->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                        <a href="<?= ROOT_DIREC ?>/families/delete/<?= $family->id ?>" onclick="return confirm('Are you sure you would like to delete the family member <?= $family->first_name." ".$family->last_name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+                <tr><th colspan="5">Total</th><th class="text-center"><?= number_format($total, 2, ".", ",") ?> USD</th><th></th><th></th></tr>
+            </tfoot>
+        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+<script type="text/javascript">$(document).ready( function () {
+    $('.datatable').DataTable({
+
+    } );
+} );</script>
+
+<style>
+    .dt-button{
+        padding:5px;
+        background:black;
+        border:2px solid black;
+        border-radius:2px;;
+        color:white;
+        margin-bottom:-10px;
+    }
+    .dt-buttons{
+        margin-bottom:-25px;
+    }
+</style>
+
+<div class="modal fade" id="new_family" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Family Member</h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => '/employees/addfamily')) ?>
+      <div class="modal-body">
+            <div class="row">
+                    <div class="col-md-4"><?= $this->Form->control('first_name', array('class' => 'form-control', "label" => "First Name *", "placeholder" => "First Name")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('last_name', array('class' => 'form-control', "label" => "Last Name *", "placeholder" => "Last Name")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('relationship', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $relationships, "label" => "Relationship", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                </div>
+                <hr>
+                <div class="row">
+                    <?= $this->Form->control('business_id', array('type' => 'hidden',"value" => $employee->business_id)); ?>
+                <?= $this->Form->control('grouping_id', array('type' => 'hidden',"value" => $employee->grouping_id)); ?>
+                <?= $this->Form->control('employee_id', array('type' => 'hidden',"value" => $employee->id)); ?>
+                    <div class="col-md-6"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Premium *", "placeholder" => "Premium")); ?></div>
+                    <div class="col-md-6"><?= $this->Form->control('dob', array('class' => 'form-control', "label" => "Date of Birth *", 'type' => 'date')); ?></div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6"><?= $this->Form->control('gender', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $genders, "label" => "Gender *", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                    <div class="col-md-6"><?= $this->Form->control('country', array('class' => 'form-control', "label" => "Country of Residence *", "placeholder" => "Country of Residence")); ?></div>
+                </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Add</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
 </div>

@@ -66,6 +66,9 @@
                     <li><a class="" href="<?= ROOT_DIREC ?>/payments/renewals">
                         <span class="fa fa-arrow-right">&nbsp;</span> Renewals
                     </a></li>
+                    <li><a class="" href="<?= ROOT_DIREC ?>/employees/report">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Companies
+                    </a></li>
                 </ul>
             </li>
 
@@ -86,6 +89,10 @@
 
                     <li class="<?= ($this->request->getParam('controller') == 'Policies' && $this->request->getParam('action') == 'update') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/policies/update">
                         <span class="fa fa-arrow-right">&nbsp;</span> Updates
+                    </a></li>
+
+                    <li class="<?= ($this->request->getParam('controller') == 'Newborns' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/newborns">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Maternity
                     </a></li>
 
                     <li class="<?= ($this->request->getParam('controller') == 'Payments') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/payments">
@@ -112,6 +119,9 @@
 
                     <li class="<?= ($this->request->getParam('controller') == 'Families') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/families">
                         <span class="fa fa-arrow-right">&nbsp;</span> Families
+                    </a></li>
+                    <li class="<?= ($this->request->getParam('controller') == 'Renewals') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/renewals">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Renewals
                     </a></li>
                 </ul>
             </li>

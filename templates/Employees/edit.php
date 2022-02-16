@@ -39,8 +39,13 @@
                 <hr>
                 <div class="row">
                     <div class="col-md-4"><?= $this->Form->control('business_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $businesses, "label" => "Company", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
-                    <div class="col-md-4"><?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Choose --', "label" => "Group", 'options' => $groupings, "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                    <div class="col-md-4"><?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Choose --', "label" => "Group", 'options' => $groupings, "multiple" => false, 'required' => true, 'style' => "height:46px", 'value' => $employee->grouping_id)); ?></div> 
                     <div class="col-md-4"><?= $this->Form->control('deductible', array('class' => 'form-control', "label" => "Deductible *", "placeholder" => "Deductible")); ?></div>
+                </div>
+                <hr>
+                 <div class="row">
+                  <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Effective Date *")); ?></div>
+                  <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
                 </div>
                 <div class="row">
                     <div class="col-md-12"><?= $this->Form->button(__('Add'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>

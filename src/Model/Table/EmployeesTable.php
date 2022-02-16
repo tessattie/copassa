@@ -97,6 +97,11 @@ class EmployeesTable extends Table
             ->requirePresence('deductible', 'create')
             ->notEmptyString('deductible');
 
+        $validator
+            ->date('effective_date')
+            ->requirePresence('effective_date', 'create')
+            ->notEmptyDate('effective_date');
+
         return $validator;
     }
 

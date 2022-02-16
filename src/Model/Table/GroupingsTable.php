@@ -80,6 +80,11 @@ class GroupingsTable extends Table
             ->requirePresence('grouping_number', 'create')
             ->notEmptyString('grouping_number');
 
+        $validator
+            ->date('effective_date')
+            ->requirePresence('effective_date', 'create')
+            ->notEmptyDate('effective_date');
+
         return $validator;
     }
 

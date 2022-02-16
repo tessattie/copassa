@@ -18,10 +18,7 @@ class GroupingsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Businesses', 'Companies'],
-        ];
-        $groupings = $this->paginate($this->Groupings);
+        $groupings = $this->Groupings->find("all")->contain(['Employees' => ['Families'], 'Businesses', 'Companies']);
 
         $this->set(compact('groupings'));
     }
@@ -36,7 +33,7 @@ class GroupingsController extends AppController
     public function view($id = null)
     {
         $grouping = $this->Groupings->get($id, [
-            'contain' => ['Businesses', 'Companies', 'Employees'],
+            'contain' => ['Businesses', 'Companies', 'Employees' => ['Families', 'Groupings' => ['Companies']]],
         ]);
 
         $this->set(compact('grouping'));
@@ -62,6 +59,24 @@ class GroupingsController extends AppController
         $businesses = $this->Groupings->Businesses->find('list', ['limit' => 200]);
         $companies = $this->Groupings->Companies->find('list', ['limit' => 200]);
         $this->set(compact('grouping', 'businesses', 'companies'));
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     */
+    public function addemployee()
+    {
+        $employee = $this->Groupings->Employees->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $employee = $this->Groupings->Employees->patchEntity($employee, $this->request->getData());
+            if ($this->Groupings->Employees->save($employee)) {
+                return $this->redirect(['action' => 'view', $employee->grouping_id]);
+            }
+        }
+
+        return $this->redirect($this->referer());
     }
 
     /**

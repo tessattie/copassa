@@ -37,14 +37,32 @@
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>#</th>
-                    <th>Name</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Groups</th>
+                    <th class="text-center">Premium</th>
                     <th class="text-center"></th>
                 </thead>
             <tbody> 
             <?php foreach($businesses as $business) : ?>
+                <?php 
+                    $total = 0;
+                    foreach($business->groupings as $group){
+                        foreach($group->employees as $employee){
+                            if($employee->status == 1){
+                                foreach($employee->families as $family){
+                                    if($family->status = 1){
+                                        $total = $total + $family->premium;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ?>
                 <tr>
-                    <td><?= $business->business_number ?></td>
-                    <td><?= $business->name ?></td>
+                    <td><a href="<?= ROOT_DIREC ?>/businesses/view/<?= $business->id ?>"><?= $business->business_number ?></a></td>
+                    <td class="text-center"><?= $business->name ?></td>
+                    <td class="text-center"><?= count($business->groupings) ?></td>
+                    <td class="text-center"><?= number_format($total, 2, ".", ",") ?></td>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/businesses/edit/<?= $business->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <a href="<?= ROOT_DIREC ?>/businesses/delete/<?= $business->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= $business->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>

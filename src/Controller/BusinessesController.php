@@ -18,7 +18,7 @@ class BusinessesController extends AppController
      */
     public function index()
     {
-        $businesses = $this->paginate($this->Businesses);
+        $businesses = $this->Businesses->find("all", array())->contain(['Groupings' => ['Employees' => ['Families']]]);
 
         $this->set(compact('businesses'));
     }
@@ -33,10 +33,14 @@ class BusinessesController extends AppController
     public function view($id = null)
     {
         $business = $this->Businesses->get($id, [
-            'contain' => ['Employees', 'Groupings'],
+            'contain' => ['Employees' => ['Groupings' => ['Companies'], 'Families'], 'Groupings' => ['Employees' => ['Families'], 'Companies' => ['Countries']]],
         ]);
 
-        $this->set(compact('business'));
+        $companies = $this->Businesses->Groupings->Companies->find('list', array("order" => array("name ASC")));
+
+        $groupings = $this->Businesses->Groupings->find('list', array("order" => array("grouping_number ASC")));
+
+        $this->set(compact('business','companies', 'groupings'));
     }
 
     /**
@@ -57,6 +61,42 @@ class BusinessesController extends AppController
             $this->Flash->error(__('The business could not be saved. Please, try again.'));
         }
         $this->set(compact('business'));
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     */
+    public function addgroup()
+    {
+        $group = $this->Businesses->Groupings->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $group = $this->Businesses->Groupings->patchEntity($group, $this->request->getData());
+            if ($this->Businesses->Groupings->save($group)) {
+                return $this->redirect(['action' => 'view', $group->business_id]);
+            }
+        }
+
+        return $this->redirect($this->referer());
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     */
+    public function addemployee()
+    {
+        $employee = $this->Businesses->Groupings->Employees->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $employee = $this->Businesses->Groupings->Employees->patchEntity($employee, $this->request->getData());
+            if ($this->Businesses->Groupings->Employees->save($employee)) {
+                return $this->redirect(['action' => 'view', $employee->business_id]);
+            }
+        }
+
+        return $this->redirect($this->referer());
     }
 
     /**
@@ -101,5 +141,14 @@ class BusinessesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+
+    public function getbusiness(){
+        if($this->request->is(['ajax'])){
+            $business = $this->Businesses->get($this->request->getData()['business_id']);
+            echo json_encode($business); 
+        }
+        die();
     }
 }

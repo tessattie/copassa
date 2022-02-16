@@ -110,4 +110,13 @@ class FamiliesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
+
+    public function list(){
+        if($this->request->is(['ajax'])){
+            $families = $this->Families->find("all", array('order' => ['last_name ASC'], "conditions" => array("employee_id" => $this->request->getData()['employee_id'])));
+            echo json_encode($families->toArray()); 
+        }
+        die();
+    }
 }

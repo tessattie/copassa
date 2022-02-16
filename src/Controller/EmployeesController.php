@@ -18,11 +18,17 @@ class EmployeesController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Businesses', 'Groupings' => ['Companies']],
-        ];
-        $employees = $this->paginate($this->Employees);
+        $employees = $this->Employees->find("all")->contain(['Businesses', 'Groupings' => ['Companies']]);
 
+        $this->set(compact('employees'));
+    }
+
+    public function report($group_id = false){
+        $employees = array();
+        $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
+        if($group_id){
+           $employees = $this->Employees->find("all")->contain(['Businesses', 'Families', 'Groupings' => ['Companies']]); 
+        }
         $this->set(compact('employees'));
     }
 
@@ -62,6 +68,24 @@ class EmployeesController extends AppController
         $businesses = $this->Employees->Businesses->find('list', ['limit' => 200]);
         $groupings = $this->Employees->Groupings->find('list', ['limit' => 200]);
         $this->set(compact('employee', 'businesses', 'groupings'));
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
+     */
+    public function addfamily()
+    {
+        $family = $this->Employees->Families->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $family = $this->Employees->Families->patchEntity($family, $this->request->getData());
+            if ($this->Employees->Families->save($family)) {
+                return $this->redirect(['action' => 'view', $family->employee_id]);
+            }
+        }
+
+        return $this->redirect($this->referer());
     }
 
     /**

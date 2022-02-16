@@ -41,6 +41,9 @@ class Family extends Entity
         'created' => true,
         'modified' => true,
         'employee' => true,
+        'gender' => true,
+        'country' => true,
+        'status' => true
     ];
 
     protected function _getName()

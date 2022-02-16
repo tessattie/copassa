@@ -405,4 +405,13 @@ class PoliciesController extends AppController
 
         $this->set(compact('policies', 'companies'));
     }
+
+
+    public function list(){
+        if($this->request->is(['ajax'])){
+            $policies = $this->Policies->find("all", array("conditions" => array("customer_id" => $this->request->getData()['customer_id'])));
+            echo json_encode($policies->toArray()); 
+        }
+        die();
+    }
 }
