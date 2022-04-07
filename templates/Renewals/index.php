@@ -17,7 +17,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Renewals
-            <button class="btn btn-info float-right" data-toggle="modal" data-target="#newrenewal" style="float:right">New Renewal</button>
+            <button class="btn btn-warning float-right" data-toggle="modal" data-target="#newrenewal" style="float:right">New Renewal</button>
         </div>
     <div class="panel-body articles-container">
             <table class="table table-stripped datatable">
@@ -41,7 +41,6 @@
                 </tr>
             <?php endforeach; ?>
             </tbody>
-
         </table>
             <!--End .article-->
         </div>

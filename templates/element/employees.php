@@ -12,8 +12,7 @@
                         <thead> 
                             <th>Full Name</th>
                             <th class="text-center">Group</th>
-                            <th class="text-center">Insurance</th>
-                            <th class="text-center">Membership Number</th>
+                            <th class="text-center">Membership / Policy #</th>
                             <th class="text-center">Deductible</th>
                             <th class="text-center">Premium</th>
                             <th class="text-center">Effective Date</th>
@@ -37,7 +36,6 @@
                     <tr>
                         <td><a href="<?= ROOT_DIREC ?>/employees/view/<?= $employee->id ?>"><?= $employee->first_name." ".$employee->last_name ?></a></td>
                         <td class="text-center"><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $employee->grouping_id ?>"><?= $employee->grouping->grouping_number ?></a></td>
-                        <td class="text-center"><?= $employee->grouping->company->name ?></td>
                         <td class="text-center"><?= $employee->membership_number ?></td>
                         <td class="text-center"><?= number_format($employee->deductible, 2, ".", ",") ?></td>
                         <td class="text-center"><?= number_format($total_premium, 2, ".", ",") ?></td>

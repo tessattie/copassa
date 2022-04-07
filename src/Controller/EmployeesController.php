@@ -26,10 +26,18 @@ class EmployeesController extends AppController
     public function report($group_id = false){
         $employees = array();
         $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
-        if($group_id){
-           $employees = $this->Employees->find("all")->contain(['Businesses', 'Families', 'Groupings' => ['Companies']]); 
+        if($this->request->is(['patch', 'put', 'post'])){
+            if(!empty($this->request->getData()['business_id'])){
+                $employees->where(['Employees.business_id' => $this->request->getData()['business_id']]);
+            }
+            if(!empty($this->request->getData()['grouping_id'])){
+                $employees->where(['Employees.grouping_id' => $this->request->getData()['grouping_id']]);
+            }
         }
-        $this->set(compact('employees'));
+
+         $businesses = $this->Employees->Businesses->find('list', ['order' => 'name ASC']);
+        $groupings = $this->Employees->Groupings->find('list', ['order' => ['grouping_number ASC']]);
+        $this->set(compact('employees', 'businesses', 'groupings'));
     }
 
     /**
@@ -58,8 +66,20 @@ class EmployeesController extends AppController
         $employee = $this->Employees->newEmptyEntity();
         if ($this->request->is('post')) {
             $employee = $this->Employees->patchEntity($employee, $this->request->getData());
-            if ($this->Employees->save($employee)) {
+            if ($ident = $this->Employees->save($employee)) {
                 $this->Flash->success(__('The employee has been saved.'));
+                    $this->loadModel("Families");
+                    $family = $this->Families->newEmptyEntity(); 
+                    $family->first_name = $ident['first_name'];
+                    $family->last_name = $ident['last_name'];
+                    $family->relationship = 4;
+                    $family->dob = $this->request->getData()['dob'];
+                    $family->premium = $this->request->getData()['premium']; 
+                    $family->employee_id = $ident['id']; 
+                    $family->gender = $this->request->getData()['gender']; 
+                    $family->country = $this->request->getData()['country'];
+                    $family->status = 1 ;
+                    $this->Families->save($family);
 
                 return $this->redirect(['action' => 'index']);
             }

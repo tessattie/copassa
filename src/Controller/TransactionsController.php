@@ -125,8 +125,7 @@ class TransactionsController extends AppController
             $new->business_id = $transaction->business_id; 
             $new->grouping_id = $transaction->grouping_id;
             $new->user_id = $this->Auth->user()['id']; 
-            debug($new); die();
-            if($this->Transactions->save($new){
+            if($this->Transactions->save($new)){
                 $member = $this->Transactions->Families->get($transaction->family_id);
                 $member->status = 0;
                 $this->Transactions->Families->save($member);

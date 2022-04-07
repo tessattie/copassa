@@ -3,19 +3,36 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li class="active">Employees</li>
+        <li class="active">Report</li>
+        <li class="active">Coorporate Groups</li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Company Census
+            Corporate Groups
+        </div>
+        <div class="panel-body articles-container">       
+            <?= $this->Form->create() ?>
+                <div class="row">
+                    <div class="col-md-3">
+                        <?= $this->Form->control('business_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $businesses, "label" => "Corporate Group", "multiple" => false, 'style' => "height:46px")); ?>
+                    </div>
+                    <div class="col-md-3">
+                        <?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $groupings, "label" => "Group", "multiple" => false, 'style' => "height:46px")); ?>
+                    </div>
+                    <div class="col-md-1">
+                        <?= $this->Form->button(__('Valider'), array('class'=>'btn btn-success', "style"=>"margin-top:24px;height:46px")) ?>
+                    </div>
+                </div>
+
+            <?= $this->Form->end() ?>
         </div>
     <div class="panel-body articles-container">
             <table class="table table-stripped datatable">
                 <thead> 
-                    <th>Membership</th>
+                    <th>#</th>
                     <th class="text-center">Last Name</th>
                     <th class="text-center">First Name</th>
                     <th class="text-center">DOB</th>

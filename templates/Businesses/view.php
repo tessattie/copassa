@@ -19,7 +19,7 @@ foreach($business->employees as $employee){
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li><a href="<?= ROOT_DIREC ?>/businesses">Companies</a></li>
+        <li><a href="<?= ROOT_DIREC ?>/businesses">Coorporate Groups</a></li>
         <li>View</li>
         <li><?= $business->name ?></li>
     </ol>
@@ -29,7 +29,7 @@ foreach($business->employees as $employee){
         <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-            Company Profile : <?= $business->name ?>
+            Coorporate Group Profile : <?= $business->name ?>
         </div>
         <div class="panel-body articles-container">       
                 <table class = "table table-striped">
@@ -55,7 +55,6 @@ foreach($business->employees as $employee){
                     </tr>
                 </table>
             </div>
-            
         </div>
         </div>
     </div>
@@ -72,7 +71,7 @@ foreach($business->employees as $employee){
                     <th>#</th>
                     <th class="text-center">Insurance</th>
                     <th class="text-center">Country</th>
-                    <th class="text-center">Effective Date</th>
+                    <th class="text-center">Created Date</th>
                     <th class="text-center">Premium</th>
                     <th class="text-left"></th>
                 </thead>
@@ -174,21 +173,30 @@ foreach($business->employees as $employee){
       <?= $this->Form->create(null, array("url" => '/businesses/addemployee')) ?>
       <div class="modal-body">
             <div class="row">
-                <div class="col-md-4"><?= $this->Form->control('first_name', array('class' => 'form-control', "label" => "First Name *", "placeholder" => "First Name")); ?></div>
-                <div class="col-md-4"><?= $this->Form->control('last_name', array('class' => 'form-control', "label" => "Last Name *", "placeholder" => "Last Name")); ?></div>
-                <div class="col-md-4"><?= $this->Form->control('membership_number', array('class' => 'form-control', "label" => "Membership Number *", "placeholder" => "Membership Number")); ?></div>
-            </div>
-            <hr>
-            <div class="row">
-                <?= $this->Form->control('business_id', array('type' => 'hidden',"value" => $business->id)); ?>
-                <div class="col-md-4"><?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Choose Group --', "label" => "Group", "option" => $groupings, 'required' => true, 'style' => "height:46px")); ?></div> 
-                <div class="col-md-4"><?= $this->Form->control('deductible', array('class' => 'form-control', "label" => "Deductible *", "placeholder" => "Deductible")); ?></div>
-                <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Effective Date *", 'type' => 'date', 'value' => date('Y-m-d'))); ?></div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col-md-6"><?= $this->Form->control('status', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px", 'value' => 1)); ?></div> 
-            </div>
+                    <div class="col-md-4"><?= $this->Form->control('first_name', array('class' => 'form-control', "label" => "First Name *", "placeholder" => "First Name")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('last_name', array('class' => 'form-control', "label" => "Last Name *", "placeholder" => "Last Name")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('membership_number', array('class' => 'form-control', "label" => "Membership / Policy # *", "placeholder" => "Membership Number")); ?></div>
+                </div>
+                <hr>  
+                <div class="row">
+                  <div class="col-md-4"><?= $this->Form->control('dob', array('class' => 'form-control', "label" => "Date of Birth *", "type" => "date")); ?></div>
+                  <div class="col-md-4"><?= $this->Form->control('gender', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $genders, "label" => "Gender", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                  <div class="col-md-4"><?= $this->Form->control('country', array('class' => 'form-control', "label" => "Country of Residence *", "placeholder" => "Country of Residence")); ?></div>
+                </div>
+                <hr>
+                <div class="row">
+<?= $this->Form->control('business_id', array('type' => 'hidden', 'value' => $business->id )); ?>
+                    <div class="col-md-4"><?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Group --', "label" => "Group", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                    <div class="col-md-4"><?= $this->Form->control('deductible', array('class' => 'form-control', "label" => "Deductible *", "placeholder" => "Deductible")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Created Date *", "type" => 'date')); ?></div>
+                </div>
+                <hr>
+                <div class="row">
+                  
+                  <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                  <div class="col-md-4"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Premium *", "placeholder" => "Premium")); ?></div>
+                </div>
+                <hr> 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

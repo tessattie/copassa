@@ -9,29 +9,15 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li class="active">Companies</li>
+        <li class="active">Corporate Groups</li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Companies
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                    <em class="fa fa-plus"></em>
-                </a>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <ul class="dropdown-settings">
-                                <li><a href="<?= ROOT_DIREC ?>/businesses/add">
-                                    <em class="fa fa-plus"></em> New Company
-                                </a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            Corporate Groups
+            <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/businesses/add">New</a>
         </div>
     <div class="panel-body articles-container">
             <table class="table table-stripped datatable">

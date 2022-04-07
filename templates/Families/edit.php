@@ -72,7 +72,7 @@ $(document).ready(function(){
             var token =  $('input[name="_csrfToken"]').val();
             var business = $(this).val();
             $.ajax({
-                 url : '/copassa/groupings/list',
+                 url : '/groupings/list',
                  type : 'POST',
                  data : {business_id : business},
                  headers : {
@@ -99,7 +99,7 @@ $(document).ready(function(){
             var token =  $('input[name="_csrfToken"]').val();
             var group = $(this).val();
             $.ajax({
-                 url : '/copassa/employees/list',
+                 url : '/employees/list',
                  type : 'POST',
                  data : {group_id : group},
                  headers : {

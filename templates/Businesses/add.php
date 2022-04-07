@@ -10,7 +10,7 @@
             <em class="fa fa-home"></em>
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/businesses">
-            Companies
+            Corporate Groups
         </a></li>
         <li class="active">Add</li>
     </ol>
@@ -19,7 +19,7 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            New Company
+            New Corporate Group
             <ul class="pull-right panel-settings panel-button-tab-right">
                 <li class="dropdown"><a href="<?= ROOT_DIREC ?>/businesses">
                     <em class="fa fa-arrow-left"></em>

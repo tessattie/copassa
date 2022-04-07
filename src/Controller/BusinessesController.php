@@ -91,7 +91,19 @@ class BusinessesController extends AppController
         $employee = $this->Businesses->Groupings->Employees->newEmptyEntity();
         if ($this->request->is('post')) {
             $employee = $this->Businesses->Groupings->Employees->patchEntity($employee, $this->request->getData());
-            if ($this->Businesses->Groupings->Employees->save($employee)) {
+            if ($ident = $this->Businesses->Groupings->Employees->save($employee)) {
+                $this->loadModel("Families");
+                    $family = $this->Families->newEmptyEntity(); 
+                    $family->first_name = $ident['first_name'];
+                    $family->last_name = $ident['last_name'];
+                    $family->relationship = 4;
+                    $family->dob = $this->request->getData()['dob'];
+                    $family->premium = $this->request->getData()['premium']; 
+                    $family->employee_id = $ident['id']; 
+                    $family->gender = $this->request->getData()['gender']; 
+                    $family->country = $this->request->getData()['country'];
+                    $family->status = 1 ;
+                    $this->Families->save($family);
                 return $this->redirect(['action' => 'view', $employee->business_id]);
             }
         }
@@ -132,7 +144,7 @@ class BusinessesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $business = $this->Businesses->get($id);
         if ($this->Businesses->delete($business)) {
             $this->Flash->success(__('The business has been deleted.'));

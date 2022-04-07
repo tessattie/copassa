@@ -37,7 +37,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-md-6"><?= $this->Form->control('company_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $companies, "label" => "Insurance", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
-                  <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Effective Date *")); ?></div>
+                  <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Created Date *")); ?></div>
                 </div> 
                 
                 <div class="row">

@@ -10,7 +10,7 @@
             <em class="fa fa-home"></em>
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/businesses">
-            Companies
+            Corporate Groups
         </a></li>
         <li>Edit</li>
         <li><?= $business->name ?></li>
@@ -20,7 +20,7 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Company : <?= $business->name ?>
+            Edit Corporate Group : <?= $business->name ?>
             <ul class="pull-right panel-settings panel-button-tab-right">
                 <li class="dropdown"><a href="<?= ROOT_DIREC ?>/businesses">
                     <em class="fa fa-arrow-left"></em>
@@ -30,7 +30,7 @@
             </ul>
         </div>
     <div class="panel-body articles-container">       
-            <?= $this->Form->create($company) ?>
+            <?= $this->Form->create($business) ?>
                 <div class="row">
                 <div class="col-md-8"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?></div>
                 <div class="col-md-4"><?= $this->Form->control('business_number', array('class' => 'form-control', "label" => "Company Number *", "placeholder" => "Company Number")); ?></div>

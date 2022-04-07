@@ -12,12 +12,12 @@
 <div class="container-fluid">   
 <div class="row">
     <div class="col-md-6">
-        <div class="panel panel-default articles" style="height:400px;overflow-y:scroll">
+        <div class="panel panel-default articles" style="height:300px;overflow-y:scroll">
             <div class="panel-heading">
                 Maternity Reminders
             </div>
             <div class="panel-body articles-container">       
-                <table class="table table-striped datatable">
+                <table class="table table-striped table-bordered">
                 <thead> 
                     <th class="text-left">Policy Number</th>
                     <th class="text-center">Policy Holder</th>
@@ -39,29 +39,25 @@
             
         </div>
     </div> 
+
     <div class="col-md-6">
-        <div class="panel panel-default articles" style="height:400px;overflow-y:scroll">
+        <div class="panel panel-default articles" style="height:300px;overflow-y:scroll">
             <div class="panel-heading">
-                Pending Business
+                Birthdays
             </div>
             <div class="panel-body articles-container">       
-<table class="table table-striped datatable">
+                <table class="table table-striped table-bordered">
                 <thead> 
-                    <th class="text-left">Number</th>
-                    <th class="text-center">Holder</th>
-                    <th class="text-center">Country</th>
-                    <th class="text-center">Company</th>
-                    <th class="text-center">Premium</th>
+                    <th class="text-left">Policy Holder</th>
+                    <th class="text-center">DOB</th>
+                    <th class="text-center">Phone</th>
                 </thead>
             <tbody> 
-        <?php foreach($policies as $policy) : ?>
+        <?php foreach($birthdays as $birthday) : ?>
             <tr>
-                <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
-                <td class="text-center"><?= $policy->customer->name ?></td>
-                <td class="text-center"><?= $policy->customer->country->name ?></td>
-                <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
-                <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
-
+                <td class="text-left"><?= $birthday->name ?></td>
+                <td class="text-center"><?= $birthday->dob ?></td>
+                <td class="text-center"><?= $birthday->home_phone ?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
@@ -70,28 +66,37 @@
             
         </div>
     </div> 
+    
 </div>
 
 <div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-default articles" style="height:400px;overflow-y:scroll">
+    <div class="col-md-12">
+        <div class="panel panel-default articles" style="height:300px;overflow-y:scroll">
             <div class="panel-heading">
-                Birthdays
+                Pending Business
             </div>
             <div class="panel-body articles-container">       
-                <table class="table table-striped datatable">
+<table class="table table-striped table-bordered">
                 <thead> 
-                    <th class="text-left">Policy Holder</th>
-                    <th class="text-center">DOB</th>
-                    <th class="text-right">Phone</th>
+                    <th class="text-left">Name</th>
+                    <th class="text-center">Company</th>
+                    <th class="text-center">Option</th>
+                    <th class="text-center">Country</th>
+                    <th class="text-center">Dependants</th>
+                    <th class="text-center">Last Contact Date</th>
                 </thead>
             <tbody> 
-        <?php foreach($birthdays as $birthday) : ?>
+        <?php foreach($pendings as $pending) : ?>
+          <?php if($pending->country_id == $filter_country || empty($filter_country)) : ?>
             <tr>
-                <td class="text-left"><?= $birthday->name ?></td>
-                <td class="text-center"><?= $birthday->dob ?></td>
-                <td class="text-right"><?= $birthday->home_phone ?></td>
+                <td class="text-left"><?= $pending->name ?></td>
+                <td class="text-center"><?= $pending->company->name ?></td>
+                <td class="text-center"><?= $pending->option->name ?></td>
+                <td class="text-center"><?= $pending->country->name ?></td>
+                <td class="text-center"><?= $pending->dependants ?></td>
+                <td class="text-center"><?= date("M d Y", strtotime($pending->last_contact_date)) ?></td> 
             </tr>
+          <?php endif; ?>
         <?php endforeach; ?>
         </tbody>
         </table>

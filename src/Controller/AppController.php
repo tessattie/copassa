@@ -30,7 +30,7 @@ use Cake\Event\EventInterface;
 class AppController extends Controller
 {
 
-    public $company_types = array(1 => "Life", 2 => "Health");
+    public $company_types = array(1 => "Life", 2 => "Health", 3 => "Travel");
 
     public $types = array(1 => 'Premium', 2 => 'Payment', 3 => 'Cancelation');
 
@@ -172,7 +172,7 @@ class AppController extends Controller
         if(!$file['error']){
             $extension = explode("/", $file['type'])[1];
             // $dossier = '/home/dhf8co1jhtoy'.ROOT_DIREC.'/webroot/img/'.$directory.'/';
-            $dossier = 'C:/wamp/www'.ROOT_DIREC.'/webroot/tmp/files/';
+            $dossier = '/home/elmw5laxfvwr/public_html'.ROOT_DIREC.'/webroot/tmp/files/';
             if($extensionn == 2){
                 if(move_uploaded_file($file['tmp_name'], $dossier . $name . ".xlsx")){
                 return $name . ".xlsx";

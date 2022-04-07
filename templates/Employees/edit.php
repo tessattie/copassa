@@ -34,7 +34,7 @@
                 <div class="row">
                     <div class="col-md-4"><?= $this->Form->control('first_name', array('class' => 'form-control', "label" => "First Name *", "placeholder" => "First Name")); ?></div>
                     <div class="col-md-4"><?= $this->Form->control('last_name', array('class' => 'form-control', "label" => "Last Name *", "placeholder" => "Last Name")); ?></div>
-                    <div class="col-md-4"><?= $this->Form->control('membership_number', array('class' => 'form-control', "label" => "Membership Number *", "placeholder" => "Membership Number")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('membership_number', array('class' => 'form-control', "label" => "Membership / Policy Number *", "placeholder" => "Membership Number")); ?></div>
                 </div>
                 <hr>
                 <div class="row">
@@ -67,7 +67,7 @@
             var token =  $('input[name="_csrfToken"]').val();
             var business = $(this).val();
             $.ajax({
-                 url : '/copassa/groupings/list',
+                 url : '/groupings/list',
                  type : 'POST',
                  data : {business_id : business},
                  headers : {

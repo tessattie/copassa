@@ -29,7 +29,7 @@
                 </tr>
                 <tr>
 
-                    <th><?= __('Business') ?></th>
+                    <th><?= __('Corporate Group') ?></th>
                     <td class="text-right"><?= $employee->has('business') ? $this->Html->link($employee->business->name, ['controller' => 'Businesses', 'action' => 'view', $employee->business->id]) : '' ?></td>
                 </tr>
                 

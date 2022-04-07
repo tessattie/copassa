@@ -148,7 +148,7 @@
             var token =  $('input[name="_csrfToken"]').val();
             var customer_id = $(this).val();
             $.ajax({
-                 url : '/copassa/policies/list',
+                 url : '/policies/list',
                  type : 'POST',
                  data : {customer_id : customer_id},
                  headers : {

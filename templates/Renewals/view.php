@@ -351,7 +351,7 @@ $summary_cancelations = 0;
             var token =  $('input[name="_csrfToken"]').val();
             var group = $(this).val();
             $.ajax({
-                 url : '/copassa/employees/list',
+                 url : '/employees/list',
                  type : 'POST',
                  data : {group_id : group},
                  headers : {
@@ -378,7 +378,7 @@ $summary_cancelations = 0;
             var token =  $('input[name="_csrfToken"]').val();
             var employee = $(this).val();
             $.ajax({
-                 url : '/copassa/families/list',
+                 url : '/families/list',
                  type : 'POST',
                  data : {employee_id : employee},
                  headers : {

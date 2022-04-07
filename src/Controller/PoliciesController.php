@@ -62,8 +62,9 @@ class PoliciesController extends AppController
         }else{
            $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 1)))->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
         }
+        $this->loadModel("Pendings");
 
-
+        $pendings = $this->Pendings->find("all")->contain(['Companies', 'Options', 'Countries', 'Users']);
         $all_birthdays = $this->Policies->Customers->find("all")->contain(['Policies']);
         $birthdays = array();
         foreach($all_birthdays as $bd){
@@ -75,7 +76,7 @@ class PoliciesController extends AppController
             
         }
 
-        $this->set(compact('newborns', 'policies', 'birthdays'));
+        $this->set(compact('newborns', 'policies', 'birthdays', 'pendings'));
     }
 
     /**

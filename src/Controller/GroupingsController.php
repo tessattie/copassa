@@ -72,6 +72,18 @@ class GroupingsController extends AppController
         if ($this->request->is('post')) {
             $employee = $this->Groupings->Employees->patchEntity($employee, $this->request->getData());
             if ($this->Groupings->Employees->save($employee)) {
+                $this->loadModel("Families");
+                $family = $this->Families->newEmptyEntity(); 
+                $family->first_name = $ident['first_name'];
+                $family->last_name = $ident['last_name'];
+                $family->relationship = 4;
+                $family->dob = $this->request->getData()['dob'];
+                $family->premium = $this->request->getData()['premium']; 
+                $family->employee_id = $ident['id']; 
+                $family->gender = $this->request->getData()['gender']; 
+                $family->country = $this->request->getData()['country'];
+                $family->status = 1 ;
+                $this->Families->save($family);
                 return $this->redirect(['action' => 'view', $employee->grouping_id]);
             }
         }

@@ -17,35 +17,19 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Family Members
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                    <em class="fa fa-plus"></em>
-                </a>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <ul class="dropdown-settings">
-                                <li><a href="<?= ROOT_DIREC ?>/families/add">
-                                    <em class="fa fa-plus"></em> New Family Member
-                                </a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/companies/add">Families</a>
         </div>
     <div class="panel-body articles-container">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>Full Name</th>
                     <th class="text-center">Employee</th>
-                    <th class="text-center">Company</th>
+                    <th class="text-center">Corporate Group</th>
                     <th class="text-center">Group</th>
                     <th class="text-center">Insurance</th>
                     <th class="text-center">Relationship</th>
                     <th class="text-center">DOB</th>
-                    <th class="text-center">Gender</th>
                     <th class="text-center">Premium</th>
-                    <th class="text-center">Residence</th>
                     <th class="text-center">Status</th>
                     <th class="text-left"></th>
                 </thead>
@@ -60,9 +44,7 @@
                     <td class="text-center"><?= $relationships[$family->relationship] ?></td>
                     <td class="text-center"><?= date("F d Y", strtotime($family->dob)) ?></td>
                     
-                    <td class="text-center"><?= $genders[$family->gender] ?></td>
                     <td class="text-center"><?= number_format($family->premium,2,".",",") ?></td>
-                    <td class="text-center"><?= $family->country ?></td>
                     <?php if($family->status == 1) : ?>
                         <td class="text-center"><span class="label label-success">Active</span></td>
                     <?php else : ?>

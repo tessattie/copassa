@@ -11,7 +11,7 @@
             <em class="fa fa-home"></em>
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/companies">
-            Companies
+            Insurance Companies
         </a></li>
         <li>Edit</li>
         <li><?= $company->name ?></li>
@@ -21,7 +21,7 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit <?= $company->name ?>
+            Edit Insurance Company : <?= $company->name ?>
             <ul class="pull-right panel-settings panel-button-tab-right">
                 <li class="dropdown"><a href="<?= ROOT_DIREC ?>/companies">
                     <em class="fa fa-arrow-left"></em>
