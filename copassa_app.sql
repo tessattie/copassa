@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Feb 16, 2022 at 11:53 PM
+-- Generation Time: Apr 07, 2022 at 02:54 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `businesses` (
   `created` datetime NOT NULL,
   `modified` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `businesses`
@@ -43,7 +43,8 @@ CREATE TABLE IF NOT EXISTS `businesses` (
 
 INSERT INTO `businesses` (`id`, `name`, `business_number`, `created`, `modified`) VALUES
 (1, 'Sogebank', '123456', '2022-01-19 13:07:49', '2022-01-19 13:07:49'),
-(2, 'Unibank', 'VK47738', '2022-01-20 11:29:18', '2022-01-20 11:29:18');
+(2, 'Unibank', 'VK47738', '2022-01-20 11:29:18', '2022-01-20 11:29:18'),
+(3, 'Copassa', '678465', '2022-03-28 13:36:26', '2022-03-28 13:36:26');
 
 -- --------------------------------------------------------
 
@@ -697,7 +698,7 @@ CREATE TABLE IF NOT EXISTS `dependants` (
   `user_id` int(11) NOT NULL,
   `policy_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=405 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=406 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `dependants`
@@ -1101,7 +1102,8 @@ INSERT INTO `dependants` (`id`, `name`, `relation`, `dob`, `sexe`, `limitations`
 (401, 'GABRIELA MACHADO', 2, '2007-02-08', 2, '', '2021-12-22 13:10:39', '2021-12-22 13:10:39', 4, 551),
 (402, 'PATRICIA KHAWLY', 1, '1967-07-02', 2, '', '2021-12-23 09:17:46', '2021-12-23 09:17:46', 4, 552),
 (403, 'MADISON LOWHOY', 1, '2011-02-10', 2, '', '2022-01-10 13:35:50', '2022-01-10 13:35:50', 4, 554),
-(404, 'Wayne Rudy BENNETT', 2, '2022-02-28', 1, '', '2022-02-16 14:48:31', '2022-02-16 14:48:31', 1, 280);
+(404, 'Wayne Rudy BENNETT', 2, '2022-02-28', 1, '', '2022-02-16 14:48:31', '2022-02-16 14:48:31', 1, 280),
+(405, 'John Label', 2, '2022-03-29', 1, 'Exclusions here', '2022-02-19 08:49:45', '2022-02-19 08:49:45', 1, 372);
 
 -- --------------------------------------------------------
 
@@ -1123,7 +1125,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
   `effective_date` date NOT NULL DEFAULT '2022-01-01',
   `status` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `employees`
@@ -1133,10 +1135,12 @@ INSERT INTO `employees` (`id`, `business_id`, `first_name`, `last_name`, `member
 (1, 1, 'Tess', 'ATTIE', '83929384', 5000, 1, '2022-01-19 14:22:04', '2022-01-19 14:22:04', '2022-01-01', 1),
 (2, 1, 'Yann', 'ATTIE', '9948374', 4000, 1, '2022-01-19 20:55:48', '2022-01-19 20:55:48', '2022-01-01', 1),
 (3, 2, 'Lida', 'HENNING', '77583302', 3500, 2, '2022-01-20 11:30:15', '2022-01-20 19:23:56', '2022-01-20', 1),
-(4, 1, 'Patricia', 'STEED ATTIE', '73664827', 2000, 3, '2022-01-20 11:52:34', '2022-02-09 11:22:28', '2022-01-01', 0),
-(5, 2, 'Alessandro', 'BENNETT', '2844608', 2000, 2, '2022-01-27 22:11:00', '2022-02-09 10:40:42', '2022-01-27', 0),
-(6, 1, 'Coraline', 'BENNETT', '387706589', 5000, 4, '2022-01-27 22:22:52', '2022-02-09 11:22:12', '2022-01-27', 0),
-(7, 1, 'Patricia', 'Weiner', '76876986', 4000, 4, '2022-01-27 22:25:52', '2022-01-27 22:25:52', '2022-01-27', 1);
+(4, 1, 'Patricia', 'STEED ATTIE', '73664827', 2000, 3, '2022-01-20 11:52:34', '2022-03-24 15:09:06', '2022-01-01', 1),
+(5, 2, 'Alessandro', 'BENNETT', '2844608', 2000, 2, '2022-01-27 22:11:00', '2022-03-24 15:09:20', '2022-01-27', 1),
+(6, 1, 'Coraline', 'BENNETT', '387706589', 5000, 4, '2022-01-27 22:22:52', '2022-03-24 15:09:14', '2022-01-27', 1),
+(7, 1, 'Patricia', 'Weiner', '76876986', 4000, 4, '2022-01-27 22:25:52', '2022-01-27 22:25:52', '2022-01-27', 1),
+(8, 1, 'John', 'Doe', '9234023', 5000, 3, '2022-03-24 14:59:06', '2022-03-24 14:59:06', '2022-01-01', 1),
+(9, 1, 'Kate', 'Hudson', '2302374982', 4000, 4, '2022-03-24 15:04:06', '2022-03-24 15:04:06', '2022-03-23', 1);
 
 -- --------------------------------------------------------
 
@@ -1159,7 +1163,7 @@ CREATE TABLE IF NOT EXISTS `families` (
   `country` varchar(255) DEFAULT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `families`
@@ -1185,7 +1189,9 @@ INSERT INTO `families` (`id`, `first_name`, `last_name`, `relationship`, `employ
 (17, 'Patricia', 'Wiener', 4, 7, 654, '1949-01-01', '2022-02-09 12:15:30', '2022-02-09 12:15:30', 2, 'HAITI', 1),
 (18, 'Tess', 'ATTIE', 4, 1, 879, '1993-02-07', '2022-02-09 12:15:59', '2022-02-09 12:15:59', 2, 'HAITI', 1),
 (19, 'Yann', 'ATTIE', 4, 2, 900, '1991-01-08', '2022-02-09 12:16:21', '2022-02-09 12:16:21', 1, 'HAITI', 1),
-(20, 'Patricia', 'STEED ATTIE', 4, 4, 850, '1962-12-05', '2022-02-09 12:35:52', '2022-02-09 12:35:52', 2, 'HAITI', 1);
+(20, 'Patricia', 'STEED ATTIE', 4, 4, 850, '1962-12-05', '2022-02-09 12:35:52', '2022-02-09 12:35:52', 2, 'HAITI', 1),
+(21, 'John', 'Doe', 4, 8, 485, '1990-01-30', '2022-03-24 14:59:06', '2022-03-24 14:59:06', 1, 'HAITI', 1),
+(22, 'Kate', 'Hudson', 4, 9, 582, '2022-03-21', '2022-03-24 15:04:06', '2022-03-24 15:04:06', 2, 'HAITI', 1);
 
 -- --------------------------------------------------------
 
@@ -1204,7 +1210,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `user_id` int(11) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `files`
@@ -1216,7 +1222,9 @@ INSERT INTO `files` (`id`, `name`, `location`, `created`, `modified`, `extension
 (91, 'TEST', '91.xlsx', '2022-02-16 18:38:06', '2022-02-16 18:38:06', '2', 1, 'Excel Test'),
 (92, 'Word Document', '92.vnd.openxmlformats-officedocument.wordprocessingml.document', '2022-02-16 18:42:47', '2022-02-16 18:42:47', '1', 1, ''),
 (94, 'Powerpoint Test', '94.png', '2022-02-16 18:46:40', '2022-02-16 18:46:40', '3', 1, ''),
-(95, 'PDF test', '95.pdf', '2022-02-16 18:46:58', '2022-02-16 18:46:58', '0', 1, '');
+(95, 'PDF test', '95.pdf', '2022-02-16 18:46:58', '2022-02-16 18:46:58', '0', 1, ''),
+(96, 'PDF', '96.pdf', '2022-02-19 08:58:30', '2022-02-19 08:58:30', '0', 1, ''),
+(97, 'Test file meeting', '97.vnd.openxmlformats-officedocument.wordprocessingml.document', '2022-02-19 08:59:48', '2022-02-19 08:59:48', '1', 1, '');
 
 -- --------------------------------------------------------
 
@@ -1243,13 +1251,14 @@ CREATE TABLE IF NOT EXISTS `folders` (
 --
 
 INSERT INTO `folders` (`id`, `name`, `parent_id`, `lft`, `rght`, `created`, `modified`, `user_id`) VALUES
-(1, 'ROOT', NULL, 1, 54, '2019-10-10 14:58:33', '2019-10-10 16:46:13', 32),
-(53, 'TEST', 1, 42, 49, '2022-02-16 17:20:11', '2022-02-16 17:20:11', 1),
-(54, 'Policies', 1, 50, 51, '2022-02-16 17:20:38', '2022-02-16 17:20:38', 1),
-(55, 'Contracts', 1, 52, 53, '2022-02-16 17:20:48', '2022-02-16 17:20:48', 1),
+(1, 'ROOT', NULL, 1, 56, '2019-10-10 14:58:33', '2019-10-10 16:46:13', 32),
+(53, 'TEST', 1, 42, 51, '2022-02-16 17:20:11', '2022-02-16 17:20:11', 1),
+(54, 'Policies', 1, 52, 53, '2022-02-16 17:20:38', '2022-02-16 17:20:38', 1),
+(55, 'Contracts', 1, 54, 55, '2022-02-16 17:20:48', '2022-02-16 17:20:48', 1),
 (56, 'INSIDE TEST', 53, 43, 48, '2022-02-16 17:47:18', '2022-02-16 17:47:18', 1),
 (59, 'Third Subfolder', 56, 44, 45, '2022-02-16 18:48:39', '2022-02-16 18:48:39', 1),
-(60, 'Subfolder 2', 56, 46, 47, '2022-02-16 18:49:53', '2022-02-16 18:49:53', 1);
+(60, 'Subfolder 2', 56, 46, 47, '2022-02-16 18:49:53', '2022-02-16 18:49:53', 1),
+(61, 'Lida', 53, 49, 50, '2022-02-19 08:58:08', '2022-02-19 08:58:08', 1);
 
 -- --------------------------------------------------------
 
@@ -1268,7 +1277,7 @@ CREATE TABLE IF NOT EXISTS `folders_files` (
   PRIMARY KEY (`id`),
   KEY `FILEFILE` (`file_id`),
   KEY `FILEFOLD` (`folder_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `folders_files`
@@ -1278,7 +1287,9 @@ INSERT INTO `folders_files` (`id`, `folder_id`, `file_id`, `position`, `created`
 (85, 1, 91, NULL, '2022-02-16 18:38:06', '2022-02-16 18:38:06'),
 (86, 1, 92, NULL, '2022-02-16 18:42:47', '2022-02-16 18:42:47'),
 (88, 1, 94, NULL, '2022-02-16 18:46:40', '2022-02-16 18:46:40'),
-(89, 1, 95, NULL, '2022-02-16 18:46:58', '2022-02-16 18:46:58');
+(89, 1, 95, NULL, '2022-02-16 18:46:58', '2022-02-16 18:46:58'),
+(90, 61, 96, NULL, '2022-02-19 08:58:30', '2022-02-19 08:58:30'),
+(91, 59, 97, NULL, '2022-02-19 08:59:48', '2022-02-19 08:59:48');
 
 -- --------------------------------------------------------
 
@@ -1296,7 +1307,7 @@ CREATE TABLE IF NOT EXISTS `groupings` (
   `modified` datetime NOT NULL,
   `effective_date` date NOT NULL DEFAULT '2022-01-01',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `groupings`
@@ -1306,7 +1317,8 @@ INSERT INTO `groupings` (`id`, `business_id`, `grouping_number`, `company_id`, `
 (1, 1, 'S3378', 10, '2022-01-19 13:52:17', '2022-01-19 13:52:17', '2022-01-01'),
 (2, 2, 'KK234', 10, '2022-01-20 11:29:41', '2022-01-20 19:27:58', '2022-01-20'),
 (3, 1, 'YZC5', 16, '2022-01-20 11:51:36', '2022-01-20 11:51:36', '2022-01-01'),
-(4, 1, 'KK4994', 16, '2022-01-27 21:17:43', '2022-01-27 21:17:43', '2022-01-27');
+(4, 1, 'KK4994', 16, '2022-01-27 21:17:43', '2022-01-27 21:17:43', '2022-01-27'),
+(5, 3, 'ABCD', 14, '2022-03-28 13:36:49', '2022-03-28 13:36:49', '2022-03-28');
 
 -- --------------------------------------------------------
 
@@ -1327,7 +1339,7 @@ CREATE TABLE IF NOT EXISTS `logs` (
   `new_data` text,
   `code` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8356 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8392 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `logs`
@@ -9644,7 +9656,43 @@ INSERT INTO `logs` (`id`, `comment`, `user_id`, `status`, `created`, `modified`,
 (8352, 'Accessed policies update page', 1, 1, '2022-02-16 16:45:20', '2022-02-16 16:45:20', 3, '', '', 200),
 (8353, 'Accessed policies update page', 1, 1, '2022-02-16 16:45:39', '2022-02-16 16:45:39', 3, '', '', 200),
 (8354, 'User logged in', 1, 1, '2022-02-16 17:14:16', '2022-02-16 17:14:16', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
-(8355, 'Accessed company page', 1, 1, '2022-02-16 18:29:21', '2022-02-16 18:29:21', 3, '', '', 200);
+(8355, 'Accessed company page', 1, 1, '2022-02-16 18:29:21', '2022-02-16 18:29:21', 3, '', '', 200),
+(8356, 'User logged in', 1, 1, '2022-02-18 14:05:05', '2022-02-18 14:05:05', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
+(8357, 'User logged in', 1, 1, '2022-02-19 08:25:22', '2022-02-19 08:25:22', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
+(8358, 'Accessed policy holder page', 1, 1, '2022-02-19 08:49:52', '2022-02-19 08:49:52', 3, '', '', 200),
+(8359, 'Accessed policy holder page', 1, 1, '2022-02-19 08:50:57', '2022-02-19 08:50:57', 3, '', '', 200),
+(8360, 'Accessed policies page', 1, 1, '2022-02-19 08:51:26', '2022-02-19 08:51:26', 3, '', '', 200),
+(8361, 'Accessed policies page', 1, 1, '2022-02-19 08:55:15', '2022-02-19 08:55:15', 3, '', '', 200),
+(8362, 'User logged in', 1, 1, '2022-02-23 09:44:42', '2022-02-23 09:44:42', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
+(8363, 'Accessed Pending Business page', 1, 1, '2022-02-23 09:45:33', '2022-02-23 09:45:33', 3, '', '', 200),
+(8364, 'User logged in', 1, 1, '2022-02-23 10:54:47', '2022-02-23 10:54:47', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
+(8365, 'Accessed Pending Business page', 1, 1, '2022-02-23 10:54:48', '2022-02-23 10:54:48', 3, '', '', 200),
+(8366, 'User logged in', 1, 1, '2022-03-24 12:12:41', '2022-03-24 12:12:41', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
+(8367, 'Accessed company page', 1, 1, '2022-03-24 13:00:14', '2022-03-24 13:00:14', 3, '', '', 200),
+(8368, 'Accessed company page', 1, 1, '2022-03-24 13:00:32', '2022-03-24 13:00:32', 3, '', '', 200),
+(8369, 'Accessed company page', 1, 1, '2022-03-24 13:01:00', '2022-03-24 13:01:00', 3, '', '', 200),
+(8370, 'User logged in', 1, 1, '2022-03-24 14:20:48', '2022-03-24 14:20:48', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
+(8371, 'Accessed company page', 1, 1, '2022-03-24 14:20:48', '2022-03-24 14:20:48', 3, '', '', 200),
+(8372, 'Accessed company page', 1, 1, '2022-03-24 14:22:10', '2022-03-24 14:22:10', 3, '', '', 200),
+(8373, 'Accessed company page', 1, 1, '2022-03-24 14:22:31', '2022-03-24 14:22:31', 3, '', '', 200),
+(8374, 'Accessed policy holder page', 1, 1, '2022-03-24 14:23:03', '2022-03-24 14:23:03', 3, '', '', 200),
+(8375, 'Accessed policy holder page', 1, 1, '2022-03-24 14:23:23', '2022-03-24 14:23:23', 3, '', '', 200),
+(8376, 'Accessed policy holder page', 1, 1, '2022-03-24 14:23:26', '2022-03-24 14:23:26', 3, '', '', 200),
+(8377, 'Accessed policies page', 1, 1, '2022-03-24 14:23:30', '2022-03-24 14:23:30', 3, '', '', 200),
+(8378, 'Accessed policies page', 1, 1, '2022-03-24 14:23:44', '2022-03-24 14:23:44', 3, '', '', 200),
+(8379, 'Accessed policies page', 1, 1, '2022-03-24 14:24:07', '2022-03-24 14:24:07', 3, '', '', 200),
+(8380, 'Accessed payments page', 1, 1, '2022-03-24 14:24:19', '2022-03-24 14:24:19', 3, '', '', 200),
+(8381, 'Accessed company page', 1, 1, '2022-03-24 14:43:17', '2022-03-24 14:43:17', 3, '', '', 200),
+(8382, 'User logged in', 1, 1, '2022-03-28 13:32:46', '2022-03-28 13:32:46', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
+(8383, 'Accessed users page', 1, 1, '2022-03-28 13:46:28', '2022-03-28 13:46:28', 3, '', '', 200),
+(8384, 'User logged in', 1, 1, '2022-03-28 14:34:57', '2022-03-28 14:34:57', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
+(8385, 'Accessed company page', 1, 1, '2022-03-28 14:38:05', '2022-03-28 14:38:05', 3, '', '', 200),
+(8386, 'User logged in', 1, 1, '2022-04-02 19:33:59', '2022-04-02 19:33:59', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200),
+(8387, 'Accessed company page', 1, 1, '2022-04-02 19:35:08', '2022-04-02 19:35:08', 3, '', '', 200),
+(8388, 'Accessed policy holder page', 1, 1, '2022-04-02 19:35:50', '2022-04-02 19:35:50', 3, '', '', 200),
+(8389, 'Accessed policies page', 1, 1, '2022-04-02 19:35:59', '2022-04-02 19:35:59', 3, '', '', 200),
+(8390, 'Accessed policies update page', 1, 1, '2022-04-02 19:37:06', '2022-04-02 19:37:06', 3, '', '', 200),
+(8391, 'User logged in', 1, 1, '2022-04-07 09:37:21', '2022-04-07 09:37:21', 4, '', '{\"id\":1,\"name\":\"Tess ATTIE\",\"username\":\"tattie\",\"status\":1,\"role_id\":1,\"created\":\"2021-04-07T10:35:51-04:00\",\"modified\":\"2021-04-26T11:25:20-04:00\"}', 200);
 
 -- --------------------------------------------------------
 
@@ -9669,7 +9717,8 @@ CREATE TABLE IF NOT EXISTS `newborns` (
 --
 
 INSERT INTO `newborns` (`id`, `policy_id`, `due_date`, `created`, `modified`, `user_id`, `status`) VALUES
-(1, 280, '2022-02-28', '2022-02-16 14:33:02', '2022-02-16 14:48:30', 1, 2);
+(1, 280, '2022-02-28', '2022-02-16 14:33:02', '2022-02-16 14:48:30', 1, 2),
+(2, 372, '2022-03-30', '2022-02-19 08:47:39', '2022-02-19 08:49:45', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -10234,6 +10283,36 @@ INSERT INTO `payments` (`id`, `customer_id`, `policy_id`, `amount`, `status`, `u
 (311, 197, 216, 2190, 1, 4, 2, 0, '2022-01-11 08:33:54', '2022-01-11 08:33:54', 0, 'Paid 01-04-22', ''),
 (312, 249, 279, 6385, 1, 4, 2, 0, '2022-01-11 08:34:58', '2022-01-11 08:34:58', 0, 'Paid 12-09-2021', ''),
 (313, 164, 165, 1619, 1, 4, 2, 0, '2022-01-11 08:35:53', '2022-01-11 08:35:53', 0, 'Paid 12-23-2021', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pendings`
+--
+
+DROP TABLE IF EXISTS `pendings`;
+CREATE TABLE IF NOT EXISTS `pendings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `option_id` int(11) NOT NULL,
+  `dependants` int(11) NOT NULL DEFAULT '0',
+  `country_id` int(11) NOT NULL,
+  `created` datetime NOT NULL,
+  `modified` datetime NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  `last_contact_date` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `pendings`
+--
+
+INSERT INTO `pendings` (`id`, `name`, `company_id`, `option_id`, `dependants`, `country_id`, `created`, `modified`, `user_id`, `status`, `last_contact_date`) VALUES
+(1, 'Tess ATTIE', 10, 144, 3, 1, '2022-03-24 12:52:32', '2022-03-24 14:37:15', 1, 1, '2022-03-24'),
+(2, 'John Doe', 14, 52, 2, 1, '2022-03-28 14:35:23', '2022-03-28 14:35:55', 1, 1, '2022-03-29');
 
 -- --------------------------------------------------------
 
