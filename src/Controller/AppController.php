@@ -120,7 +120,7 @@ class AppController extends Controller
             $this->set("relationships", $this->relationships);
             $this->set('plans', $this->plans);
             $this->set('tenant', $this->Tenants->get($this->Auth->user()['tenant_id']));
-            $this->set('filter_countries', $this->Countries->find("list"));
+            $this->set('filter_countries', $this->Countries->find("list", array("order" => array("name asc"), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']))));
         }
     }
 
