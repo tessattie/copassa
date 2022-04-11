@@ -60,6 +60,11 @@ class EmployeesTable extends Table
         $this->hasMany('Families', [
             'foreignKey' => 'employee_id',
         ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

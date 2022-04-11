@@ -33,5 +33,6 @@ class Rider extends Entity
         'modified' => true,
         'user_id' => true,
         'user' => true,
+        'tenant_id' => true
     ];
 }

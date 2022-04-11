@@ -19,7 +19,7 @@ class UsersController extends AppController
     public function index()
     {
         $this->savelog(200, "Accessed users page", 1, 3, "", "");
-        $users = $this->Users->find("all")->contain(['Roles']);
+        $users = $this->Users->find("all", array("conditions" => array("Users.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Roles']);
         $this->set(compact('users'));
     }
 
@@ -34,6 +34,7 @@ class UsersController extends AppController
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
+            $user->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Users->save($user)) {
                 $this->savelog(200, "Created user", 1, 1, "", json_encode($user));
                 $this->Flash->success(__('The user has been saved.'));

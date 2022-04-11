@@ -57,6 +57,10 @@ class GroupingsTable extends Table
             'foreignKey' => 'company_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
         $this->hasMany('Employees', [
             'foreignKey' => 'grouping_id',
         ]);

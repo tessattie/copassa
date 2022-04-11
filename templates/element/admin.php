@@ -46,7 +46,7 @@
         <div class="profile-sidebar">
             <div class="profile-usertitle" style="margin:auto;width:100%">
                 <div class="profile-usertitle-name text-center" style="margin-top:12px"><?= $user_connected['name'] ?></div>
-                <div class="profile-usertitle-status text-center"><span class="indicator label-success"></span>Online</div>
+                <div class="profile-usertitle-status text-center"><?= $tenant->full_name ?></div>
             </div>
             <div class="clear"></div>
         </div>

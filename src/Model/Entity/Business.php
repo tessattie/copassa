@@ -35,5 +35,6 @@ class Business extends Entity
         'modified' => true,
         'employees' => true,
         'groupings' => true,
+        'tenant_id' => true
     ];
 }

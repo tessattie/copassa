@@ -6,22 +6,22 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Dependant Entity
+ * Tenant Entity
  *
  * @property int $id
- * @property int|null $relation
- * @property \Cake\I18n\FrozenDate|null $dob
- * @property int|null $sexe
- * @property string $limitations
- * @property int $policy_id
- * @property int $user_id
+ * @property string $full_name
+ * @property string $email
+ * @property string $phone
+ * @property string $identification
+ * @property string $company
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
+ * @property int $user_id
+ * @property int $status
  *
- * @property \App\Model\Entity\Policy $policy
  * @property \App\Model\Entity\User $user
  */
-class Dependant extends Entity
+class Tenant extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -33,17 +33,15 @@ class Dependant extends Entity
      * @var array
      */
     protected $_accessible = [
-        'relation' => true,
-        'dob' => true,
-        'sexe' => true,
-        'limitations' => true,
-        'policy_id' => true,
-        'user_id' => true,
+        'full_name' => true,
+        'email' => true,
+        'phone' => true,
+        'identification' => true,
+        'company' => true,
         'created' => true,
         'modified' => true,
-        'policy' => true,
+        'user_id' => true,
+        'status' => true,
         'user' => true,
-        'name' => true,
-        'tenant_id' => true
     ];
 }

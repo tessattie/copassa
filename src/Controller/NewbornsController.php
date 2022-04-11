@@ -19,8 +19,8 @@ class NewbornsController extends AppController
     public function index()
     {
         $filter_country = $this->session->read("filter_country");
-        $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
-        $customers = $this->Newborns->Policies->Customers->find("list", array( "order" => array('name ASC') ));
+        $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1, 'Newborns.tenant_id' => $this->Auth->user()['tenant_id']), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
+        $customers = $this->Newborns->Policies->Customers->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array('name ASC') ));
         $this->set(compact('newborns', 'customers', 'filter_country'));
     }
 
@@ -52,6 +52,7 @@ class NewbornsController extends AppController
             $newborn = $this->Newborns->newEmptyEntity();
             $newborn = $this->Newborns->patchEntity($newborn, $this->request->getData());
             $newborn->status = 1; 
+            $newborn->tenant_id = $this->Auth->user()['tenant_id'];
             $newborn->user_id = $this->Auth->user()['id'];
             $this->Newborns->save($newborn);
         }
@@ -113,6 +114,7 @@ class NewbornsController extends AppController
             $this->loadmodel('Dependants'); 
             $dependant = $this->Dependants->newEmptyEntity(); 
             $dependant->name = $this->request->getData()['name'];
+            $dependant->tenant_id = $this->Auth->user()['tenant_id'];
             $dependant->sexe = $this->request->getData()['sexe'];
             $dependant->relation = $this->request->getData()['relation'];
             $dependant->dob = $this->request->getData()['dob'];

@@ -64,6 +64,12 @@ class FoldersTable extends Table
             'className' => 'Folders',
             'foreignKey' => 'parent_id',
         ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
+        
         $this->belongsToMany('Files', [
             'foreignKey' => 'folder_id',
             'targetForeignKey' => 'file_id',

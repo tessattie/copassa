@@ -46,7 +46,8 @@ class Employee extends Entity
         'grouping' => true,
         'families' => true,
         'effective_date' => true, 
-        'status' => true
+        'status' => true,
+        'tenant_id' => true
     ];
 
     protected function _getName()

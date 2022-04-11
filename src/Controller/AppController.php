@@ -100,7 +100,7 @@ class AppController extends Controller
             $year = date('Y');
             $next_year = $year + 1;
             $years = array($year => $year, $next_year => $next_year);
-            $this->loadModel('Countries');
+            $this->loadModel('Countries'); $this->loadModel('Tenants');
             $this->from = $this->session->read("from")." 00:00:00";
             $this->to = $this->session->read("to")." 23:59:59";
             $this->initializeSessionVariables();
@@ -119,6 +119,7 @@ class AppController extends Controller
             $this->set("years", $years);
             $this->set("relationships", $this->relationships);
             $this->set('plans', $this->plans);
+            $this->set('tenant', $this->Tenants->get($this->Auth->user()['tenant_id']));
             $this->set('filter_countries', $this->Countries->find("list"));
         }
     }

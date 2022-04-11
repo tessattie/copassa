@@ -26,7 +26,7 @@ class CompaniesController extends AppController
     public function index()
     {
         $this->savelog(200, "Accessed company page", 1, 3, "", "");
-        $companies = $this->Companies->find("all")->contain(['Users', 'Options', 'Policies', 'Countries']);
+        $companies = $this->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Users', 'Options', 'Policies', 'Countries']);
 
         $this->set(compact('companies'));
     }
@@ -44,6 +44,7 @@ class CompaniesController extends AppController
             $company = $this->Companies->patchEntity($company, $this->request->getData());
             $company->user_id = $this->Auth->user()['id'];
             $company->country_id = 1;
+            $company->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Companies->save($company)) {
                 $this->savelog(200, "Created company", 1, 1, "", json_encode($company));
                 $this->Flash->success(__('The company has been saved.'));

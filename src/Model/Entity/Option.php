@@ -43,7 +43,8 @@ class Option extends Entity
         'deductible' => true,
         'usa_deductible' => true, 
         'max_coverage' => true, 
-        'plan' => true
+        'plan' => true,
+        'tenant_id' => true
     ];
 
     protected function _getFull(){

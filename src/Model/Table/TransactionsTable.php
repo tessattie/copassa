@@ -74,6 +74,10 @@ class TransactionsTable extends Table
             'foreignKey' => 'renewal_id',
             'joinType' => 'INNER',
         ]);
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

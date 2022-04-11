@@ -48,6 +48,11 @@ class BusinessesTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
+
         $this->hasMany('Employees', [
             'foreignKey' => 'business_id',
         ]);

@@ -18,7 +18,7 @@ class GroupingsController extends AppController
      */
     public function index()
     {
-        $groupings = $this->Groupings->find("all")->contain(['Employees' => ['Families'], 'Businesses', 'Companies']);
+        $groupings = $this->Groupings->find("all", array("conditions" => array("Groupings.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Employees' => ['Families'], 'Businesses', 'Companies']);
 
         $this->set(compact('groupings'));
     }
@@ -49,6 +49,7 @@ class GroupingsController extends AppController
         $grouping = $this->Groupings->newEmptyEntity();
         if ($this->request->is('post')) {
             $grouping = $this->Groupings->patchEntity($grouping, $this->request->getData());
+            $grouping->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Groupings->save($grouping)) {
                 $this->Flash->success(__('The grouping has been saved.'));
 
@@ -71,6 +72,7 @@ class GroupingsController extends AppController
         $employee = $this->Groupings->Employees->newEmptyEntity();
         if ($this->request->is('post')) {
             $employee = $this->Groupings->Employees->patchEntity($employee, $this->request->getData());
+            $employee->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Groupings->Employees->save($employee)) {
                 $this->loadModel("Families");
                 $family = $this->Families->newEmptyEntity(); 
@@ -139,7 +141,7 @@ class GroupingsController extends AppController
 
     public function list(){
         if($this->request->is(['ajax'])){
-            $groupings = $this->Groupings->find("all", array("conditions" => array("business_id" => $this->request->getData()['business_id'])));
+            $groupings = $this->Groupings->find("all", array("conditions" => array("business_id" => $this->request->getData()['business_id'], 'tenant_id' => $this->Auth->user()['tenant_id'])));
             echo json_encode($groupings->toArray()); 
         }
         die();

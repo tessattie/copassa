@@ -23,18 +23,18 @@ class PaymentsController extends AppController
     {
         $filter_country = $this->session->read("filter_country");
         if(!empty($filter_country)){
-            $policies = $this->Payments->Policies->find("all")->contain(['Customers', 'Companies'])->matching('Customers', function ($q) use ($filter_country) {
+            $policies = $this->Payments->Policies->find("all", array("conditions" => array("Policies.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Customers', 'Companies'])->matching('Customers', function ($q) use ($filter_country) {
                 return $q->where(['Customers.country_id' => $filter_country]);
             });
             
         }else{
-            $policies = $this->Payments->Policies->find("all")->contain(['Customers', 'Companies']);
+            $policies = $this->Payments->Policies->find("all", array("conditions" => array("Policies.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Customers', 'Companies']);
         }
         
         if(!empty($policy_id)){
             $policy = $this->Payments->Policies->get($policy_id, ['contain' => ['Customers']]);
             $this->savelog(200, "Accessed payments for policy #".$policy->policy_number, 1, 3, "", "");
-            $payments = $this->Payments->find("all", array('order' => array('Payments.created DESC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to, 'Payments.policy_id' => $policy_id)))->contain(['Rates', 'Users']);
+            $payments = $this->Payments->find("all", array('order' => array('Payments.created DESC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.tenant_id' => $this->Auth->user()['tenant_id'], 'Payments.created <=' => $this->to, 'Payments.policy_id' => $policy_id)))->contain(['Rates', 'Users']);
         }else{
             $this->savelog(200, "Accessed payments page", 1, 3, "", "");
             $policy = '';
@@ -52,7 +52,7 @@ class PaymentsController extends AppController
         $type_filter="9999";
         $company_filter = "9999";
         // Get each company 
-        $comps = $this->Policies->Companies->find("list");
+        $comps = $this->Policies->Companies->find("list", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
         
         if($this->request->is(['patch', 'put', 'post'])){
             if(!empty($this->request->getData()['type'])){
@@ -63,20 +63,20 @@ class PaymentsController extends AppController
             }
             $companies = $this->getPolicies($this->request->getData()['type'], $this->request->getData()['company_id']);
         }else{
-            $companies = $this->Policies->Companies->find("all", array("order" => array("Companies.name ASC")))->contain(['Countries']);
+            $companies = $this->Policies->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("Companies.name ASC")))->contain(['Countries']);
             foreach($companies as $company){
                 $filter_country = $this->session->read("filter_country");
                 
                 if(!empty($filter_country)){
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
                         return $q->where(['Customers.country_id' => $filter_country]);
                     });
                 }else{
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id,'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id,'Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
                 }
 
                 foreach($company->policies as $policy){
-                    $policy->last_payment = $this->Payments->find("all", array("order" => array("created DESC"), "conditions" => array("policy_id" => $policy->id)))->first();
+                    $policy->last_payment = $this->Payments->find("all", array("order" => array("created DESC"), "conditions" => array("policy_id" => $policy->id, 'tenant_id' => $this->Auth->user()['tenant_id'])))->first();
                 }
                 
             }
@@ -94,29 +94,29 @@ class PaymentsController extends AppController
         $to = date("Y-m-d", strtotime($to." -1 day"));
         if(!empty($type)){
             if(!empty($company_id)){
-                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type, "id" => $company_id), "order" => array("name ASC")));
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type, "id" => $company_id, "tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
             }else{
-                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type), "order" => array("name ASC")));
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type, 'tenant_id' => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
             }
         }else{
             if(!empty($company_id)){
-                $companies = $this->Policies->Companies->find("all", array("conditions" => array("id" => $company_id), "order" => array("name ASC")));
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("id" => $company_id, 'tenant_id' => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
             }else{
-                $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC")));
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array('tenant_id' => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
             }
         }
 
         foreach($companies as $company){
             if(!empty($filter_country)){
-                $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id,'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
+                $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id,'Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
                     return $q->where(['Customers.country_id' => $filter_country]);
                 });
             }else{
-                $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id,'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
+                $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id,'Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
             }
 
             foreach($company->policies as $policy){
-                $policy->last_payment = $this->Payments->find("all", array("order" => array("created DESC"), "conditions" => array("policy_id" => $policy->id)))->first();
+                $policy->last_payment = $this->Payments->find("all", array("order" => array("created DESC"), "conditions" => array("policy_id" => $policy->id, 'tenant_id' => $this->Auth->user()['tenant_id'])))->first();
             }
         }
 
@@ -265,6 +265,7 @@ class PaymentsController extends AppController
                 $payment->policy_id = $policy->id;
                 $payment->user_id = $this->Auth->user()['id'];
                 $payment->status = 1;
+                $payment->tenant_id = $this->Auth->user()['tenant_id'];
                 $payment->path_to_photo = $data['certificate'];
                 if($pm = $this->Payments->save($payment)){
                     $this->update_paid_until($policy);
@@ -373,11 +374,11 @@ class PaymentsController extends AppController
         $this->savelog(200, "Accessed payments page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
         if(!empty($filter_country)){
-            $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']])->matching('Customers', function ($q) use ($filter_country) {
+            $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.tenant_id' => $this->Auth->user()['tenant_id'], 'Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']])->matching('Customers', function ($q) use ($filter_country) {
                         return $q->where(['Customers.country_id' => $filter_country]);
                     });
         }else{
-           $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']]); 
+           $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.tenant_id' => $this->Auth->user()['tenant_id'], 'Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']]); 
         }
         
         $this->set(compact('payments'));
@@ -390,11 +391,11 @@ class PaymentsController extends AppController
         $to = $this->session->read("to"); 
         $filter_country = $this->session->read("filter_country");
         if(!empty($filter_country)){
-            $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']])->matching('Customers', function ($q) use ($filter_country) {
+            $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.tenant_id' => $this->Auth->user()['tenant_id'], 'Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']])->matching('Customers', function ($q) use ($filter_country) {
                         return $q->where(['Customers.country_id' => $filter_country]);
                     });
         }else{
-           $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']]); 
+           $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.tenant_id' => $this->Auth->user()['tenant_id'], 'Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']]); 
         }
 
         $fpdf = new FPDF();
@@ -457,7 +458,6 @@ class PaymentsController extends AppController
         
         $fpdf = new FPDF();
         $fpdf->AddPage();
-        $fpdf->Image(ROOT.'/webroot/img/logo.png',10,4,50);
         $fpdf->SetFont('Arial','B',11);
         $fpdf->Cell(190,0,date('F j Y'),0,0, 'R');
         $fpdf->Ln(7);
@@ -521,7 +521,6 @@ class PaymentsController extends AppController
         $fpdf->SetFont('Arial','',11);
         $fpdf->Cell(95,0,utf8_decode($payment->policy->policy_number),0,0, 'R');
 
-        $fpdf->Image(ROOT.'/webroot/img/footer.png',10,270,190);
         $fpdf->Output('I');
 
         die();

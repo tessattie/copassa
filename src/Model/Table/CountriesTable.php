@@ -40,6 +40,11 @@ class CountriesTable extends Table
         $this->setTable('countries');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

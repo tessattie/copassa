@@ -50,5 +50,6 @@ class Pending extends Entity
         'country' => true,
         'last_contact_date' => true,
         'user' => true,
+        'tenant_id' => true
     ];
 }

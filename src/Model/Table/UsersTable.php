@@ -75,6 +75,10 @@ class UsersTable extends Table
         $this->hasMany('Policies', [
             'foreignKey' => 'user_id',
         ]);
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

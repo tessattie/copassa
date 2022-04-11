@@ -24,5 +24,6 @@ class Country extends Entity
      */
     protected $_accessible = [
         'name' => true,
+        'tenant_id' => true
     ];
 }

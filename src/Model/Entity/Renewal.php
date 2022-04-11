@@ -45,5 +45,6 @@ class Renewal extends Entity
         'user' => true,
         'paid' => true,
         'transactions' => true,
+        'tenant_id' => true
     ];
 }

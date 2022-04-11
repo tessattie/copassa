@@ -51,6 +51,11 @@ class LogsTable extends Table
             'foreignKey' => 'user_id',
             'joinType' => 'LEFT',
         ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

@@ -18,7 +18,7 @@ class EmployeesController extends AppController
      */
     public function index()
     {
-        $employees = $this->Employees->find("all")->contain(['Businesses', 'Groupings' => ['Companies']]);
+        $employees = $this->Employees->find("all", array('conditions' => array('Employees.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Groupings' => ['Companies']]);
 
         $this->set(compact('employees'));
     }
@@ -26,6 +26,7 @@ class EmployeesController extends AppController
     public function report($group_id = false){
         $employees = array();
         $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
+        $employees->where(['Employees.tenant_id' => $this->Auth->user()['tenant_id']]);
         if($this->request->is(['patch', 'put', 'post'])){
             if(!empty($this->request->getData()['business_id'])){
                 $employees->where(['Employees.business_id' => $this->request->getData()['business_id']]);
@@ -35,8 +36,8 @@ class EmployeesController extends AppController
             }
         }
 
-         $businesses = $this->Employees->Businesses->find('list', ['order' => 'name ASC']);
-        $groupings = $this->Employees->Groupings->find('list', ['order' => ['grouping_number ASC']]);
+         $businesses = $this->Employees->Businesses->find('list', ['conditions' => array('tenant_id' => $this->Auth->user()['tenant_id']), 'order' => 'name ASC']);
+        $groupings = $this->Employees->Groupings->find('list', ['conditions' => array('tenant_id' => $this->Auth->user()['tenant_id']), 'order' => ['grouping_number ASC']]);
         $this->set(compact('employees', 'businesses', 'groupings'));
     }
 
@@ -66,6 +67,7 @@ class EmployeesController extends AppController
         $employee = $this->Employees->newEmptyEntity();
         if ($this->request->is('post')) {
             $employee = $this->Employees->patchEntity($employee, $this->request->getData());
+            $employee->tenant_id = $this->Auth->user()['tenant_id'];
             if ($ident = $this->Employees->save($employee)) {
                 $this->Flash->success(__('The employee has been saved.'));
                     $this->loadModel("Families");
@@ -100,6 +102,7 @@ class EmployeesController extends AppController
         $family = $this->Employees->Families->newEmptyEntity();
         if ($this->request->is('post')) {
             $family = $this->Employees->Families->patchEntity($family, $this->request->getData());
+            $family->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Employees->Families->save($family)) {
                 return $this->redirect(['action' => 'view', $family->employee_id]);
             }
@@ -156,7 +159,7 @@ class EmployeesController extends AppController
 
     public function list(){
         if($this->request->is(['ajax'])){
-            $employees = $this->Employees->find("all", array('order' => ['last_name ASC'], "conditions" => array("grouping_id" => $this->request->getData()['group_id'])));
+            $employees = $this->Employees->find("all", array('order' => ['last_name ASC'], "conditions" => array("grouping_id" => $this->request->getData()['group_id'], 'tenant_id' => $this->Auth->user()['tenant_id'])));
             echo json_encode($employees->toArray()); 
         }
         die();

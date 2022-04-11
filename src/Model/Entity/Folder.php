@@ -45,5 +45,6 @@ class Folder extends Entity
         'user' => true,
         'child_folders' => true,
         'files' => true,
+        'tenant_id' => true
     ];
 }

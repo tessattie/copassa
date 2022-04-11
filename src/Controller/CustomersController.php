@@ -27,7 +27,7 @@ class CustomersController extends AppController
     {
         $this->savelog(200, "Accessed policy holder page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
-          $customers = $this->Customers->find("all")->contain(['Users', 'Countries', 'Policies' => 'Companies']);  
+          $customers = $this->Customers->find("all", array('conditions' => array('Customers.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Users', 'Countries', 'Policies' => 'Companies']);  
 
         $this->set(compact('customers', 'filter_country'));
     }
@@ -60,6 +60,7 @@ class CustomersController extends AppController
         if ($this->request->is('post')) {
             $customer = $this->Customers->patchEntity($customer, $this->request->getData());
             $customer->user_id = $this->Auth->user()['id'];
+            $customer->tenant_id = $this->Auth->user()['tenant_id'];
             if ($ident = $this->Customers->save($customer)) {
                 $this->savelog(200, "Created policy holder", 1, 1, "", json_encode($customer));
                 $this->Flash->success(__('The policy holder has been saved.'));

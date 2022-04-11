@@ -26,8 +26,8 @@ class RenewalsController extends AppController
      */
     public function index()
     {
-        $businesses = $this->Renewals->Businesses->find("list", array("order" => array("name ASC")));
-        $renewals = $this->Renewals->find("all")->contain(['Businesses']);
+        $businesses = $this->Renewals->Businesses->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
+        $renewals = $this->Renewals->find("all", array("conditions" => array("Renewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Businesses']);
 
         $this->set(compact('renewals', 'businesses'));
     }
@@ -47,11 +47,11 @@ class RenewalsController extends AppController
 
         $this->loadModel('Groupings');
 
-        $groups = $this->Groupings->find("all", array("conditions" => array('business_id' => $renewal->business_id)));
+        $groups = $this->Groupings->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'business_id' => $renewal->business_id)));
 
-        $groupings = $this->Groupings->find("list", array("conditions" => array('business_id' => $renewal->business_id)));
+        $groupings = $this->Groupings->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'business_id' => $renewal->business_id)));
 
-        $employees = $this->Renewals->Transactions->Employees->find("list", array("order" => array('last_name ASC'), "conditions" => array("business_id" => $renewal->business_id)));
+        $employees = $this->Renewals->Transactions->Employees->find("list", array("order" => array('last_name ASC'), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], "business_id" => $renewal->business_id)));
 
         $this->set(compact('renewal', 'groups', 'groupings', 'employees'));
     }
@@ -67,6 +67,7 @@ class RenewalsController extends AppController
             $renewal = $this->Renewals->newEmptyEntity();
             $renewal = $this->Renewals->patchEntity($renewal, $this->request->getData());
             $business_id = $renewal->business_id;
+            $renewal->tenant_id = $this->Auth->user()['tenant_id'];
             $renewal->user_id = $this->Auth->user()['id']; 
             if ($this->Renewals->save($renewal)) {
                 $this->loadModel('Employees'); $this->loadModel('Transactions');
@@ -77,6 +78,7 @@ class RenewalsController extends AppController
                             $transaction = $this->Transactions->newEmptyEntity();
                             $transaction->business_id = $employee->business_id;
                             $transaction->grouping_id = $employee->grouping_id;
+                            $transaction->tenant_id = $this->Auth->user()['tenant_id'];
                             $transaction->employee_id = $employee->id;
                             $transaction->family_id = $member->id; 
                             $transaction->debit = $member->premium;
@@ -158,6 +160,7 @@ class RenewalsController extends AppController
             
             
             $transaction->business_id = $renewal->business_id;
+            $transaction->tenant_id = $this->Auth->user()['tenant_id'];
             
             if($this->request->getData()["operation"] == 1){
                 $transaction->credit = $this->request->getData()["amount"];  
@@ -185,11 +188,11 @@ class RenewalsController extends AppController
 
         $this->loadModel('Groupings');
 
-        $groups = $this->Groupings->find("all", array("conditions" => array('business_id' => $renewal->business_id)));
+        $groups = $this->Groupings->find("all", array("conditions" => array('tenant_id' => $this->Auth->user()['tenant_id'], 'business_id' => $renewal->business_id)));
 
-        $groupings = $this->Groupings->find("list", array("conditions" => array('business_id' => $renewal->business_id)));
+        $groupings = $this->Groupings->find("list", array("conditions" => array('tenant_id' => $this->Auth->user()['tenant_id'], 'business_id' => $renewal->business_id)));
 
-        $employees = $this->Renewals->Transactions->Employees->find("list", array("order" => array('last_name ASC'), "conditions" => array("business_id" => $renewal->business_id)));
+        $employees = $this->Renewals->Transactions->Employees->find("list", array( "order" => array('last_name ASC'), "conditions" => array('tenant_id' => $this->Auth->user()['tenant_id'], "business_id" => $renewal->business_id)));
 
         require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel.php');
         require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel' . DS . 'IOFactory.php');

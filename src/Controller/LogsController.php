@@ -24,7 +24,7 @@ class LogsController extends AppController
         $status = ""; 
         $user_id = ""; 
         $type = "";
-        $condition = array("Logs.created >=" => $this->from, 'Logs.created <=' => $this->to);
+        $condition = array("Logs.created >=" => $this->from, 'Logs.created <=' => $this->to, "Logs.tenant_id" => $this->Auth->user()['tenant_id']);
 
         if($this->request->is(['patch', 'put', 'post'])){
             if(!empty($this->request->getData()['status']) || $this->request->getData()['status'] == 0 ){

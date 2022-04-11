@@ -41,5 +41,6 @@ class File extends Entity
         'description' => true,
         'user' => true,
         'folders' => true,
+        'tenant_id' => true
     ];
 }

@@ -18,10 +18,7 @@ class FamiliesController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Employees' => ['Businesses', 'Groupings' => ['Companies']]],
-        ];
-        $families = $this->paginate($this->Families);
+        $families = $this->Families->find("all", array("conditions" => array("Families.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Employees' => ['Businesses', 'Groupings' => ['Companies']]]);
 
         $this->set(compact('families'));
     }

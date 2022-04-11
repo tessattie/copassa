@@ -76,6 +76,7 @@ class Policy extends Entity
         'next_renewal' => true, 
         'last_renewal' => true,
         'passport_number' => true,
-        'pending_business' => true
+        'pending_business' => true,
+        'tenant_id' => true
     ];
 }

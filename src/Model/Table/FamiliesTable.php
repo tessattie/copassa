@@ -51,6 +51,11 @@ class FamiliesTable extends Table
             'foreignKey' => 'employee_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

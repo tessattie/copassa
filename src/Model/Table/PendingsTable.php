@@ -58,6 +58,12 @@ class PendingsTable extends Table
             'foreignKey' => 'option_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
+        
         $this->belongsTo('Countries', [
             'foreignKey' => 'country_id',
             'joinType' => 'INNER',

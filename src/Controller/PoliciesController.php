@@ -23,11 +23,11 @@ class PoliciesController extends AppController
         $this->savelog(200, "Accessed policies page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
         if(!empty($filter_country)){
-           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2)))->contain(['Companies', 'Options', 'Customers' => ['Countries']])->matching('Customers', function ($q) use ($filter_country) {
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries']])->matching('Customers', function ($q) use ($filter_country) {
                 return $q->where(['Customers.country_id' => $filter_country]);
             }); 
         }else{
-           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2)))->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
         }
 
         $this->set(compact('policies'));
@@ -51,21 +51,12 @@ class PoliciesController extends AppController
 
     public function dashboard(){
         $this->loadModel("Newborns");
-        $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
+        $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1, 'Newborns.tenant_id' => $this->Auth->user()['tenant_id']), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
 
-
-        $filter_country = $this->session->read("filter_country");
-        if(!empty($filter_country)){
-           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 1)))->contain(['Companies', 'Options', 'Customers' => ['Countries']])->matching('Customers', function ($q) use ($filter_country) {
-                return $q->where(['Customers.country_id' => $filter_country]);
-            }); 
-        }else{
-           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 1)))->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
-        }
         $this->loadModel("Pendings");
 
-        $pendings = $this->Pendings->find("all")->contain(['Companies', 'Options', 'Countries', 'Users']);
-        $all_birthdays = $this->Policies->Customers->find("all")->contain(['Policies']);
+        $pendings = $this->Pendings->find("all", array("conditions" => array("Pendings.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Countries', 'Users']);
+        $all_birthdays = $this->Policies->Customers->find("all", array("conditions" => array("Customers.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies']);
         $birthdays = array();
         foreach($all_birthdays as $bd){
             if(!empty($bd->dob)){
@@ -76,7 +67,7 @@ class PoliciesController extends AppController
             
         }
 
-        $this->set(compact('newborns', 'policies', 'birthdays', 'pendings'));
+        $this->set(compact('newborns', 'birthdays', 'pendings'));
     }
 
     /**
@@ -127,6 +118,7 @@ class PoliciesController extends AppController
             }
             $policy = $this->Policies->patchEntity($policy, $data);
             $policy->user_id = $this->Auth->user()['id'];
+            $policy->tenant_id = $this->Auth->user()['tenant_id'];
             $customer = $this->Policies->Customers->get($policy->customer_id);
             if ($this->Policies->save($policy)) {
                 $this->savelog(200, "Created policy for customer: ".$customer->name, 1, 1, "", json_encode($policy));
@@ -220,7 +212,7 @@ class PoliciesController extends AppController
         $type_filter="9999";
         $company_filter = "9999";
         // Get each company 
-        $comps = $this->Policies->Companies->find("list");
+        $comps = $this->Policies->Companies->find("list", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
         
         if($this->request->is(['patch', 'put', 'post'])){
             if(!empty($this->request->getData()['type'])){
@@ -231,16 +223,16 @@ class PoliciesController extends AppController
             }
             $companies = $this->getPolicies($this->request->getData()['type'], $this->request->getData()['company_id']);
         }else{
-            $companies = $this->Policies->Companies->find("all", array("order" => array("Companies.name ASC")))->contain(['Countries']);
+            $companies = $this->Policies->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("Companies.name ASC")))->contain(['Countries']);
             foreach($companies as $company){
                 $filter_country = $this->session->read("filter_country");
                 
                 if(!empty($filter_country)){
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
                         return $q->where(['Customers.country_id' => $filter_country]);
                     });
                 }else{
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
                 }
                 
             }
@@ -255,7 +247,7 @@ class PoliciesController extends AppController
 
 
     public function renewals(){
-        $policies = $this->Policies->find("all");
+        $policies = $this->Policies->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'])));
         foreach($policies as $policy){
             $paid_until = $policy->paid_until->year."-".$policy->paid_until->month."-".$policy->paid_until->day;
             if($paid_until >= date("Y-m-d")){
@@ -317,7 +309,7 @@ class PoliciesController extends AppController
         $fpdf = new FPDF();
         $fpdf->AddPage("L");
         $fpdf->SetFont('Arial','B',9);
-        $fpdf->Cell(200,0,"Copassa Renewals Report",0,0, 'L');
+        $fpdf->Cell(200,0,"Renewals Report",0,0, 'L');
         $fpdf->Cell(75,0,"From " . date("M d Y", strtotime($from)) . " to " . date("M d Y", strtotime($to)) ,0,0, 'R');
         $fpdf->Ln(7);
         $fpdf->Cell(275,0,"",'B',0, 'R');
@@ -395,25 +387,25 @@ class PoliciesController extends AppController
         if(!empty($type)){
             if(!empty($company_id)){
                 $company_filter = $this->request->getData()['company_id'];
-                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type, "id" => $company_id), "order" => array("name ASC")));
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type, "id" => $company_id, "tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
             }else{
-                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type), "order" => array("name ASC")));
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("type" => $type, 'tenant_id' => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
             }
         }else{
             if(!empty($company_id)){
-                $companies = $this->Policies->Companies->find("all", array("conditions" => array("id" => $company_id), "order" => array("name ASC")));
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array("id" => $company_id, 'tenant_id' => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
             }else{
-                $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC")));
+                $companies = $this->Policies->Companies->find("all", array("conditions" => array('tenant_id' => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
             }
         }
 
         foreach($companies as $company){
             if(!empty($filter_country)){
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "Policies.tenant_id" => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
                         return $q->where(['Customers.country_id' => $filter_country]);
                     });
                 }else{
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id,'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "Policies.tenant_id" => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
                 }
         }
         return $companies;
@@ -443,7 +435,7 @@ class PoliciesController extends AppController
         }
         
         $companies = $this->Policies->Companies->find("all");
-        $policies = $this->Policies->find("all", array("order" => array("Policies.company_id ASC")))->contain(['Companies', 'Options', 'Customers', 'Users']);
+        $policies = $this->Policies->find("all", array("conditions" => array("Policies.tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("Policies.company_id ASC")))->contain(['Companies', 'Options', 'Customers', 'Users']);
 
         $this->set(compact('policies', 'companies'));
     }
@@ -451,7 +443,7 @@ class PoliciesController extends AppController
 
     public function list(){
         if($this->request->is(['ajax'])){
-            $policies = $this->Policies->find("all", array("conditions" => array("customer_id" => $this->request->getData()['customer_id'])));
+            $policies = $this->Policies->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], "customer_id" => $this->request->getData()['customer_id'])));
             echo json_encode($policies->toArray()); 
         }
         die();

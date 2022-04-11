@@ -39,5 +39,6 @@ class Newborn extends Entity
         'status' => true,
         'policy' => true,
         'user' => true,
+        'tenant_id' => true
     ];
 }

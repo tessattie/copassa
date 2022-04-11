@@ -57,6 +57,11 @@ class FilesTable extends Table
             'targetForeignKey' => 'folder_id',
             'joinTable' => 'folders_files',
         ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

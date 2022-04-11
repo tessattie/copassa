@@ -72,6 +72,11 @@ class PoliciesTable extends Table
         $this->hasMany('Dependants', [
             'foreignKey' => 'policy_id',
         ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

@@ -22,6 +22,7 @@ class DependantsController extends AppController
         if ($this->request->is('post')) {
             $dependant = $this->Dependants->patchEntity($dependant, $this->request->getData());
             $dependant->user_id = $this->Auth->user()['id'];
+            $dependant->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Dependants->save($dependant)) {
                 $this->Flash->success(__('The dependant has been saved.'));
             }else{

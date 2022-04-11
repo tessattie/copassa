@@ -43,7 +43,8 @@ class Family extends Entity
         'employee' => true,
         'gender' => true,
         'country' => true,
-        'status' => true
+        'status' => true,
+        'tenant_id' => true
     ];
 
     protected function _getName()

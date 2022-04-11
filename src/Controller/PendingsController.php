@@ -18,11 +18,11 @@ class PendingsController extends AppController
      */
     public function index()
     {
-        $pendings = $this->Pendings->find("all")->contain(['Companies', 'Options', 'Countries', 'Users']);
+        $pendings = $this->Pendings->find("all", array("conditions" => array('Pendings.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Countries', 'Users']);
 
-        $companies = $this->Pendings->Companies->find('list', ['order' => ['name ASC']]);
-        $options = $this->Pendings->Options->find('list', ['order' => ['name ASC']]);
-        $countries = $this->Pendings->Countries->find('list', ['order' => ['name ASC']]);
+        $companies = $this->Pendings->Companies->find('list', ['conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']], 'order' => ['name ASC']]);
+        $options = $this->Pendings->Options->find('list', ['conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']], 'order' => ['name ASC']]);
+        $countries = $this->Pendings->Countries->find('list', ['conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']], 'order' => ['name ASC']]);
         $this->set(compact('pendings', 'companies', 'options', 'countries'));
     }
 
@@ -54,6 +54,7 @@ class PendingsController extends AppController
             $pending = $this->Pendings->patchEntity($pending, $this->request->getData());
             $pending->user_id = $this->Auth->user()['id'];
             $pending->status = 1;
+            $pending->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Pendings->save($pending)) {
                 return $this->redirect(['action' => 'index']);
             }
