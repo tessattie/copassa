@@ -20,7 +20,7 @@
     <div class="col-md-4">
         <div class="panel panel-default articles">
         <div class="panel-heading">
-            Payments
+            Policies
         </div>
     <div class="panel-body articles-container">
             <table class="datatable">
@@ -69,8 +69,6 @@
                 <th>#</th>
                 <th class="text-center">Amount</th>
                 <th class="text-center">Date</th>
-                <th class="text-center">Created by</th>
-                <th class="text-center">Rate</th>
                 <th class="text-center">Memo</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">Confirmed</th>
@@ -84,8 +82,6 @@
                         <td><?= 4000+$p->id ?></td>
                         <td class="text-center"><?= number_format($p->amount, 2, ".", ",")." ".$p->rate->name;  ?></td>
                         <td class="text-center"><?= date('d M Y', strtotime($p->created)); ?></td>
-                        <td class="text-center"><?= $p->user->name ?></td>
-                        <td class="text-center"><?= $p->daily_rate ?></td>
                         <td class="text-center"><?= $p->memo ?></td>
                         <?php if($p->status == 1) : ?>
                             <td class="text-center"><span class="label label-success">YES</span></td>

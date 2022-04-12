@@ -151,7 +151,7 @@ foreach($business->employees as $employee){
             <hr>
             <div class="row">
                 <div class="col-md-6"><?= $this->Form->control('company_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $companies, "label" => "Insurance", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
-              <div class="col-md-6"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Effective Date *", 'type' => 'date', 'value' => date("Y-m-d"))); ?></div>
+              <div class="col-md-6"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Created Date *", 'type' => 'date', 'value' => date("Y-m-d"))); ?></div>
             </div> 
 
       </div>
@@ -165,7 +165,7 @@ foreach($business->employees as $employee){
 </div>
 
 <div class="modal fade" id="new_employee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">New Employee</h5>
@@ -188,7 +188,7 @@ foreach($business->employees as $employee){
 <?= $this->Form->control('business_id', array('type' => 'hidden', 'value' => $business->id )); ?>
                     <div class="col-md-4"><?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Group --', "label" => "Group", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
                     <div class="col-md-4"><?= $this->Form->control('deductible', array('class' => 'form-control', "label" => "Deductible *", "placeholder" => "Deductible")); ?></div>
-                    <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Created Date *", "type" => 'date')); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Effective Date *", "type" => 'date')); ?></div>
                 </div>
                 <hr>
                 <div class="row">
@@ -196,7 +196,6 @@ foreach($business->employees as $employee){
                   <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
                   <div class="col-md-4"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Premium *", "placeholder" => "Premium")); ?></div>
                 </div>
-                <hr> 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

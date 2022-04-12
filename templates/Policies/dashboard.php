@@ -94,7 +94,11 @@
                 <td class="text-center"><?= $pending->option->name ?></td>
                 <td class="text-center"><?= $pending->country->name ?></td>
                 <td class="text-center"><?= $pending->dependants ?></td>
+                <?php if(!empty($pending->last_contact_date)) : ?>
                 <td class="text-center"><?= date("M d Y", strtotime($pending->last_contact_date)) ?></td> 
+                <?php else : ?>
+                    <td></td>
+                <?php endif; ?>
             </tr>
           <?php endif; ?>
         <?php endforeach; ?>

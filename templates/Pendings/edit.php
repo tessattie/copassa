@@ -42,7 +42,7 @@
                 <?= $this->Form->control('country_id', array('class' => 'form-control', "label" => "Country *", "empty" => "-- Choose --", "options" => $countries)); ?>
             </div> 
             <div class="col-md-4">
-                <?= $this->Form->control('status', array('class' => 'form-control', "label" => "Country *", "empty" => "-- Choose --", "options" => array(1=> "Pending", 2 => "Canceled", 3 => "Confirmed"))); ?>
+                <?= $this->Form->control('status', array('class' => 'form-control', "label" => "Status *", "empty" => "-- Choose --", "options" => array(1=> "Pending", 2 => "Canceled", 3 => "Confirmed"))); ?>
             </div> 
         </div>
 

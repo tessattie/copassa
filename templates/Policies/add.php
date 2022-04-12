@@ -58,24 +58,21 @@ $months = array(
                     <div class="col-md-3"><?= $this->Form->control('policy_number', array('class' => 'form-control', "label" => "Policy Number *", "placeholder" => "Policy Number")); ?>
                     </div>
 
-                    <div class="col-md-3"><?= $this->Form->control('effective_date', array('class' => 'form-control', "type" => "date", "label" => "Effective Date *")); ?>
-                    </div>
-                    <div class="col-md-3"><?= $this->Form->control('paid_until', array('class' => 'form-control', "type" => "date", "label" => "Paid Until *")); ?>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-3"><?= $this->Form->control('pending_business', array('class' => 'form-control', "value" => 2, "label" => "Pending Business *", "options" => array(1 => "Yes", 2 => "No"))); ?>
-                    </div>
-
                     <div class="col-md-3"><?= $this->Form->control('passport_number', array('class' => 'form-control', 'placeholder' => 'Passport Number', "label" => "Passport Number")); ?>
                     </div>
+
+                    <div class="col-md-3"><?= $this->Form->control('effective_date', array('class' => 'form-control', "type" => "date", "label" => "Effective Date *")); ?>
+                    </div>
+                </div>
+                <div class="row">
+
+                    
                 </div>
                 <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Coverage</h4>
                 <div class="row">
-                    <div class="col-md-2"><?= $this->Form->control('company_id', array('class' => 'form-control', "label" => "Company*", "empty" => "-- Choose --", "options" => $companies)); ?>
+                    <div class="col-md-3"><?= $this->Form->control('company_id', array('class' => 'form-control', "label" => "Company*", "empty" => "-- Choose --", "options" => $companies)); ?>
                     </div>
-                    <div class="col-md-2"><?= $this->Form->control('option_id', array('class' => 'form-control', "empty" => "-- Choose company to see options --")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('option_id', array('class' => 'form-control', "empty" => "-- Choose company to see options --")); ?>
                     </div>
                     <div class="col-md-2"><?= $this->Form->control('deductible', array('class' => 'form-control', "value" => 0, 'placeholder' => 'deductible', 'value' => $policy->deductible)); ?>
                     </div>
@@ -165,7 +162,7 @@ echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
                       }
                       $('#deductible').val(data[data.length - 1].deductible);
                       $('#usa-deductible').val(data[data.length - 1].usa_deductible);
-                      $('#max-coverage').val(data[data.length - 1].usa_deductible);
+                      $('#max-coverage').val(data[data.length - 1].max_coverage);
                  },
                  error : function(resultat, statut, erreur){
                   console.log(erreur)

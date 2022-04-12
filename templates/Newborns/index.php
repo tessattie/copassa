@@ -139,6 +139,9 @@
 </div>
 <?php endforeach; ?>
 
+<?php 
+echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
+?>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -148,7 +151,7 @@
             var token =  $('input[name="_csrfToken"]').val();
             var customer_id = $(this).val();
             $.ajax({
-                 url : '/policies/list',
+                 url : ROOT_DIREC+'/policies/list',
                  type : 'POST',
                  data : {customer_id : customer_id},
                  headers : {
@@ -157,7 +160,7 @@
                  dataType : 'json',
                  success : function(data, statut){
                       for (var i = data.length - 1; i >= 0; i--) {
-                          $("#policy-id").append("<option value='"+data[i].id+"'>" + data[i].policy_number+")</option>")
+                          $("#policy-id").append("<option value='"+data[i].id+"'>" + data[i].policy_number+"</option>")
                       }
                  },
                  error : function(resultat, statut, erreur){

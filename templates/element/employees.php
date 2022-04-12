@@ -6,7 +6,7 @@
                     <button class="btn btn-info" style="float:right" data-toggle="modal" data-target="#new_employee">New Employee</button>
                 </div>
                 <div class="panel-body articles-container">       
-                    <?php if (!empty($employees)) : ?>
+                    
                     <div class="table-responsive">
                     <table class="table table-stripped datatable">
                         <thead> 
@@ -20,7 +20,8 @@
                             <th class="text-left"></th>
                         </thead>
                     <tbody> 
-                    <?php $total =0; foreach($employees as $employee) : ?>
+                        <?php $total =0; if (!empty($employees)) : ?>
+                    <?php  foreach($employees as $employee) : ?>
                         <?php   
                             $total_premium = 0;
                             if($employee->status == 1){
@@ -52,10 +53,11 @@
                         </td>
                     </tr>
                     <?php endforeach; ?>
+                    <?php endif; ?>
                     </tbody>
                     <tfoot> 
                         <tr> 
-                            <th colspan="5">Total</th>
+                            <th colspan="4">Total</th>
                             <th class="text-center"><?= number_format($total, 2, ".", ",") ?></th>
                             <th></th>
                             <th></th>
@@ -64,7 +66,7 @@
                     </tfoot>
                 </table>
                     </div>
-                    <?php endif; ?>
+                    
                 </div>
             </div>
         </div>

@@ -103,6 +103,7 @@ class BusinessesController extends AppController
                     $family->dob = $this->request->getData()['dob'];
                     $family->premium = $this->request->getData()['premium']; 
                     $family->employee_id = $ident['id']; 
+                    $family->tenant_id = $this->Auth->user()['tenant_id'];
                     $family->gender = $this->request->getData()['gender']; 
                     $family->country = $this->request->getData()['country'];
                     $family->status = 1 ;

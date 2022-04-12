@@ -5,7 +5,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span></button>
-                <a class="navbar-brand" href="#" style="color:white"><span style="color:white">COPASSA</span></a>
+                <a class="navbar-brand" href="#" style="color:white"><span style="color:white">AR System</span></a>
                 
                 <ul class="nav navbar-top-links navbar-right">
 
@@ -76,37 +76,37 @@
             <li class="<?= ($this->request->getParam('controller') == 'Companies') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-bank">&nbsp;</em> Insurance CO</a></li>
             <li class="<?= ($this->request->getParam('controller') == 'Countries' && $this->request->getParam('action') == 'dashboard') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/countries"><em class="fa fa-map">&nbsp;</em> Countries</a></li>
 
-            <li class="parent <?= ( ($this->request->getParam('controller') == 'Customers' || $this->request->getParam('controller') == 'Pendings' || $this->request->getParam('controller') == 'Policies') && $this->request->getParam('action') != 'dashboard' ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-111">
+            <li class="parent <?= ( ($this->request->getParam('controller') == 'Customers' || $this->request->getParam('controller') == 'Pendings' || $this->request->getParam('controller') == 'Policies') && $this->request->getParam('action') != 'dashboard' && $this->request->getParam('action') != 'report' ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-111">
                 <em class="fa fa-users">&nbsp;</em> Policy Holders <span data-toggle="collapse" href="#sub-item-111" class="icon pull-right"><em class="fa fa-plus"></em></span>
                 </a>
                 <ul class="children collapse" id="sub-item-111">
-                    <li class="<?= ($this->request->getParam('controller') == 'Customers' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/customers">
+                    <li><a class="" href="<?= ROOT_DIREC ?>/customers">
                         <span class="fa fa-arrow-right">&nbsp;</span> Policy Holders
                     </a></li>
 
-                    <li class="<?= ($this->request->getParam('controller') == 'Policies' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/policies">
+                    <li><a class="" href="<?= ROOT_DIREC ?>/policies">
                         <span class="fa fa-arrow-right">&nbsp;</span> Policies
                     </a></li>
 
-                    <li class="<?= ($this->request->getParam('controller') == 'Policies' && $this->request->getParam('action') == 'update') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/policies/update">
+                    <li><a class="" href="<?= ROOT_DIREC ?>/policies/update">
                         <span class="fa fa-arrow-right">&nbsp;</span> Updates
                     </a></li>
 
-                    <li class="<?= ($this->request->getParam('controller') == 'Pendings' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/pendings">
+                    <li><a class="" href="<?= ROOT_DIREC ?>/pendings">
                         <span class="fa fa-arrow-right">&nbsp;</span> PNB
                     </a></li>
 
-                    <li class="<?= ($this->request->getParam('controller') == 'Newborns' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>" ><a class="" href="<?= ROOT_DIREC ?>/newborns">
+                    <li><a class="" href="<?= ROOT_DIREC ?>/newborns">
                         <span class="fa fa-arrow-right">&nbsp;</span> Maternity
                     </a></li>
 
-                    <li class="<?= ($this->request->getParam('controller') == 'Payments') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/payments">
+                    <li><a class=""  href="<?= ROOT_DIREC ?>/payments">
                         <span class="fa fa-arrow-right">&nbsp;</span> Payments
                     </a></li>
                 </ul>
             </li>
 
-            <li class="parent <?= ( ($this->request->getParam('controller') == 'Businesses' || $this->request->getParam('controller') == 'Groupings') ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-1111">
+            <li class="parent <?= ( ($this->request->getParam('controller') == 'Businesses' || $this->request->getParam('controller') == 'Groupings' || $this->request->getParam('controller') == 'Employees' || $this->request->getParam('controller') == 'Families') && $this->request->getParam('action') != 'report') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-1111">
                 <em class="fa fa-building">&nbsp;</em> Corporate <span data-toggle="collapse" href="#sub-item-1111" class="icon pull-right"><em class="fa fa-plus"></em></span>
                 </a>
                 <ul class="children collapse" id="sub-item-1111">

@@ -17,7 +17,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Family Members
-            <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/companies/add">Families</a>
+            <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/families/add">New</a>
         </div>
     <div class="panel-body articles-container">
             <table class="table table-stripped datatable">

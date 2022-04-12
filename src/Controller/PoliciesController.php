@@ -118,6 +118,7 @@ class PoliciesController extends AppController
             }
             $policy = $this->Policies->patchEntity($policy, $data);
             $policy->user_id = $this->Auth->user()['id'];
+            $policy->paid_until = date("Y-m-d");
             $policy->tenant_id = $this->Auth->user()['tenant_id'];
             $customer = $this->Policies->Customers->get($policy->customer_id);
             if ($this->Policies->save($policy)) {
@@ -128,8 +129,8 @@ class PoliciesController extends AppController
             $this->savelog(500, "Tempted to create policy for customer: ".$customer->name, 0, 1, "", json_encode($policy));
             $this->Flash->error(__('The policy could not be saved. Please, try again.'));
         }
-        $companies = $this->Policies->Companies->find('list');
-        $customers = $this->Policies->Customers->find('list', ['order' => ['name ASC']]);
+        $companies = $this->Policies->Companies->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
+        $customers = $this->Policies->Customers->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
         $this->set(compact('policy', 'companies', 'customers', 'customer_id'));
     }
 

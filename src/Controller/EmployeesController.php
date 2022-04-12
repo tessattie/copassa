@@ -75,6 +75,7 @@ class EmployeesController extends AppController
                     $family->first_name = $ident['first_name'];
                     $family->last_name = $ident['last_name'];
                     $family->relationship = 4;
+                    $family->tenant_id = $this->Auth->user()['tenant_id'];
                     $family->dob = $this->request->getData()['dob'];
                     $family->premium = $this->request->getData()['premium']; 
                     $family->employee_id = $ident['id']; 
@@ -87,9 +88,8 @@ class EmployeesController extends AppController
             }
             $this->Flash->error(__('The employee could not be saved. Please, try again.'));
         }
-        $businesses = $this->Employees->Businesses->find('list', ['limit' => 200]);
-        $groupings = $this->Employees->Groupings->find('list', ['limit' => 200]);
-        $this->set(compact('employee', 'businesses', 'groupings'));
+        $businesses = $this->Employees->Businesses->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
+        $this->set(compact('employee', 'businesses'));
     }
 
     /**
