@@ -69,7 +69,7 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        define('ROOT_DIREC', '/copassa');
+        define('ROOT_DIREC', '/main');
 
         date_default_timezone_set("America/New_York");
 
