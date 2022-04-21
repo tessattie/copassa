@@ -73,7 +73,7 @@
     <div class="col-md-12">
         <div class="panel panel-default articles" style="height:300px;overflow-y:scroll">
             <div class="panel-heading">
-                Pending Business
+                Pending New Business
             </div>
             <div class="panel-body articles-container">       
 <table class="table table-striped table-bordered">

@@ -35,7 +35,7 @@ $rates = array(1 => "HTG", 2 => "USD");
                                 <th class="text-center">Fees</th>
                                 <th class="text-center">Effective Date</th>
                                 <th class="text-center">Last Renewal</th>
-                                <th class="text-center">Paid Until</th>
+                                <th class="text-center">Next Renewal</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -58,15 +58,13 @@ $rates = array(1 => "HTG", 2 => "USD");
                     <?= $this->Form->control('amount', array('class' => 'form-control total_amount', "placeholder" => "Amount", "label" => "Amount", "style" => "margin-left:4px", 'value' => ($policy->premium+$policy->fee))); ?>
                 </div>
                 <div class="col-md-4">
-                    <?= $this->Form->control('rate_id', array('class' => 'form-control', "empty" => "-- Currency --", "options" => $rates, "label" => 'Currency', "style" => "margin-left:4px;height:46px", "required" => true, 'value' => 2)); ?>
-                </div>
-                <div class="col-md-4">
                     <?= $this->Form->control('memo', array('class' => 'form-control', "placeholder" => "Memo", "label" => 'Memo', "style" => "margin-left:4px")); ?>
-                    <?= $this->Form->control('daily_rate', array('type' => 'hidden', 'value' => 0)); ?>
                 </div>
             </div>  
             <hr>
             <div class="row">
+                <div class="col-md-3"><?= $this->Form->control('created', array('class' => 'form-control', 'type' => 'date', "label" => "Created *", 'required' => true, 'style' => "height:46px", "value" => date("Y-m-d"))); ?>
+                </div>
                 <div class="col-md-3"><?= $this->Form->control('next_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Next Renewal *", 'required' => true, 'style' => "height:46px",)); ?>
                 </div>
                 <div class="col-md-3"><?= $this->Form->control('premium', array('class' => 'form-control', 'placeholder' => "New Premium", "label" => "New Premium", 'required' => false, 'style' => "height:46px")); ?>

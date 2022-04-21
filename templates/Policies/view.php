@@ -36,21 +36,7 @@ $paiduntil = $yesterday->format('Y-m-d');
                     <?php if($policy->pending_business == 1) : ?>
                         <span class="label label-warning">Pending Business</span>
                     <?php endif; ?>
-                    <ul class="pull-right panel-settings panel-button-tab-right">
-                        <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                            <em class="fa fa-plus"></em>
-                        </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li>
-                                    <ul class="dropdown-settings">
-                                        <li><a href="<?= ROOT_DIREC ?>/policies/add/<?= $policy->customer_id ?>">
-                                            <em class="fa fa-plus"></em> New Policy
-                                        </a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">

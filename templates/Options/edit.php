@@ -38,12 +38,10 @@
                     <div class="col-md-4">
                             <?= $this->Form->control('option_name', array('class' => 'form-control', "label" => 'Option', "placeholder" => "Option")); ?>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <?= $this->Form->control('plan', array('class' => 'form-control', "label" => 'Plan', "empty" => "-- Plan --", 'options' => $plans)); ?>
                     </div>    
-                    <div class="col-md-4">
-                            <?= $this->Form->control('max_coverage', array('class' => 'form-control', "label" => 'Maximum Coverage', "placeholder" => "Maximum Coverage")); ?>
-                    </div>
+                    
                 </div>
                 <hr>
                 <div class="row">
@@ -52,6 +50,9 @@
                     </div>
                     <div class="col-md-4">
                             <?= $this->Form->control('usa_deductible', array('class' => 'form-control', "label" => 'Inside USA Deductible', "placeholder" => "Inside USA Deductible")); ?>
+                    </div>
+                    <div class="col-md-4">
+                            <?= $this->Form->control('max_coverage', array('class' => 'form-control', "label" => 'Maximum Coverage', "placeholder" => "Maximum Coverage")); ?>
                     </div>
                 </div>
                 <div class="row">

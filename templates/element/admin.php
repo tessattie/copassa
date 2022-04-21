@@ -140,8 +140,8 @@
                     <li class="<?= ($this->request->getParam('controller') == 'Users' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/users">
                         <span class="fa fa-arrow-right">&nbsp;</span> Users
                     </a></li>
-                    <li class="<?= ($this->request->getParam('controller') == 'Roles') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/roles">
-                        <span class="fa fa-arrow-right">&nbsp;</span> Roles
+                    <li class="<?= ($this->request->getParam('controller') == 'Authorizations') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/authorizations">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Authorizations
                     </a></li>
                     <li class="<?= ($this->request->getParam('controller') == 'Riders') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/riders">
                         <span class="fa fa-arrow-right">&nbsp;</span> Riders

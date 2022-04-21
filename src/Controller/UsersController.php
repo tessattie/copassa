@@ -19,7 +19,11 @@ class UsersController extends AppController
     public function index()
     {
         $this->savelog(200, "Accessed users page", 1, 3, "", "");
-        $users = $this->Users->find("all", array("conditions" => array("Users.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Roles']);
+        if($this->Auth->user()['role_id'] == 1){
+            $users = $this->Users->find("all", array("conditions" => array("Users.tenant_id" => $this->Auth->user()['tenant_id'], 'role_id <>' => 3)))->contain(['Roles']);
+        }else{
+            $users = $this->Users->find("all", array("conditions" => array("Users.tenant_id" => $this->Auth->user()['tenant_id'], 'role_id' => 2)))->contain(['Roles']);
+        }
         $this->set(compact('users'));
     }
 
@@ -35,17 +39,28 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
             $user->tenant_id = $this->Auth->user()['tenant_id'];
-            if ($this->Users->save($user)) {
-                $this->savelog(200, "Created user", 1, 1, "", json_encode($user));
-                $this->Flash->success(__('The user has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+            $username_check = $this->Users->find("all", array("conditions" => array("username" => $this->request->getData()['username'])))->count();
+            if($username_check  > 0){
+                $this->Flash->error(__('Please choose a different username and try again.'));
             }else{
-                $this->savelog(500, "Tempted to create new user", 0, 1, "", json_encode($user));
+               if ($this->Users->save($user)) {
+                    $this->savelog(200, "Created user", 1, 1, "", json_encode($user));
+                    $this->Flash->success(__('The user has been saved.'));
+
+                    return $this->redirect(['action' => 'index']);
+                }else{
+                    $this->savelog(500, "Tried to create new user", 0, 1, "", json_encode($user));
+                }
+                $this->Flash->error(__('The user could not be saved. Please, try again.')); 
             }
-            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+            
         }
-        $roles = $this->Users->Roles->find('list', ['limit' => 200]);
+        if($this->Auth->user()['role_id'] == 1) {
+            $roles = $this->Users->Roles->find('list', ['conditions' => ['id <>' => 3]]);
+        }else{
+            $roles = $this->Users->Roles->find('list', ['conditions' => [['id' => 2]]]);
+        }
+        
         $this->set(compact('user', 'roles'));
     }
 
@@ -73,7 +88,11 @@ class UsersController extends AppController
             $this->savelog(500, "Tempted to edit user", 0, 2, $old_data, json_encode($user));
             $this->Flash->error(__('The user could not be saved. Please, try again.'));
         }
-        $roles = $this->Users->Roles->find('list', ['limit' => 200]);
+        if($this->Auth->user()['role_id'] == 1) {
+            $roles = $this->Users->Roles->find('list', ['conditions' => ['id <>' => 3]]);
+        }else{
+            $roles = $this->Users->Roles->find('list', ['conditions' => [['id' => 2]]]);
+        }
         $this->set(compact('user', 'roles'));
     }
 

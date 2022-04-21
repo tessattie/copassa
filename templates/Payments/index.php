@@ -30,7 +30,7 @@
                 <tbody>
                     <?php foreach($policies as $pp) : ?>
                         <tr>
-                            <th><a href="<?= ROOT_DIREC ?>/payments/index/<?= $pp->id ?>"><?= $pp->policy_number . " - " . $pp->customer->name ?></a></th>
+                            <th><a href="<?= ROOT_DIREC ?>/payments/index/<?= $pp->id ?>"><?= $pp->policy_number . " - " . $pp->customer->name . " - " . $company_types[$pp->company->type] ?></a></th>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

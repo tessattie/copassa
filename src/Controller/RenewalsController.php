@@ -32,6 +32,38 @@ class RenewalsController extends AppController
         $this->set(compact('renewals', 'businesses'));
     }
 
+    public function process($id){
+        $renewal = $this->Renewals->get($id, ['contain' => ['Businesses']]);
+        // debug($renewal); die();
+        $this->loadModel('Employees');
+        $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
+        $employees->where(['Employees.tenant_id' => $this->Auth->user()['tenant_id']]);
+        $employees->where(['Employees.business_id' => $renewal->business_id]);
+        if($this->request->is(['patch', 'put', 'post'])){
+            // process renewal and redirect to view page
+            $this->loadModel("Transactions");$this->loadModel("Families");
+            foreach($this->request->getData()['family_id'] as $i => $family_id){
+                $member = $this->Families->get($family_id, ['contain' => ['Employees']]);
+                $transaction = $this->Transactions->newEmptyEntity();
+                $transaction->type = 1; 
+                $transaction->credit = 0; 
+                $transaction->debit = $member->premium; 
+                $transaction->family_id = $family_id;
+                $transaction->business_id = $renewal->business_id;
+                $transaction->employee_id = $member->employee_id;
+                $transaction->grouping_id = $member->employee->grouping_id;
+                $transaction->user_id = $this->Auth->user()['id'];
+                $transaction->renewal_id = $renewal->id; 
+                $transaction->tenant_id = $this->Auth->user()['tenant_id'];
+                $this->Transactions->save($transaction);
+            }
+
+            return $this->redirect(['action' => 'view', $renewal->id]);
+        }
+
+        $this->set(compact('renewal', 'employees'));
+    }
+
     /**
      * View method
      *
@@ -70,29 +102,112 @@ class RenewalsController extends AppController
             $renewal->tenant_id = $this->Auth->user()['tenant_id'];
             $renewal->user_id = $this->Auth->user()['id']; 
             if ($this->Renewals->save($renewal)) {
-                $this->loadModel('Employees'); $this->loadModel('Transactions');
-                $employees = $this->Employees->find("all", array('business_id' => $business_id))->contain(['Families']);
-                foreach($employees as $employee){
-                    foreach($employee->families as $member){
-                        if($employee->status == 1 && $member->status == 1){
+                return $this->redirect(['action' => 'process', $renewal->id]);
+            }
+        }
+    }
+
+    public function addemployee()
+    {
+        $employee = $this->Renewals->Businesses->Groupings->Employees->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $employee = $this->Renewals->Businesses->Groupings->Employees->patchEntity($employee, $this->request->getData());
+            $employee->tenant_id = $this->Auth->user()['tenant_id'];
+            if ($ident = $this->Renewals->Businesses->Groupings->Employees->save($employee)) {
+                $this->loadModel("Families");
+                    $family = $this->Families->newEmptyEntity(); 
+                    $family->first_name = $ident['first_name'];
+                    $family->last_name = $ident['last_name'];
+                    $family->relationship = 4;
+                    $family->dob = $this->request->getData()['dob'];
+                    $family->premium = $this->request->getData()['premium']; 
+                    $family->employee_id = $ident['id']; 
+                    $family->tenant_id = $this->Auth->user()['tenant_id'];
+                    $family->gender = $this->request->getData()['gender']; 
+                    $family->country = $this->request->getData()['country'];
+                    $family->status = 1 ;
+                    if($fam = $this->Families->save($family)){
+                        // create transaction with full premium 
+                        $this->loadModel("Transactions");
+                        $transaction = $this->Transactions->newEmptyEntity();
+                        $transaction->type = 1; 
+                        $transaction->credit = 0; 
+                        $transaction->debit = $fam->premium; 
+                        $transaction->family_id = $fam->id;
+                        $transaction->business_id = $employee->business_id;
+                        $transaction->employee_id = $employee->id;
+                        $transaction->grouping_id = $employee->grouping_id;
+                        $transaction->user_id = $this->Auth->user()['id'];
+                        $transaction->renewal_id = $this->request->getData()['renewal_id']; 
+                        $transaction->tenant_id = $this->Auth->user()['tenant_id'];
+                        $this->Transactions->save($transaction);
+                        // create transaction with refunded premium 
+                        if($fam->premium - $this->request->getData()['debit'] != 0){
                             $transaction = $this->Transactions->newEmptyEntity();
+                            $transaction->type = 4; 
+                            $transaction->credit = $fam->premium - $this->request->getData()['debit']; 
+                            $transaction->debit = 0; 
+                            $transaction->family_id = $fam->id;
                             $transaction->business_id = $employee->business_id;
-                            $transaction->grouping_id = $employee->grouping_id;
-                            $transaction->tenant_id = $this->Auth->user()['tenant_id'];
                             $transaction->employee_id = $employee->id;
-                            $transaction->family_id = $member->id; 
-                            $transaction->debit = $member->premium;
-                            $transaction->credit = 0;
-                            $transaction->type = 1;
-                            $transaction->renewal_id = $renewal->id;
+                            $transaction->grouping_id = $employee->grouping_id;
                             $transaction->user_id = $this->Auth->user()['id'];
+                            $transaction->renewal_id = $this->request->getData()['renewal_id']; 
+                            $transaction->tenant_id = $this->Auth->user()['tenant_id'];
                             $this->Transactions->save($transaction);
                         }
                     }
-                }
-                return $this->redirect(['action' => 'view', $renewal->id]);
+                return $this->redirect(['action' => 'view', $this->request->getData()['renewal_id']]);
             }
         }
+
+        return $this->redirect($this->referer());
+    }
+
+
+    public function addfamily()
+    {
+        $this->loadModel("Employees");
+        $family = $this->Employees->Families->newEmptyEntity();
+        if ($this->request->is('post')) {
+
+            $family = $this->Employees->Families->patchEntity($family, $this->request->getData());
+            $family->tenant_id = $this->Auth->user()['tenant_id'];
+            if ($fam = $this->Employees->Families->save($family)) {
+
+            $this->loadModel("Transactions");
+            $transaction = $this->Transactions->newEmptyEntity();
+            $transaction->type = 1; 
+            $transaction->credit = 0; 
+            $transaction->debit = $fam->premium; 
+            $transaction->family_id = $fam->id;
+            $transaction->business_id = $this->request->getData()['business_id']; 
+            $transaction->employee_id = $this->request->getData()['employee_id']; 
+            $transaction->grouping_id = $this->request->getData()['grouping_id']; 
+            $transaction->user_id = $this->Auth->user()['id'];
+            $transaction->renewal_id = $this->request->getData()['renewal_id']; 
+            $transaction->tenant_id = $this->Auth->user()['tenant_id'];
+            $this->Transactions->save($transaction);
+            // create transaction with refunded premium 
+            if($fam->premium - $this->request->getData()['debit'] != 0){
+                $transaction = $this->Transactions->newEmptyEntity();
+                $transaction->type = 4; 
+                $transaction->credit = $fam->premium - $this->request->getData()['debit']; 
+                $transaction->debit = 0; 
+                $transaction->family_id = $fam->id;
+                $transaction->business_id = $this->request->getData()['business_id']; 
+                $transaction->employee_id = $this->request->getData()['employee_id']; 
+                $transaction->grouping_id = $this->request->getData()['grouping_id']; 
+                $transaction->user_id = $this->Auth->user()['id'];
+                $transaction->renewal_id = $this->request->getData()['renewal_id']; 
+                $transaction->tenant_id = $this->Auth->user()['tenant_id'];
+                $this->Transactions->save($transaction);
+            }
+                
+            }
+        }
+
+        return $this->redirect(['action' => 'view', $this->request->getData()['renewal_id']]);
     }
 
     /**
@@ -362,6 +477,10 @@ class RenewalsController extends AppController
                 }elseif($transaction->type == 2){
                     $sheet->SetCellValue('E'.$row, 'PAYMENT');
                     $total_payments = $total_payments + $transaction->credit;
+                }
+                elseif($transaction->type == 4){
+                    $sheet->SetCellValue('E'.$row, 'REFUND');
+                    $total_payments = $total_payments + $transaction->credit;
                 }else{
                     $sheet->SetCellValue('E'.$row, 'CANCELATION');
                     $total_cancelations = $total_cancelations + $transaction->credit;
@@ -406,7 +525,7 @@ class RenewalsController extends AppController
         $sheet->SetCellValue('A3', "Renewal Year");
         $sheet->SetCellValue('A4', "Groups");
         $sheet->SetCellValue('A5', "Premium");
-        $sheet->SetCellValue('A6', "Payments");
+        $sheet->SetCellValue('A6', "Payments / Refunds");
         $sheet->SetCellValue('A7', "Cancelations");
         $sheet->SetCellValue('A8', "Balance");
 

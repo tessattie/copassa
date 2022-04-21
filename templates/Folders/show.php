@@ -140,6 +140,7 @@
             <div class="card-deck-wrapper">
                 <div class="row">
                 <?php   foreach($active_folder->child_folders as $folder) : ?>
+                    <?php if($folder->tenant_id == $user_connected['tenant_id']) : ?>
                     <div class="col-md-3">
                     <div class="card elements" style="height:170px">
                     
@@ -156,8 +157,10 @@
 
                         </div>
                     </div></div>
+                <?php endif; ?>
                 <?php   endforeach; ?>
                 <?php   foreach($active_folder->files as $file) : ?>
+                    <?php if($file->tenant_id == $user_connected['tenant_id']) : ?>
                     <div class="col-md-3">
                     <div class="card elements"  style="height:170px">
                     
@@ -175,6 +178,7 @@
                                 </p>
                         </div>
                     </div></div>
+                <?php endif; ?>
                 <?php   endforeach; ?>
                     
                     

@@ -69,7 +69,7 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        define('ROOT_DIREC', '/main');
+        define('ROOT_DIREC', '/copassa');
 
         date_default_timezone_set("America/New_York");
 
@@ -159,6 +159,7 @@ class AppController extends Controller
         $log = $this->Logs->newEmptyEntity(); 
         $log->user_id = $this->Auth->user()['id']; 
         $log->comment = $comment; 
+        $log->tenant_id = $this->Auth->user()['tenant_id']; 
         $log->code = $code; 
         $log->status = $status;
         $log->type = $type; 
@@ -172,8 +173,8 @@ class AppController extends Controller
         $allowed_extensions = array('pdf', "xls", "xlsx", "doc", "docx");
         if(!$file['error']){
             $extension = explode("/", $file['type'])[1];
-            // $dossier = '/home/dhf8co1jhtoy'.ROOT_DIREC.'/webroot/img/'.$directory.'/';
-            $dossier = '/home/elmw5laxfvwr/public_html'.ROOT_DIREC.'/webroot/tmp/files/';
+            // $dossier = '/home/jugi71qiqj1g/public_html'.ROOT_DIREC.'/webroot/tmp/files/';
+            $dossier = 'C:/wamp/www'.ROOT_DIREC.'/webroot/tmp/files/';
             if($extensionn == 2){
                 if(move_uploaded_file($file['tmp_name'], $dossier . $name . ".xlsx")){
                 return $name . ".xlsx";

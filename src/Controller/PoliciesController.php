@@ -324,10 +324,11 @@ class PoliciesController extends AppController
                 $fpdf->Cell(275,7,$company->name,"T-L-R",0, 'L', 1);
                 $fpdf->SetFillColor(255,255,255);
                 $fpdf->Ln(7);
-                $fpdf->Cell(64,7,"Insured Name",'T-L-B',0, 'L');
+                $fpdf->Cell(59,7,"Insured Name",'T-L-B',0, 'L');
                 $fpdf->Cell(10,7,"Age",'T-L-B',0, 'C');
-                $fpdf->Cell(29,7,"Policy",'T-L-B',0, 'C');
-                $fpdf->Cell(55,7,"Plan",'T-L-B',0, 'C');
+                $fpdf->Cell(24,7,"Policy",'T-L-B',0, 'C');
+                $fpdf->Cell(50,7,"Plan",'T-L-B',0, 'C');
+                $fpdf->Cell(15,7,"Country",'T-L-B',0, 'C');
                 $fpdf->Cell(10,7,"Mode",'T-L-B',0, 'C');
                 $fpdf->Cell(25,7,"L Premium",'T-L-B',0, 'C');
                 $fpdf->Cell(25,7,"Premium",'T-L-B',0, 'C');
@@ -360,10 +361,11 @@ class PoliciesController extends AppController
                         $fpdf->SetFillColor(255,255,255);
                     }
 
-                    $fpdf->Cell(64,7,$policy->customer->name,'T-L-B',0, 'L',1);
+                    $fpdf->Cell(59,7,$policy->customer->name,'T-L-B',0, 'L',1);
                     $fpdf->Cell(10,7,$age,'T-L-B',0, 'C',1);
-                    $fpdf->Cell(29,7,$policy->policy_number,'T-L-B',0, 'C',1);
-                    $fpdf->Cell(55,7,$policy->option->name." / ".$policy->option->option_name,'T-L-B',0, 'C',1);
+                    $fpdf->Cell(24,7,$policy->policy_number,'T-L-B',0, 'C',1);
+                    $fpdf->Cell(50,7,$policy->option->name." / ".$policy->option->option_name,'T-L-B',0, 'C',1);
+                    $fpdf->Cell(15,7,substr($policy->customer->country->name, 0, 3),'T-L-B',0, 'C');
                     $fpdf->Cell(10,7,$this->modes[$policy->mode],'T-L-B',0, 'C',1);
                     $fpdf->Cell(25,7,number_format(($policy->last_premium+$policy->fee), 2, ".", ",") ."USD",'T-L-B',0, 'C',1);
                     $fpdf->Cell(25,7,number_format(($policy->premium+$policy->fee), 2, ".", ",") ."USD",'T-L-B',0, 'C',1);
@@ -402,11 +404,11 @@ class PoliciesController extends AppController
 
         foreach($companies as $company){
             if(!empty($filter_country)){
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "Policies.tenant_id" => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "Policies.tenant_id" => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers' => ['Countries'], 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
                         return $q->where(['Customers.country_id' => $filter_country]);
                     });
                 }else{
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "Policies.tenant_id" => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
+                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, "Policies.tenant_id" => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers' => ['Countries'], 'Options', 'Payments']);
                 }
         }
         return $companies;

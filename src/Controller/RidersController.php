@@ -18,7 +18,7 @@ class RidersController extends AppController
      */
     public function index()
     {
-        $riders = $this->Riders->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'])));
+        $riders = $this->Riders->find("all", array("conditions" => array("Riders.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Users']);
 
         $this->set(compact('riders'));
     }

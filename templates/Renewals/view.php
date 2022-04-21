@@ -50,8 +50,7 @@ $summary_cancelations = 0;
                                 <th class="text-center">Gender</th>
                                 <th class="text-center">Relationship</th>
                                 <th class="text-center">Type</th>
-                                <th class="text-center">Premium</th>
-                                <th>    </th>
+                                <th class="text-right">Premium</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,23 +98,10 @@ $summary_cancelations = 0;
                                     <?php endif; ?>
 
                                     <?php if($transaction->debit > 0) :  ?>
-                                        <td class="text-center" style="font-weight:bold"><?= number_format($transaction->debit,2,".",",") ?></td>
+                                        <td class="text-right" style="font-weight:bold"><?= number_format($transaction->debit,2,".",",") ?></td>
                                     <?php else :  ?>
-                                        <td class="text-center" style="color:green;font-weight:bold"></td>
+                                        <td class="text-right" style="color:green;font-weight:bold"></td>
                                     <?php endif; ?>
-                                    <td class="text-right">
-                                        <?php 
-                                        $condition = true;
-                                            foreach($renewal->transactions as $tr){
-                                                if($tr->type == 3 && $tr->family_id == $transaction->family_id){
-                                                    $condition = false;
-                                                }
-                                            }
-                                        ?>
-                                        <?php if($condition) : ?>
-                                        <a onclick="return confirm('Are you sure you would like to cancel the transaction for <?= $transaction->family->last_name.' '.$transaction->family->first_name ?>? This will not remove the family member from the renewal, but will add a opposite transaction in the << Transactions >> tab')" href="<?= ROOT_DIREC ?>/transactions/cancel/<?= $transaction->id ?>"><span class="fa fa-remove" style="color:white;background:red;padding:5px;border-radius:3px"></span></a>
-                                        <?php endif; ?>
-                                    </td>
                                 </tr>
                             <?php endif; ?>
                             <?php endforeach; ?>
@@ -124,8 +110,7 @@ $summary_cancelations = 0;
                             <?php $total = $total_debit; $summary_due = $summary_due + $total_debit; ?>
                             <tr>
                                 <th colspan="8">TOTAL</th>
-                                <th class="text-center"><?= number_format($total_debit, 2, ".", ",") ?></th>
-                                <th></th>
+                                <th class="text-right"><?= number_format($total_debit, 2, ".", ",") ?></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -135,7 +120,9 @@ $summary_cancelations = 0;
 
                 <div class="tab-pane fade" id="transactions">
                     <div class="table-responsive">
-                        <button class="btn btn-info" data-toggle="modal" data-target="#new_transaction">New</button>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#new_transaction">New Transaction</button>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#new_employee">New Employee</button>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#new_family">New Family Member</button>
                         <table class="table table-hover datatable">
                         <thead>
                             <tr>
@@ -179,6 +166,9 @@ $summary_cancelations = 0;
                                     <?php elseif($transaction->type == 2) : ?>
                                         <?php $summary_payments = $summary_payments + $transaction->credit ?>
                                         <td class="text-center"><span class="label label-success">PAYMENT</span></td>
+                                    <?php elseif($transaction->type == 4) : ?>
+                                        <?php $summary_payments = $summary_payments + $transaction->credit ?>
+                                        <td class="text-center"><span class="label label-warning">REFUND</span></td>
                                     <?php else : ?>
                                         <?php $summary_cancelations = $summary_cancelations + $transaction->credit ?>
                                         <td class="text-center"><span class="label label-danger">CANCELATION</span></td>
@@ -195,8 +185,8 @@ $summary_cancelations = 0;
                                     <?php else :  ?>
                                         <td class="text-center" style="color:green;font-weight:bold"></td>
                                     <?php endif; ?>
-                                    <td><?= $transaction->memo ?></td>
-                                    <td>
+                                    <td class="text-center"><?= $transaction->memo ?></td>
+                                    <td class="text-right">
 
                                         <a href="<?= ROOT_DIREC ?>/transactions/delete/<?= $transaction->id ?>" onclick="return confirm('Are you sure you would like to delete this transaction')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                                     </td>
@@ -207,7 +197,7 @@ $summary_cancelations = 0;
                         <tfoot>
                             <?php $total = $total_debit ?>
                             <tr>
-                                <th colspan="5">TOTAL ( <?= number_format(($total_debit - $total_credit), 2, ".", ",") ?>)</th>
+                                <th colspan="5">TOTAL</th>
                                 <th class="text-center"><?= number_format($total_debit, 2, ".", ",") ?></th>
                                 <th class="text-center"><?= number_format($total_credit, 2, ".", ",") ?></th>
                                 <th></th>
@@ -243,7 +233,7 @@ $summary_cancelations = 0;
                                         <td class="text-right"><?= number_format($summary_due, 2, ",", ",") ?></td>
                                     </tr>
                                     <tr>
-                                        <th>Payments</th>
+                                        <th>Payments / Refunds</th>
                                         <td class="text-right"><?= number_format($summary_payments, 2, ",", ",") ?></td>
                                     </tr>
                                     <tr>
@@ -341,7 +331,99 @@ $summary_cancelations = 0;
   </div>
 </div>
 
+<div class="modal fade" id="new_employee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Employee</h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => '/renewals/addemployee')) ?>
+      <div class="modal-body">
+            <div class="row">
+                    <div class="col-md-4"><?= $this->Form->control('first_name', array('class' => 'form-control', "label" => "First Name *", "placeholder" => "First Name")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('last_name', array('class' => 'form-control', "label" => "Last Name *", "placeholder" => "Last Name")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('membership_number', array('class' => 'form-control', "label" => "Membership / Policy # *", "placeholder" => "Membership Number")); ?></div>
+                </div>
+                <hr>  
+                <div class="row">
+                  <div class="col-md-4"><?= $this->Form->control('dob', array('class' => 'form-control', "label" => "Date of Birth *", "type" => "date")); ?></div>
+                  <div class="col-md-4"><?= $this->Form->control('gender', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $genders, "label" => "Gender", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                  <div class="col-md-4"><?= $this->Form->control('country', array('class' => 'form-control', "label" => "Country of Residence *", "placeholder" => "Country of Residence")); ?></div>
+                </div>
+                <hr>
+                <div class="row">
+                <?= $this->Form->control('business_id', array('type' => 'hidden', 'value' => $renewal->business_id )); ?>
+                <?= $this->Form->control('renewal_id', array('type' => 'hidden', 'value' => $renewal->id )); ?>
+                    <div class="col-md-4"><?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Group --', "label" => "Group *", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                    <div class="col-md-4"><?= $this->Form->control('deductible', array('class' => 'form-control', "label" => "Deductible *", "placeholder" => "Deductible")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Effective Date *", "type" => 'date')); ?></div>
+                </div>
+                <hr>
+                <div class="row">
+                  
+                  <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                  <div class="col-md-4"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Full Premium *", "placeholder" => "Full Premium")); ?></div>
+                  <div class="col-md-4"><?= $this->Form->control('debit', array('class' => 'form-control', "label" => "Charged Premium *", "placeholder" => "Charged Premium for this renewal")); ?></div>
+                </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Add</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div>
 
+<div class="modal fade" id="new_family" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Family Member</h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => '/renewals/addfamily')) ?>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6"><?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Choose Group --', 'id' => 'grouping-id2', "label" => "Group *", "multiple" => false, 'required' => false, 'style' => "height:46px", 'options' => $groupings)); ?></div> 
+            <div class="col-md-6"><?= $this->Form->control('employee_id', array('class' => 'form-control', "empty" => '-- Choose Employee --', 'id' => 'employee-id2', "label" => "Employee *", "multiple" => false, 'required' => false, 'style' => "height:46px")); ?></div> 
+        </div>
+        <hr>
+            <div class="row">
+                    <div class="col-md-6"><?= $this->Form->control('first_name', array('class' => 'form-control', "label" => "First Name *", "placeholder" => "First Name")); ?></div>
+                    <div class="col-md-6"><?= $this->Form->control('last_name', array('class' => 'form-control', "label" => "Last Name *", "placeholder" => "Last Name")); ?></div>
+                    
+                </div>
+                <hr>
+                <div class="row">
+                    <?= $this->Form->control('business_id', array('type' => 'hidden',"value" => $renewal->business_id)); ?>
+                    <?= $this->Form->control('renewal_id', array('type' => 'hidden',"value" => $renewal->id)); ?>
+                    <div class="col-md-6"><?= $this->Form->control('relationship', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $relationships, "label" => "Relationship", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                    <div class="col-md-6"><?= $this->Form->control('dob', array('class' => 'form-control', "label" => "Date of Birth *", 'type' => 'date')); ?></div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6"><?= $this->Form->control('gender', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $genders, "label" => "Gender *", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                    <div class="col-md-6"><?= $this->Form->control('country', array('class' => 'form-control', "label" => "Country of Residence *", "placeholder" => "Country of Residence")); ?></div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Full Premium *", "placeholder" => "Premium")); ?></div>
+                    <div class="col-md-6"><?= $this->Form->control('debit', array('class' => 'form-control', "label" => "Charged Premium *", "placeholder" => "Charged Premium for this renewal")); ?></div>
+                </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Add</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div>
+
+<?php 
+echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
+
+?>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -351,7 +433,7 @@ $summary_cancelations = 0;
             var token =  $('input[name="_csrfToken"]').val();
             var group = $(this).val();
             $.ajax({
-                 url : '/employees/list',
+                 url : ROOT_DIREC+'/employees/list',
                  type : 'POST',
                  data : {group_id : group},
                  headers : {
@@ -372,13 +454,40 @@ $summary_cancelations = 0;
             });
         })
 
+        $("#grouping-id2").change(function(){
+            $("#employee-id2").empty();
+            $("#employee-id2").append("<option value=''>-- Choose Employee --</option>")
+            var token =  $('input[name="_csrfToken"]').val();
+            var group = $(this).val();
+            $.ajax({
+                 url : ROOT_DIREC+'/employees/list',
+                 type : 'POST',
+                 data : {group_id : group},
+                 headers : {
+                    'X-CSRF-Token': token 
+                 },
+                 dataType : 'json',
+                 success : function(data, statut){
+                      for (var i = data.length - 1; i >= 0; i--) {
+                          $("#employee-id2").append("<option value='"+data[i].id+"'>" + data[i].last_name +  " "+data[i].first_name+ "</option>")
+                      }
+                 },
+                 error : function(resultat, statut, erreur){
+                  console.log(erreur)
+                 }, 
+                 complete : function(resultat, statut){
+                    console.log(resultat)
+                 }
+            });
+        })
+
         $("#employee-id").change(function(){
             $("#family-id").empty();
             $("#family-id").append("<option value=''>-- Choose Family Member --</option>")
             var token =  $('input[name="_csrfToken"]').val();
             var employee = $(this).val();
             $.ajax({
-                 url : '/families/list',
+                 url : ROOT_DIREC + '/families/list',
                  type : 'POST',
                  data : {employee_id : employee},
                  headers : {

@@ -90,7 +90,7 @@
     <div class="modal-content">
         <?= $this->Form->create(null, array('url' => '/pendings/add')) ?>
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New Pending Business</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Pending New Business</h5>
       </div>
       <div class="modal-body">
         <div class="row">

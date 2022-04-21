@@ -258,8 +258,9 @@ class PaymentsController extends AppController
                 $payment = $this->Payments->newEmptyEntity();
                 $payment->amount = $this->request->getData()['amount']; 
                 $payment->memo = $this->request->getData()['memo'];  
-                $payment->rate_id = $this->request->getData()['rate_id']; 
-                $payment->daily_rate = $this->request->getData()['daily_rate']; 
+                $payment->rate_id = 2; 
+                $payment->daily_rate = 1; 
+                $payment->created = $this->request->getData()['created']." ".date("H:i:s"); 
                 $payment->confirmed = 0;
                 $payment->customer_id = $policy->customer_id;
                 $payment->policy_id = $policy->id;

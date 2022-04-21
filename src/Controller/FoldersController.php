@@ -36,6 +36,7 @@ class FoldersController extends AppController
                        $filee = $this->Folders->Files->patchEntity($filee, $this->request->getData());
                        
                        $filee->location = '';
+                       $filee->tenant_id = $this->Auth->user()['tenant_id'];
                        $filee->user_id = $this->Auth->user()['id'];
                         if ($ident = $this->Folders->Files->save($filee)) {
                             $loca = $this->checkFile($_FILES['location'], $ident['id'], $ident['extension']);
@@ -54,22 +55,23 @@ class FoldersController extends AppController
                     $folderr = $this->Folders->patchEntity($folderr, $this->request->getData());
                     $folderr->user_id = $this->Auth->user()['id'];
                     $folderr->parent_id = $id;
+                    $folderr->tenant_id = $this->Auth->user()['tenant_id'];
                     $this->Folders->save($folderr);
                 }
             
         }
         if($this->Auth->user()['role_id'] == 1){
-            $folders = $this->Folders->find('treeList', array())->contain(["Users"]);
+            $folders = $this->Folders->find('treeList', array("conditions" => array("Folders.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(["Users"]);
             $active_folder = $this->Folders->get($id, [
             'contain' => [
                 'Files', "ChildFolders"
             ]]);
         }else{
-            $folders = $this->Folders->find('treeList', array())->contain(["Users"])->matching('Users', function(\Cake\ORM\Query $q) {
+            $folders = $this->Folders->find('treeList', array("conditions" => array("Folders.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(["Users"])->matching('Users', function(\Cake\ORM\Query $q) {
                         return $q->where(['Users.id' => $this->Auth->user()['id']]);
                     });
             // $folders = $this->completeTreeList($folders, "_");
-            $active_folderr  = $this->Folders->find('all', array("conditions" => array("Folders.id" => $id)))->contain(['Files']);
+            $active_folderr  = $this->Folders->find('all', array("conditions" => array("Folders.id" => $id, "Folders.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Files']);
         foreach($active_folderr  as $af){
             $af->child_folders = $this->Folders->find('all', array("conditions" => array("Folders.parent_id" => $af->id) ))->contain(["Users"])->matching('Users', function(\Cake\ORM\Query $q) {
                         return $q->where(['Users.id' => $this->Auth->user()['id']]);
