@@ -37,5 +37,6 @@ class Note extends Entity
         'customer_id' => true,
         'user' => true,
         'customer' => true,
+        'tenant_id' => true
     ];
 }

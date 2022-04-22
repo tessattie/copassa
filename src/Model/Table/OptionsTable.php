@@ -52,6 +52,12 @@ class OptionsTable extends Table
         $this->belongsTo('Companies', [
             'foreignKey' => 'company_id',
         ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
+        
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
         ]);

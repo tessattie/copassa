@@ -17,21 +17,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Policies
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                    <em class="fa fa-plus"></em>
-                </a>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <ul class="dropdown-settings">
-                                <li><a href="<?= ROOT_DIREC ?>/policies/add">
-                                    <em class="fa fa-plus"></em> New Policy
-                                </a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/policies/add">New</a>
         </div>
     <div class="panel-body articles-container">
         <div style="">
@@ -41,11 +27,9 @@
                     <th class="text-center">Holder</th>
                     <th class="text-center">Country</th>
                     <th class="text-center">Company</th>
-                    <th class="text-center">Last Premium</th>
                     <th class="text-center">Premium</th>
 
                     <th class="text-center">Mode</th>
-                    <th class="text-center">Paid until</th>
                     <th class="text-center">Last Renewal</th>
                     <th class="text-center">Next Renewal</th>
                     <th class="text-center">Certificate</th>
@@ -57,11 +41,22 @@
                 <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
                 <td class="text-center"><?= $policy->customer->name ?></td>
                 <td class="text-center"><?= $policy->customer->country->name ?></td>
-                <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
-                <td class="text-center"><?= number_format($policy->last_premium,2,".",",") ?></td>
+                <?php if(!empty($policy->company)) : ?>
+                    <?php if(!empty($policy->option)) : ?>
+                    <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
+                    <?php else : ?>
+                        <td class="text-center"><?= $policy->company->name ?></td>
+                    <?php endif; ?>
+                <?php else : ?>
+                    <?php if(!empty($policy->option)) : ?>
+                    <td class="text-center"><?= $policy->option->name ?></td>
+                    <?php else : ?>
+                        <td class="text-center"></td>
+                    <?php endif; ?>
+                <?php endif; ?>
+                
                 <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
-                <td class="text-center"><?= date("M d Y", strtotime($policy->paid_until)) ?></td>
                 <td class="text-center"><?= date("F Y", strtotime($policy->last_renewal)) ?></td>
                 <td class="text-center"><?= date("F Y", strtotime($policy->next_renewal)) ?></td>
                 <?php if(!empty($policy->certificate)) : ?>

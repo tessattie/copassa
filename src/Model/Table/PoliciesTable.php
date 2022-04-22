@@ -46,7 +46,7 @@ class PoliciesTable extends Table
         parent::initialize($config);
 
         $this->setTable('policies');
-        $this->setDisplayField('id');
+        $this->setDisplayField('policy_number');
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
@@ -71,6 +71,11 @@ class PoliciesTable extends Table
         ]);
         $this->hasMany('Dependants', [
             'foreignKey' => 'policy_id',
+        ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
         ]);
     }
 

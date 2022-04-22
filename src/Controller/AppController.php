@@ -30,7 +30,9 @@ use Cake\Event\EventInterface;
 class AppController extends Controller
 {
 
-    public $company_types = array(1 => "Life", 2 => "Health");
+    public $company_types = array(1 => "Life", 2 => "Health", 3 => "Travel");
+
+    public $types = array(1 => 'Premium', 2 => 'Payment', 3 => 'Cancelation');
 
     public $status = array(0 => "Inactive", 1 => "Active");
 
@@ -42,7 +44,11 @@ class AppController extends Controller
 
     public $relations = array(1 => "Spouse", 2 => "Child", 3  => "Other");
 
+    public $relationships = array(1 => "Spouse", 2 => "Child", 3  => "Other", 4 => "Employee");
+
     public $plans = array(1 => 'Open', 2 => 'Network');
+
+    public $genders = array(1 => "Male", 2 => "Female", 3 => "Other");
 
     protected $session;
 
@@ -91,7 +97,10 @@ class AppController extends Controller
 
         $this->session = $this->getRequest()->getSession();
         if($this->Auth->user()){
-            $this->loadModel('Countries');
+            $year = date('Y');
+            $next_year = $year + 1;
+            $years = array($year => $year, $next_year => $next_year);
+            $this->loadModel('Countries'); $this->loadModel('Tenants');
             $this->from = $this->session->read("from")." 00:00:00";
             $this->to = $this->session->read("to")." 23:59:59";
             $this->initializeSessionVariables();
@@ -104,9 +113,14 @@ class AppController extends Controller
             $this->set('premium_status', $this->premium_status);
             $this->set("modes", $this->modes);
             $this->set('sexe', $this->sexe);
+            $this->set('types', $this->types);
             $this->set("relations", $this->relations);
+            $this->set("genders", $this->genders);
+            $this->set("years", $years);
+            $this->set("relationships", $this->relationships);
             $this->set('plans', $this->plans);
-            $this->set('filter_countries', $this->Countries->find("list"));
+            $this->set('tenant', $this->Tenants->get($this->Auth->user()['tenant_id']));
+            $this->set('filter_countries', $this->Countries->find("list", array("order" => array("name asc"), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']))));
         }
     }
 
@@ -145,11 +159,38 @@ class AppController extends Controller
         $log = $this->Logs->newEmptyEntity(); 
         $log->user_id = $this->Auth->user()['id']; 
         $log->comment = $comment; 
+        $log->tenant_id = $this->Auth->user()['tenant_id']; 
         $log->code = $code; 
         $log->status = $status;
         $log->type = $type; 
         $log->old_data = $old_data; 
         $log->new_data = $new_data; 
         $this->Logs->save($log); 
+    }
+
+
+    protected function checkfile($file, $name, $extensionn){
+        $allowed_extensions = array('pdf', "xls", "xlsx", "doc", "docx");
+        if(!$file['error']){
+            $extension = explode("/", $file['type'])[1];
+            // $dossier = '/home/jugi71qiqj1g/public_html'.ROOT_DIREC.'/webroot/tmp/files/';
+            $dossier = 'C:/wamp/www'.ROOT_DIREC.'/webroot/tmp/files/';
+            if($extensionn == 2){
+                if(move_uploaded_file($file['tmp_name'], $dossier . $name . ".xlsx")){
+                return $name . ".xlsx";
+            }else{
+                return "move failed";
+            }
+            }else{
+                if(move_uploaded_file($file['tmp_name'], $dossier . $name . "." . $extension)){
+                return $name . "." . $extension;
+            }else{
+                return "move failed";
+            }
+            }
+            
+        }else{
+            return "general error";
+        }
     }
 }

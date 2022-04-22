@@ -13,7 +13,7 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = 'COPASSA';
+$cakeDescription = 'AR';
 ?>
 <!DOCTYPE html>
 <html>
@@ -45,7 +45,7 @@ $cakeDescription = 'COPASSA';
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span></button>
-                <a class="navbar-brand" href="#" style="color:white"><span style="color:white">COPASSA</span></a>
+                <a class="navbar-brand" href="#" style="color:white"><span style="color:white">AR System</span></a>
 
             </div>
         </div><!-- /.container-fluid -->

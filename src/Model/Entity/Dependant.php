@@ -43,6 +43,7 @@ class Dependant extends Entity
         'modified' => true,
         'policy' => true,
         'user' => true,
-        'name' => true
+        'name' => true,
+        'tenant_id' => true
     ];
 }

@@ -54,6 +54,11 @@ class CompaniesTable extends Table
             'joinType' => 'INNER',
         ]);
 
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
+
         $this->belongsTo('Countries', [
             'foreignKey' => 'country_id',
         ]);

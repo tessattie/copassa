@@ -22,7 +22,7 @@
         <div class="panel-heading">
             New Country
             <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a href="<?= ROOT_DIREC ?>/v">
+                <li class="dropdown"><a href="<?= ROOT_DIREC ?>/countries">
                     <em class="fa fa-arrow-left"></em>
                 </a>
                     

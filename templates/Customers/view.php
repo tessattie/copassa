@@ -151,30 +151,14 @@ if(!empty($customer->dob)){
                                 <th class="text-center">Deductible</th>
                                 <th class="text-center">Mode</th>
                                 <th class="text-center">Effective date</th>
-                                <th class="text-center">Paid until</th>
-                                <th class="text-center">A</th>
-                                <th class="text-center">L</th>
-                                <th class="text-center">P</th>
-                                <th class="text-center">GP</th>
-                                <th class="text-center">C</th>
-                                <th class="text-center">Created By</th>
+                                <th class="text-center">Pending Business</th>
                                 <th class="text-center">Certificate</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach($customer->policies as $policy) : ?>
-                                <?php 
-                                //Today's date.
-                                $pu = new \DateTime($policy->paid_until);
 
-                                //Subtract a day using DateInterval
-                                $yesterday = $pu->sub(new \DateInterval('P1D'));
-
-                                //Get the date in a YYYY-MM-DD format.
-                                $paiduntil = $yesterday->format('Y-m-d');
-
-                                ?>
                                 <tr>
                                 <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
                                 <td class="text-center"><?= $company_types[$policy->company->type] ?></td>
@@ -185,36 +169,13 @@ if(!empty($customer->dob)){
                                 <td class="text-center"><?= number_format($policy->deductible,2,".",",") ?> USD</td>
                                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
                                 <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
-                                <td class="text-center"><?= date("M d Y", strtotime($policy->paid_until)) ?></td>
-                                <?php if($policy->active == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
-                                <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
-                                <?php endif; ?>
 
-                                <?php if($policy->lapse == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
+                                <?php if($policy->pending_business == 1) : ?>
+                                    <td class="text-center"><span class="label label-warning">Yes</span></td>
                                 <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
+                                    <td></td>
                                 <?php endif; ?>
-
-                                <?php if($policy->pending == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
-                                <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
-                                <?php endif; ?>
-
-                                <?php if($policy->grace_period == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
-                                <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
-                                <?php endif; ?>
-                                <?php if($policy->canceled == 1) : ?>
-                                    <td class="text-center"><span class="label label-success">Yes</span></td>
-                                <?php else : ?>
-                                    <td class="text-center"><span class="label label-danger">No</span></td>
-                                <?php endif; ?>
-                                <td class="text-center"><?= $policy->user->name ?></td>
+                      
                                 <td class="text-center">
                                     <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
                                 </td>

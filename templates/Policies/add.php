@@ -58,16 +58,21 @@ $months = array(
                     <div class="col-md-3"><?= $this->Form->control('policy_number', array('class' => 'form-control', "label" => "Policy Number *", "placeholder" => "Policy Number")); ?>
                     </div>
 
+                    <div class="col-md-3"><?= $this->Form->control('passport_number', array('class' => 'form-control', 'placeholder' => 'Passport Number', "label" => "Passport Number")); ?>
+                    </div>
+
                     <div class="col-md-3"><?= $this->Form->control('effective_date', array('class' => 'form-control', "type" => "date", "label" => "Effective Date *")); ?>
                     </div>
-                    <div class="col-md-3"><?= $this->Form->control('paid_until', array('class' => 'form-control', "type" => "date", "label" => "Paid Until *")); ?>
-                    </div>
+                </div>
+                <div class="row">
+
+                    
                 </div>
                 <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Coverage</h4>
                 <div class="row">
-                    <div class="col-md-2"><?= $this->Form->control('company_id', array('class' => 'form-control', "label" => "Company*", "empty" => "-- Choose --", "options" => $companies)); ?>
+                    <div class="col-md-3"><?= $this->Form->control('company_id', array('class' => 'form-control', "label" => "Company*", "empty" => "-- Choose --", "options" => $companies)); ?>
                     </div>
-                    <div class="col-md-2"><?= $this->Form->control('option_id', array('class' => 'form-control', "empty" => "-- Choose company to see options --")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('option_id', array('class' => 'form-control', "empty" => "-- Choose company to see options --")); ?>
                     </div>
                     <div class="col-md-2"><?= $this->Form->control('deductible', array('class' => 'form-control', "value" => 0, 'placeholder' => 'deductible', 'value' => $policy->deductible)); ?>
                     </div>
@@ -89,22 +94,9 @@ $months = array(
                 </div>
                 <hr>
                 <div class="row">
-                    <div class="col-md-3"><?= $this->Form->control('last_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Last Renewal Month", 'required' => true, 'style' => "height:46px")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('last_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Last Renewal", 'required' => true, 'style' => "height:46px")); ?>
                     </div>
-                    <div class="col-md-3"><?= $this->Form->control('next_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Next Renewal Month", 'required' => true, 'style' => "height:46px",)); ?>
-                    </div>
-                </div>
-                <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Status</h4>
-                <div class="row">
-                    <div class="col-md-2"><?= $this->Form->control('active', array('class' => 'form-control', 'options' => $premium_status, "label" => "Active", 'required' => true, 'style' => "height:46px", 'value' => 1)); ?>
-                    </div>
-                    <div class="col-md-2"><?= $this->Form->control('lapse', array('class' => 'form-control', 'options' => $premium_status, "label" => "Lapse", 'required' => true, 'style' => "height:46px", 'value' => 0)); ?>
-                    </div>
-                    <div class="col-md-2"><?= $this->Form->control('pending', array('class' => 'form-control', 'options' => $premium_status, "label" => "Pending", 'required' => true, 'style' => "height:46px", 'value' => 0)); ?>
-                    </div>
-                    <div class="col-md-2"><?= $this->Form->control('grace_period', array('class' => 'form-control', 'options' => $premium_status, "label" => "Grace Period", 'required' => true, 'style' => "height:46px", 'value' => 0)); ?>
-                    </div>
-                    <div class="col-md-2"><?= $this->Form->control('canceled', array('class' => 'form-control', 'options' => $premium_status, "label" => "Canceled", 'required' => true, 'style' => "height:46px", 'value' => 0)); ?>
+                    <div class="col-md-3"><?= $this->Form->control('next_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Next Renewal", 'required' => true, 'style' => "height:46px",)); ?>
                     </div>
                 </div>
 
@@ -130,6 +122,11 @@ $months = array(
     </div>
 </div><!--End .articles-->
 
+<?php 
+echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
+
+?>
+
 <script type="text/javascript">
     $(document).ready(function(){
 
@@ -138,7 +135,7 @@ $months = array(
             var token =  $('input[name="_csrfToken"]').val();
             var company = $(this).val();
             $.ajax({
-                 url : '/companies/options',
+                 url : ROOT_DIREC+'/companies/options',
                  type : 'POST',
                  data : {company_id : company},
                  headers : {
@@ -152,7 +149,7 @@ $months = array(
                       }
                       $('#deductible').val(data[data.length - 1].deductible);
                       $('#usa-deductible').val(data[data.length - 1].usa_deductible);
-                      $('#max-coverage').val(data[data.length - 1].usa_deductible);
+                      $('#max-coverage').val(data[data.length - 1].max_coverage);
                  },
                  error : function(resultat, statut, erreur){
                   console.log(erreur)
@@ -168,7 +165,7 @@ $months = array(
             var token =  $('input[name="_csrfToken"]').val();
             var option = $(this).val();
             $.ajax({
-                 url : '/companies/option',
+                 url : ROOT_DIREC+'/companies/option',
                  type : 'POST',
                  data : {option_id : option},
                  headers : {

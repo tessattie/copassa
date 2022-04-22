@@ -18,21 +18,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Policy Holders
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                            <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                                <em class="fa fa-plus"></em>
-                            </a>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li>
-                                        <ul class="dropdown-settings">
-                                            <li><a href="<?= ROOT_DIREC ?>/customers/add">
-                                                <em class="fa fa-plus"></em> New Policy Holder
-                                            </a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
+            <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/customers/add">New</a>
         </div>
     <div class="panel-body articles-container">
             <table class="table table-stripped datatable">
@@ -50,12 +36,10 @@
             <tbody> 
         <?php foreach($customers as $customer) : ?>
             <?php  
-                $conditions = false; 
-                foreach($customer->policies as $policy){
-                    if($policy->company->country_id == $filter_year || empty($filter_year)){
+                $condition = false; 
+                    if($customer->country_id == $filter_country || empty($filter_country)){
                         $condition = true;
                     }
-                }
             ?>
             <?php 
                 $age = "N/A";

@@ -19,7 +19,7 @@ class OptionsController extends AppController
     public function index()
     {
         $this->savelog(200, "Accessed options page", 1, 3, "", "");
-        $companies = $this->Options->Companies->find('all')->contain(['Users', 'Options' => ['Users']]);
+        $companies = $this->Options->Companies->find('all', array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Users', 'Options' => ['Users']]);
 
         $this->set(compact('companies'));
     }
@@ -36,6 +36,7 @@ class OptionsController extends AppController
             $option = $this->Options->patchEntity($option, $this->request->getData());
             $company = $this->Options->Companies->get($this->request->getData()['company_id']);
             $option->user_id = $this->Auth->user()['id'];
+            $option->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Options->save($option)) {
                 $this->savelog(200, "Created option for company : ". $company->name, 1, 1, "", json_encode($option));
                 $this->Flash->success(__('The option has been saved.'));

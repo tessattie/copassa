@@ -23,6 +23,7 @@ class NotesController extends AppController
         if ($this->request->is('post')) {
             $note = $this->Notes->patchEntity($note, $this->request->getData());
             $note->user_id = $this->Auth->user()['id']; 
+            $note->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Notes->save($note)) {
                 return $this->redirect(['controller' => 'customers', 'action' => 'view', $note->customer_id]);
             }

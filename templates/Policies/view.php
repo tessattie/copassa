@@ -32,22 +32,11 @@ $paiduntil = $yesterday->format('Y-m-d');
         <div class="col-md-9">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?>
-                    <ul class="pull-right panel-settings panel-button-tab-right">
-                        <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                            <em class="fa fa-plus"></em>
-                        </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li>
-                                    <ul class="dropdown-settings">
-                                        <li><a href="<?= ROOT_DIREC ?>/policies/add/<?= $policy->customer_id ?>">
-                                            <em class="fa fa-plus"></em> New Policy
-                                        </a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                    Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?> 
+                    <?php if($policy->pending_business == 1) : ?>
+                        <span class="label label-warning">Pending Business</span>
+                    <?php endif; ?>
+                    <a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">
@@ -70,6 +59,10 @@ $paiduntil = $yesterday->format('Y-m-d');
                         <tr>
                             <th><?= __('Policy Holder') ?></th>
                             <td class="text-right"><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
+                        </tr>
+                        <tr>
+                            <th><?= __('Passport Number') ?></th>
+                            <td class="text-right"><?= $policy->passport_number ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Effective Date') ?></th>

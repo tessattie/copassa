@@ -51,6 +51,7 @@ class Payment extends Entity
         'rate' => true,
         'memo' => true, 
         'confirmed' => true, 
-        'path_to_photo' => true
+        'path_to_photo' => true,
+        'tenant_id' => true
     ];
 }

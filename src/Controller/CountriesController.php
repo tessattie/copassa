@@ -18,7 +18,7 @@ class CountriesController extends AppController
      */
     public function index()
     {
-        $countries = $this->paginate($this->Countries);
+        $countries = $this->Countries->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
 
         $this->set(compact('countries'));
     }
@@ -49,6 +49,7 @@ class CountriesController extends AppController
         $country = $this->Countries->newEmptyEntity();
         if ($this->request->is('post')) {
             $country = $this->Countries->patchEntity($country, $this->request->getData());
+            $country->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Countries->save($country)) {
                 $this->Flash->success(__('The country has been saved.'));
 

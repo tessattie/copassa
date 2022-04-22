@@ -36,12 +36,13 @@
                     </div>
                     <div class="col-md-3"><?= $this->Form->control('email', array('class' => 'form-control', "label" => "E-mail *", "placeholder" => "E-mail")); ?>
                     </div>
-                    <div class="col-md-2"><?= $this->Form->control('status', array('class' => 'form-control', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
-                    </div>
-                    <div class="col-md-2"><?= $this->Form->control('country_id', array('class' => 'form-control', 'options' => $countries, "label" => "Country", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
-                    </div>
                     <div class="col-md-3"><?= $this->Form->control('dob', array('class' => 'form-control', "type" => "date", "label" => "Date of Birth *")); ?>
                     </div>
+                    <div class="col-md-3"><?= $this->Form->control('country_id', array('class' => 'form-control', 'options' => $countries, "label" => "Country", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
+                    </div>
+                    
+                    
+                    
                 </div>
                 <hr>
                 <div class="row">
@@ -84,6 +85,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <?= $this->Form->control('address', array('class' => 'form-control', "label" => "Address *", "placeholder" => "Address")); ?>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
                     </div>
                 </div>
 

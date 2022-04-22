@@ -32,8 +32,8 @@
     <div class="panel-body articles-container">       
             <?= $this->Form->create($user) ?>
                 <div class="row">
-                <div class="col-md-6"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Nom")); ?></div>
-                <div class="col-md-3"><?= $this->Form->control('role_id', array('class' => 'form-control', 'options' => $roles, "label" => "Access *", "value" => 1, "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
+                <div class="col-md-9"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Nom")); ?></div>
+                <div class="col-md-3"><?= $this->Form->control('role_id', array('class' => 'form-control', 'options' => $roles, "label" => "Access *", "value" => 2, "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
                     
                 </div>  
                 <div class="row" style="margin-top:15px">

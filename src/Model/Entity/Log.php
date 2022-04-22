@@ -39,6 +39,7 @@ class Log extends Entity
         'user' => true,
         'old_data' => true,
         'new_data' => true,
-        'code' => true
+        'code' => true,
+        'tenant_id' => true
     ];
 }

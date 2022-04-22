@@ -87,23 +87,12 @@
                                         <th class="text-center">Deductible</th>
                                         <th class="text-center">Mode</th>
                                         <th class="text-center">Effective date</th>
-                                        <th class="text-center">Paid until</th>
+                                        <th class="text-center">Pending Business</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach($company->policies as $policy) : ?>
-                                        <?php 
-                                        //Today's date.
-                                        $pu = new \DateTime($policy->paid_until);
-
-                                        //Subtract a day using DateInterval
-                                        $yesterday = $pu->sub(new \DateInterval('P1D'));
-
-                                        //Get the date in a YYYY-MM-DD format.
-                                        $paiduntil = $yesterday->format('Y-m-d');
-
-                                        ?>
                                     <tr>
                                         <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
                                         <td class="text-center"><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
@@ -113,7 +102,11 @@
                                         <td class="text-center"><?= number_format($policy->deductible,0,".",",") ?> USD</td>
                                         <td class="text-center"><?= $modes[$policy->mode] ?></td>
                                         <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
-                                        <td class="text-center"><?= date("M d Y", strtotime($policy->paid_until)) ?></td>
+                                        <?php if($policy->pending_business == 1) : ?>
+                                            <td class="text-center"><span class="label label-warning">Yes</span></td>
+                                        <?php else : ?>
+                                            <td></td>
+                                        <?php endif; ?>
                                         <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a></td>
                                     </tr>
                                     <?php endforeach; ?>

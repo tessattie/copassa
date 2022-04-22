@@ -18,10 +18,7 @@ class RidersController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users'],
-        ];
-        $riders = $this->paginate($this->Riders);
+        $riders = $this->Riders->find("all", array("conditions" => array("Riders.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Users']);
 
         $this->set(compact('riders'));
     }
@@ -53,6 +50,7 @@ class RidersController extends AppController
         if ($this->request->is('post')) {
             $rider = $this->Riders->patchEntity($rider, $this->request->getData());
             $rider->user_id= $this->Auth->user()['id'];
+            $rider->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Riders->save($rider)) {
                 $this->Flash->success(__('The rider has been saved.'));
 

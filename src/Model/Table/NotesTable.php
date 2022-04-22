@@ -56,6 +56,11 @@ class NotesTable extends Table
             'foreignKey' => 'customer_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->belongsTo('Tenants', [
+            'foreignKey' => 'tenant_id',
+            'joinType' => 'INNER',
+        ]);
     }
 
     /**

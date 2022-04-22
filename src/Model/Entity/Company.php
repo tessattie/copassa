@@ -42,6 +42,7 @@ class Company extends Entity
         'address' => true, 
         'phone' => true, 
         'email' => true,
-        'country_id' => true
+        'country_id' => true,
+        'tenant_id' => true
     ];
 }
