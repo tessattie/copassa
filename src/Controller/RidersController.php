@@ -96,7 +96,7 @@ class RidersController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $rider = $this->Riders->get($id);
         if ($this->Riders->delete($rider)) {
             $this->Flash->success(__('The rider has been deleted.'));

@@ -146,7 +146,7 @@ class PaymentsController extends AppController
         $fpdf = new FPDF();
         $fpdf->AddPage("L");
         $fpdf->SetFont('Arial','B',9);
-        $fpdf->Cell(200,0,"Copassa Renewals Report",0,0, 'L');
+        $fpdf->Cell(200,0,"Renewals Report",0,0, 'L');
         $fpdf->Cell(75,0,"From " . date("M d Y", strtotime($from)) . " to " . date("M d Y", strtotime($to)) ,0,0, 'R');
         $fpdf->Ln(7);
         $fpdf->Cell(275,0,"",'B',0, 'R');
@@ -374,13 +374,9 @@ class PaymentsController extends AppController
     public function report(){
         $this->savelog(200, "Accessed payments page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
-        if(!empty($filter_country)){
-            $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.tenant_id' => $this->Auth->user()['tenant_id'], 'Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']])->matching('Customers', function ($q) use ($filter_country) {
-                        return $q->where(['Customers.country_id' => $filter_country]);
-                    });
-        }else{
-           $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.tenant_id' => $this->Auth->user()['tenant_id'], 'Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']]); 
-        }
+        $from = $this->session->read("from"); 
+        $to = $this->session->read("to");
+        $payments = $this->Payments->Policies->Prenewals->find("all", array("conditions" => array("payment_date >=" => $from, "payment_date <=" => $to,"Prenewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Companies', 'Options', 'Customers' => ['Countries']]]);
         
         $this->set(compact('payments'));
     }
@@ -388,21 +384,17 @@ class PaymentsController extends AppController
     public function export(){
         $this->savelog(200, "Payment Exports Done", 1, 3, "", "");
         require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
+
         $from = $this->session->read("from"); 
-        $to = $this->session->read("to"); 
+        $to = $this->session->read("to");
+
         $filter_country = $this->session->read("filter_country");
-        if(!empty($filter_country)){
-            $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.tenant_id' => $this->Auth->user()['tenant_id'], 'Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']])->matching('Customers', function ($q) use ($filter_country) {
-                        return $q->where(['Customers.country_id' => $filter_country]);
-                    });
-        }else{
-           $payments = $this->Payments->find("all", array('order' => array('Payments.created ASC'), "conditions" => array('Payments.tenant_id' => $this->Auth->user()['tenant_id'], 'Payments.created >=' => $this->from, 'Payments.created <=' => $this->to)))->contain(['Rates', 'Users', 'Customers', 'Policies' => ['Companies', 'Options']]); 
-        }
+        $payments = $this->Payments->Policies->Prenewals->find("all", array("conditions" => array("payment_date >=" => $from, "payment_date <=" => $to,"Prenewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Companies', 'Options', 'Customers' => ['Countries']]]);
 
         $fpdf = new FPDF();
         $fpdf->AddPage("L");
         $fpdf->SetFont('Arial','B',9);
-        $fpdf->Cell(200,0,"Copassa Payments Report",0,0, 'L');
+        $fpdf->Cell(200,0,"Payments Report",0,0, 'L');
         $fpdf->Cell(75,0,"From " . date("M d Y", strtotime($from)) . " to " . date("M d Y", strtotime($to)) ,0,0, 'R');
         $fpdf->Ln(7);
         $fpdf->Cell(275,0,"",'B',0, 'R');
@@ -414,11 +406,13 @@ class PaymentsController extends AppController
         
         $fpdf->Ln(7);
         $fpdf->Cell(10,7,"#",'T-L-B',0, 'C');
-        $fpdf->Cell(17,7,"Date",'T-L-B-R',0, 'C');
-        $fpdf->Cell(60,7,"Customer",'T-L-B',0, 'C');
+        
+        $fpdf->Cell(60,7,"Policy Holder",'T-L-B',0, 'C');
+        $fpdf->Cell(25,7,"Policy Number",'T-L-B',0, 'C');
         $fpdf->Cell(35,7,"Company",'T-L-B',0, 'C');
-        $fpdf->Cell(25,7,"Policy",'T-L-B',0, 'C');
-        $fpdf->Cell(25,7,"Amount",'T-L-B',0, 'C');
+        
+        $fpdf->Cell(17,7,"Amount",'T-L-B',0, 'C');
+        $fpdf->Cell(25,7,"Payment Date",'T-L-B-R',0, 'C');
         $fpdf->Cell(25,7,"Due Date",'T-L-B',0, 'C');
         $fpdf->Cell(78,7,"Memo",'T-L-B-R',0, 'C');
         
@@ -426,16 +420,18 @@ class PaymentsController extends AppController
         $fpdf->SetFont('Arial','',7);
 
         foreach($payments as $p){
-            if($p->policy->company->country_id == $filter_country || empty($filter_country)){
-                $date = $p->created->year."-".$p->created->month."-".$p->created->day;
-                $due_date = $p->policy->last_renewal->year."-".$p->policy->last_renewal->month."-".$p->policy->last_renewal->day;
+            if($p->policy->customer->country_id == $filter_country || empty($filter_country)){
+                $date = $p->payment_date->i18nFormat('yyyy-MM-dd');
+                $due_date = $p->renewal_date->i18nFormat('yyyy-MM-dd');
                 $fpdf->Cell(10,7,(4000+$p->id),'T-L-B',0, 'C');
-                $fpdf->Cell(17,7,date('d M Y', strtotime($date)),'T-L-B-R',0, 'C');
-                $fpdf->Cell(60,7,$p->customer->name,'T-L-B',0, 'L');
-                $fpdf->Cell(35,7,$p->policy->company->name,'T-L-B',0, 'L');
-                $fpdf->Cell(25,7,$p->policy->policy_number,'T-L-B',0, 'L');
-                $fpdf->Cell(25,7,(number_format($p->amount, 2, ".", ",")." ".$p->rate->name),'T-L-B',0, 'C');
-                $fpdf->Cell(25,7,date('d M Y', strtotime($due_date)),'T-L-B-R',0, 'C');
+                
+                $fpdf->Cell(60,7,$p->policy->customer->name,'T-L-B',0, 'C');
+                $fpdf->Cell(25,7,$p->policy->policy_number,'T-L-B',0, 'C');
+                $fpdf->Cell(35,7,$p->policy->company->name,'T-L-B',0, 'C');
+                
+                $fpdf->Cell(17,7,number_format($p->premium, 2, ".", ","),'T-L-B',0, 'C');
+                $fpdf->Cell(25,7,date('d M Y', strtotime($date)),'T-L-B-R',0, 'C');
+                $fpdf->Cell(25,7,date('M d Y', strtotime($due_date)),'T-L-B-R',0, 'C');
                 $fpdf->Cell(78,7,$p->memo,'T-L-B-R',0, 'C');            
                 $fpdf->Ln(7);
             }

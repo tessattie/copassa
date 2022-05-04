@@ -32,14 +32,9 @@
     <div class="panel-body articles-container">       
             <?= $this->Form->create($grouping) ?>
                 <div class="row">
-                    <div class="col-md-6"><?= $this->Form->control('grouping_number', array('class' => 'form-control', "label" => "Group Number *", "placeholder" => "Group Number")); ?></div>
-                    <div class="col-md-6"><?= $this->Form->control('business_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $businesses, "label" => "Company", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
+                    <div class="col-md-8"><?= $this->Form->control('grouping_number', array('class' => 'form-control', "label" => "Group Number *", "placeholder" => "Group Number")); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Created Date *")); ?></div>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6"><?= $this->Form->control('company_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $companies, "label" => "Insurance", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
-                  <div class="col-md-4"><?= $this->Form->control('effective_date', array('class' => 'form-control', "label" => "Created Date *")); ?></div>
-                </div> 
                 
                 <div class="row">
                     <div class="col-md-12"><?= $this->Form->button(__('Add'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>

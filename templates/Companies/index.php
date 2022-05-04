@@ -40,11 +40,13 @@
                     <td class="text-center"><?= $company->address ?></td>
                     <td class="text-center"><?= $company->phone ?></td>
                     <td class="text-center"><?= $company->email ?></td>
-                    <td class="text-center"><?= count($company->options) ?></td>
-                    <td class="text-center"><?= count($company->policies) ?></td>
+                    <td class="text-center"><span class="label label-warning"><?= count($company->options) ?></span></td>
+                    <td class="text-center"><span class="label label-info"><?= count($company->policies) ?></span></td>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/companies/edit/<?= $company->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                        <?php if(count($company->options) == 0 && count($company->policies) == 0) : ?>
                         <a href="<?= ROOT_DIREC ?>/companies/delete/<?= $company->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= $company->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endif; ?>

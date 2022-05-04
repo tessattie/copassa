@@ -133,6 +133,7 @@ $summary_cancelations = 0;
                                 <th class="text-center">Type</th>
                                 <th class="text-center">Debit</th>
                                 <th class="text-center">Credit</th>
+                                <th class="text-center">Status</th>
                                 <th class="text-center">Memo</th>
                                 <th></th>
                             </tr>
@@ -185,9 +186,20 @@ $summary_cancelations = 0;
                                     <?php else :  ?>
                                         <td class="text-center" style="color:green;font-weight:bold"></td>
                                     <?php endif; ?>
-                                    <td class="text-center"><?= $transaction->memo ?></td>
-                                    <td class="text-right">
 
+                                    <?php if($transaction->status == 1) : ?>
+                                        <td class="text-center"><span class="label label-warning">AWAITING</span></td>
+                                    <?php else : ?>
+                                        <td class="text-center"><span class="label label-success">CONFIRMED</span></td>
+                                    <?php endif; ?>
+
+
+                                    <td class="text-center"><?= $transaction->memo ?></td>
+                                    
+                                    <td class="text-right">
+                                        <?php if($transaction->status == 1) : ?>
+                                            <a data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>" style="cursor: pointer;font-size:1.3em!important;margin-left:5px;color:green"><span class="fa fa-xl fa-check color-green"></span></a>
+                                        <?php endif; ?>
                                         <a href="<?= ROOT_DIREC ?>/transactions/delete/<?= $transaction->id ?>" onclick="return confirm('Are you sure you would like to delete this transaction')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                                     </td>
                                 </tr>
@@ -200,6 +212,7 @@ $summary_cancelations = 0;
                                 <th colspan="5">TOTAL</th>
                                 <th class="text-center"><?= number_format($total_debit, 2, ".", ",") ?></th>
                                 <th class="text-center"><?= number_format($total_credit, 2, ".", ",") ?></th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -230,15 +243,15 @@ $summary_cancelations = 0;
                                     </tr>
                                     <tr>
                                         <th>Premium</th>
-                                        <td class="text-right"><?= number_format($summary_due, 2, ",", ",") ?></td>
+                                        <td class="text-right"><?= number_format($summary_due, 2, ".", ",") ?></td>
                                     </tr>
                                     <tr>
                                         <th>Payments / Refunds</th>
-                                        <td class="text-right"><?= number_format($summary_payments, 2, ",", ",") ?></td>
+                                        <td class="text-right"><?= number_format($summary_payments, 2, ".", ",") ?></td>
                                     </tr>
                                     <tr>
                                         <th>Cancelations</th>
-                                        <td class="text-right"><?= number_format($summary_cancelations, 2, ",", ",") ?></td>
+                                        <td class="text-right"><?= number_format($summary_cancelations, 2, ".", ",") ?></td>
                                     </tr>
                                     <tr>
                                         <th>Balance</th>
@@ -313,9 +326,13 @@ $summary_cancelations = 0;
         </div>
         <hr>
         <div class="row">
-            <div class="col-md-4"><?= $this->Form->control('type', array('class' => 'form-control', "empty" => '-- Type --', "label" => "Type", 'options' => array(2=>"Payment", 3 => "Cancelation") , 'required' => false, 'style' => "height:46px")); ?></div> 
+            <div class="col-md-4"><?= $this->Form->control('type', array('class' => 'form-control', "empty" => '-- Type --', "label" => "Type", 'options' => array(2=>"Payment", 3 => "Cancelation", 4 => "Refund") , 'required' => false, 'style' => "height:46px")); ?></div> 
             <div class="col-md-4"><?= $this->Form->control('operation', array('class' => 'form-control', "label" => "Operation", 'options' => array(1=>"Credit", 2 => "Debit") , "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
             <div class="col-md-4"><?= $this->Form->control('amount', array('class' => 'form-control', "label" => "Amount", 'placeholder' => "Amount")); ?></div> 
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "label" => "Operation", 'options' => array(1=>"Awaiting", 2 => "Confirmed") , "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
         </div>
         <hr>
         <div class="row">
@@ -330,6 +347,36 @@ $summary_cancelations = 0;
     </div>
   </div>
 </div>
+
+
+<?php foreach($renewal->transactions as $transaction) : ?>
+    <div class="modal fade" id="confirm_transaction_<?= $transaction->id ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Confirm Transaction for <?= $transaction->employee->first_name." ".$transaction->employee->last_name ?></h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => "/renewals/confirmtransaction")) ?>
+      <?= $this->Form->input('transaction_id', array('type' => 'hidden', "value" => $transaction->id)); ?>
+      <div class="modal-body">
+            <div class="row">
+            <div class="col-md-6"><?= $this->Form->control('credit', array('class' => 'form-control', "label" => "Credit", 'placeholder' => "Amount", 'value' => $transaction->credit)); ?></div> 
+            <div class="col-md-6"><?= $this->Form->control('debit', array('class' => 'form-control', "label" => "Debit", 'placeholder' => "Amount", 'value' => $transaction->debit)); ?></div> 
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12"><?= $this->Form->control('memo', array('class' => 'form-control', "label" => "Memo", 'placeholder' => "Memo", 'value' => $transaction->memo)); ?></div> 
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-success">Confirm</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div>
+<?php endforeach; ?>
 
 <div class="modal fade" id="new_employee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">

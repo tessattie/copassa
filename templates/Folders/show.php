@@ -22,7 +22,7 @@
     <fieldset>
         <?php
         echo $this->Form->control('type', ['type' => "hidden", "value" => 1]);
-            echo $this->Form->control('name', array('label' => "Name",'Placeholder' => "File Name"));
+            echo $this->Form->control('name', array('label' => "Name",'Placeholder' => "File Name", 'value' => ''));
             echo $this->Form->control('description', array('label' => "Description",'Placeholder' => "Short Description"));
             echo $this->Form->control('extension', array('label' => "Extension", "options" => ['PDF', 'DOC', 'EXCEL', 'PPT', "IMG", "AUTRE"]));
             echo $this->Form->control('folders._ids', ["type" => "hidden", "value" => $active_folder->id]);
@@ -59,7 +59,7 @@
     <fieldset>
         <?php
         echo $this->Form->control('type', ['type' => "hidden", "value" => 2]);
-            echo $this->Form->control('name', array('label' => "Name",'Placeholder' => "Folder Name"));
+            echo $this->Form->control('name', array('label' => "Name",'Placeholder' => "Folder Name", 'value' => ''));
         ?>
     </fieldset>
     

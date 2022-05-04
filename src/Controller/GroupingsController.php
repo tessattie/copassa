@@ -57,8 +57,8 @@ class GroupingsController extends AppController
             }
             $this->Flash->error(__('The grouping could not be saved. Please, try again.'));
         }
-        $businesses = $this->Groupings->Businesses->find('list', ['limit' => 200]);
-        $companies = $this->Groupings->Companies->find('list', ['limit' => 200]);
+        $businesses = $this->Groupings->Businesses->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
+        $companies = $this->Groupings->Companies->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
         $this->set(compact('grouping', 'businesses', 'companies'));
     }
 
@@ -115,8 +115,8 @@ class GroupingsController extends AppController
             }
             $this->Flash->error(__('The grouping could not be saved. Please, try again.'));
         }
-        $businesses = $this->Groupings->Businesses->find('list', ['limit' => 200]);
-        $companies = $this->Groupings->Companies->find('list', ['limit' => 200]);
+        $businesses = $this->Groupings->Businesses->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
+        $companies = $this->Groupings->Companies->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
         $this->set(compact('grouping', 'businesses', 'companies'));
     }
 

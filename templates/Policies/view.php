@@ -174,6 +174,63 @@ $paiduntil = $yesterday->format('Y-m-d');
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default articles">
+                <div class="panel-heading">
+                    Renewals
+                </div>
+
+                <div class="panel-body articles-container"  style="height:350px;overflow-y:scroll">
+                    <table class="table datable table-striped">
+        <thead>
+            <tr>
+                <th>Renewal Date</th>
+                <th class="text-center">Premium</th>
+                <th class="text-center">Fee</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Policy Status</th>
+                <th class="text-center">Paid on</th>
+                <th class="text-right"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if(!empty($policy->prenewals)) : ?>
+                <?php foreach($policy->prenewals as $renewal) : ?>
+                    <tr>
+                        <td><?= date('F d Y', strtotime($renewal->renewal_date)); ?></td>
+                        <td class="text-center"><?= number_format($renewal->premium, 2, ".", ",") ?></td>
+                        <td class="text-center"><?= number_format($renewal->fee, 2, ".", ",") ?></td>
+                        <?php if($renewal->status == 1) : ?>
+                            <td class="text-center"><span class="label label-info">Upcomming</span></td>
+                        <?php elseif($renewal->status == 3) : ?>
+                            <td class="text-center"><span class="label label-warning">Canceled</span></td>
+                        <?php else : ?>
+                            <td class="text-center"><span class="label label-success">Renewed</span></td>
+                        <?php endif; ?>
+
+                        <?php if($renewal->policy_status == 1) : ?>
+                            <td class="text-center"><span class="label label-success">Active</span></td>
+                        <?php else : ?>
+                            <td class="text-center"><span class="label label-danger">Canceled</span></td>
+                        <?php endif; ?>
+                        <?php if(!empty($renewal->payment_date)) : ?>
+                        <td class="text-center"><?= date('F d Y', strtotime($renewal->payment_date)); ?></td>
+                        <?php else : ?>
+                        <td></td>
+                    <?php endif; ?>
+                        <td class="text-right">
+                            <a href="<?= ROOT_DIREC ?>/prenewals/edit/<?= $renewal->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a> 
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
+                </div>
+            </div>
+        </div>
+    </div>
         </div>
         <div class="col-md-3">
             <div class="panel panel-default articles">

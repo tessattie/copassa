@@ -50,14 +50,18 @@ class PoliciesController extends AppController
     }
 
     public function dashboard(){
-        $this->loadModel("Newborns");
+        $this->loadModel("Newborns");$this->loadModel("Pendings");$this->loadModel("Transactions");
+
         $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1, 'Newborns.tenant_id' => $this->Auth->user()['tenant_id']), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
 
-        $this->loadModel("Pendings");
-
         $pendings = $this->Pendings->find("all", array("conditions" => array("Pendings.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Countries', 'Users']);
+
+        $transactions = $this->Transactions->find("all", array("conditions" => array("Transactions.status" => 1)))->contain(['Employees', 'Families', 'Groupings', 'Renewals' => ['Businesses']]);
+
         $all_birthdays = $this->Policies->Customers->find("all", array("conditions" => array("Customers.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies']);
+
         $birthdays = array();
+        
         foreach($all_birthdays as $bd){
             if(!empty($bd->dob)){
                 if($bd->dob->month == date("m") && $bd->dob->day == date('d')){
@@ -66,8 +70,7 @@ class PoliciesController extends AppController
             }
             
         }
-
-        $this->set(compact('newborns', 'birthdays', 'pendings'));
+        $this->set(compact('newborns', 'birthdays', 'pendings', 'transactions'));
     }
 
     /**
@@ -86,7 +89,7 @@ class PoliciesController extends AppController
         }
 
         $policy = $this->Policies->get($id, [
-            'contain' => ['Companies', 'Options', 'Customers', 'Users', 'Payments', 'Dependants', 'PoliciesRiders' => ['Riders']],
+            'contain' => ['Companies', 'Options', 'Customers', 'Users', 'Payments', 'Dependants', 'Prenewals', 'PoliciesRiders' => ['Riders']],
         ]);
         $riders = $this->Riders->find("all");
         $dependant = $this->Policies->Dependants->newEmptyEntity();
@@ -214,32 +217,25 @@ class PoliciesController extends AppController
         $company_filter = "9999";
         // Get each company 
         $comps = $this->Policies->Companies->find("list", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
-        
+        $companies = $this->Policies->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
         if($this->request->is(['patch', 'put', 'post'])){
             if(!empty($this->request->getData()['type'])){
                 $type_filter = $this->request->getData()['type'];
+                $companies->where(['type' => $type_filter]);
             }
             if(!empty($this->request->getData()['company_id'])){
                 $company_filter = $this->request->getData()['company_id'];
+                $companies->where(['id' => $company_filter]);
             }
-            $companies = $this->getPolicies($this->request->getData()['type'], $this->request->getData()['company_id']);
-        }else{
-            $companies = $this->Policies->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("Companies.name ASC")))->contain(['Countries']);
-            foreach($companies as $company){
-                $filter_country = $this->session->read("filter_country");
-                
-                if(!empty($filter_country)){
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments'])->matching('Customers', function ($q) use ($filter_country) {
-                        return $q->where(['Customers.country_id' => $filter_country]);
-                    });
-                }else{
-                    $company->policies = $this->Policies->find("all", array("conditions" => array("Policies.company_id" => $company->id, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'pending_business' => 2, "OR" => array("last_renewal >= '". $from."' AND last_renewal <= '". $to."'", "next_renewal >= '". $from."' AND next_renewal <= '". $to."'")), "order" => array("paid_until ASC")))->contain(['Customers', 'Options', 'Payments']);
-                }
-                
-            }
+            // $companies = $this->getPolicies($this->request->getData()['type'], $this->request->getData()['company_id']);
+        }
+
+        $renewals = $this->Policies->Prenewals->find("all", array("conditions" => array("renewal_date >=" => $from, "renewal_date <=" => $to,"Prenewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Companies', 'Options', 'Customers']]);
+        foreach($renewals as $renewal){
+            $renewal->last_renewal = $this->Policies->Prenewals->find("all", array("order" => array("renewal_date DESC"), "conditions" => array("Prenewals.tenant_id" => $this->Auth->user()['tenant_id'], "Prenewals.id <>" => $renewal->id, 'Prenewals.policy_id' => $renewal->policy_id)))->first();
         }
         
-        $this->set(compact("companies", 'comps', 'type_filter', 'company_filter', 'from'));
+        $this->set(compact("renewals", 'comps', 'type_filter', 'company_filter', 'from', 'companies'));
     }
 
     public function alerts(){
@@ -294,15 +290,21 @@ class PoliciesController extends AppController
     public function export($type, $company_id){
         $from = $this->session->read("from"); 
         $to = $this->session->read("to"); 
-        if($type == '9999'){
-            $type = false;
+
+        $companies = $this->Policies->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+
+        if($company_id != '9999'){
+            $companies->where(['id' => $company_id]);
         }
 
-        if($company_id == '9999'){
-            $company_id = false;
+        if($type != '9999'){
+            $companies->where(['type' => $type]);
         }
 
-        $companies = $this->getPolicies($type, $company_id);
+        $renewals = $this->Policies->Prenewals->find("all", array("conditions" => array("renewal_date >=" => $from, "renewal_date <=" => $to,"Prenewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Companies', 'Options', 'Customers' => ['Countries']]]);
+        foreach($renewals as $renewal){
+            $renewal->last_renewal = $this->Policies->Prenewals->find("all", array("order" => array("renewal_date DESC"), "conditions" => array("Prenewals.tenant_id" => $this->Auth->user()['tenant_id'], "Prenewals.id <>" => $renewal->id, 'Prenewals.policy_id' => $renewal->policy_id)))->first();
+        }
 
 
         require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
@@ -318,64 +320,88 @@ class PoliciesController extends AppController
         $filter_country = $this->session->read("filter_country");
         // do export
         foreach($companies as $company){
-            if($company->policies->count() > 0){
-                $fpdf->SetFont('Arial','B',8);
-                $fpdf->SetFillColor(220,220,220);
-                $fpdf->Cell(275,7,$company->name,"T-L-R",0, 'L', 1);
-                $fpdf->SetFillColor(255,255,255);
-                $fpdf->Ln(7);
-                $fpdf->Cell(59,7,"Insured Name",'T-L-B',0, 'L');
-                $fpdf->Cell(10,7,"Age",'T-L-B',0, 'C');
-                $fpdf->Cell(24,7,"Policy",'T-L-B',0, 'C');
-                $fpdf->Cell(50,7,"Plan",'T-L-B',0, 'C');
-                $fpdf->Cell(15,7,"Country",'T-L-B',0, 'C');
-                $fpdf->Cell(10,7,"Mode",'T-L-B',0, 'C');
-                $fpdf->Cell(25,7,"L Premium",'T-L-B',0, 'C');
-                $fpdf->Cell(25,7,"Premium",'T-L-B',0, 'C');
-                $fpdf->Cell(15,7,"%",'T-L-B',0, 'C');
-                $fpdf->Cell(22,7,"Effective Date",'T-L-B',0, 'C');
-                $fpdf->Cell(20,7,"Due Date",'T-L-R-B',0, 'C');
-                $fpdf->Ln(7);
-                $fpdf->SetFont('Arial','',8);
-                foreach($company->policies as $policy){
-                    $percentage = ""; 
-                    if(!empty($policy->last_premium)){
-                        $percentage = ($policy->premium - $policy->last_premium)*100/$policy->last_premium;
-                        $percentage = number_format($percentage, 2, ".",",");
-                        $percentage .="%";
-                    }
-                    $paid_until = $policy->paid_until->year."-".$policy->paid_until->month."-".$policy->paid_until->day;
-                    $effective_date = $policy->effective_date->year."-".$policy->effective_date->month."-".$policy->effective_date->day;
-                    $next_renewal = $policy->next_renewal->year."-".$policy->next_renewal->month."-".$policy->next_renewal->day;
-                    $last_renewal = $policy->last_renewal->year."-".$policy->last_renewal->month."-".$policy->last_renewal->day;
-                    $age = "";
-                    if(!empty($policy->customer->dob)){
-                        $dob = $policy->customer->dob->year."-".$policy->customer->dob->month."-".$policy->customer->dob->day;
-                        $today = date("Y-m-d");
-                        $diff = date_diff(date_create($dob), date_create($today));
-                        $age = $diff->format('%y');
-                    }
-                    if(date("Y-m-d", strtotime($next_renewal)) >= $to){
-                        $fpdf->SetFillColor(255,250,205);
-                    }else{
-                        $fpdf->SetFillColor(255,255,255);
-                    }
-
-                    $fpdf->Cell(59,7,$policy->customer->name,'T-L-B',0, 'L',1);
-                    $fpdf->Cell(10,7,$age,'T-L-B',0, 'C',1);
-                    $fpdf->Cell(24,7,$policy->policy_number,'T-L-B',0, 'C',1);
-                    $fpdf->Cell(50,7,$policy->option->name." / ".$policy->option->option_name,'T-L-B',0, 'C',1);
-                    $fpdf->Cell(15,7,substr($policy->customer->country->name, 0, 3),'T-L-B',0, 'C');
-                    $fpdf->Cell(10,7,$this->modes[$policy->mode],'T-L-B',0, 'C',1);
-                    $fpdf->Cell(25,7,number_format(($policy->last_premium+$policy->fee), 2, ".", ",") ."USD",'T-L-B',0, 'C',1);
-                    $fpdf->Cell(25,7,number_format(($policy->premium+$policy->fee), 2, ".", ",") ."USD",'T-L-B',0, 'C',1);
-                    $fpdf->Cell(15,7,$percentage,'T-L-B',0, 'C',1);
-                    $fpdf->Cell(22,7,date('M d Y', strtotime($effective_date)),'T-L-B',0, 'C',1);
-                    $fpdf->Cell(20,7,date('M d Y', strtotime($next_renewal)),'T-L-R-B',0, 'C',1);
-                    $fpdf->Ln(7);
+            $fpdf->SetFont('Arial','B',8);
+            $fpdf->SetFillColor(220,220,220);
+            $fpdf->Cell(275,7,$company->name,"T-L-R",0, 'L', 1);
+            $fpdf->SetFillColor(255,255,255);
+            $fpdf->Ln(7);
+            $fpdf->Cell(59,7,"Insured Name",'T-L-B',0, 'L');
+            $fpdf->Cell(10,7,"Age",'T-L-B',0, 'C');
+            $fpdf->Cell(24,7,"Policy",'T-L-B',0, 'C');
+            $fpdf->Cell(50,7,"Plan",'T-L-B',0, 'C');
+            $fpdf->Cell(15,7,"Country",'T-L-B',0, 'C');
+            $fpdf->Cell(10,7,"Mode",'T-L-B',0, 'C');
+            $fpdf->Cell(25,7,"L Premium",'T-L-B',0, 'C');
+            $fpdf->Cell(25,7,"Premium",'T-L-B',0, 'C');
+            $fpdf->Cell(15,7,"%",'T-L-B',0, 'C');
+            $fpdf->Cell(22,7,"Effective Date",'T-L-B',0, 'C');
+            $fpdf->Cell(20,7,"Due Date",'T-L-R-B',0, 'C');
+            $fpdf->Ln(7);
+            $fpdf->SetFont('Arial','',8);
+            foreach($renewals as $renewal){
+                if($renewal->policy->company_id == $company->id){
+                    if(empty($filter_country) || $filter_country  == $renewal->policy->customer->country_id){
+                $policy = $renewal->policy;
+                $percentage = ""; 
+                if(!empty($renewal->last_renewal)){
+                    $percentage = ($renewal->premium - $renewal->last_renewal->premium)*100/$renewal->last_renewal->premium;
+                    $percentage = number_format($percentage, 2, ".",",");
+                    $percentage .="%";
+                }    
+                $age = "N/A";
+                if(!empty($policy->customer->dob)){
+                    $dob = $policy->customer->dob->year."-".$policy->customer->dob->month."-".$policy->customer->dob->day;
+                    $today = date("Y-m-d");
+                    $diff = date_diff(date_create($dob), date_create($today));
+                    $age = $diff->format('%y');
                 }
+                if(!empty($renewal->payment_date) || $renewal->status == 2){
+                    $fpdf->SetFillColor(255,250,205);
+                }else{
+                    $fpdf->SetFillColor(255,255,255);
+                }
+
+                $fpdf->Cell(59,7,$policy->customer->name,'T-L-B',0, 'L',1);
+                if(!empty($age)){
+                    $fpdf->Cell(10,7,$age,'T-L-B',0, 'C',1);
+                }else{
+                    $fpdf->Cell(10,7,"N/A",'T-L-B',0, 'C',1);
+                }
+                
+                $fpdf->Cell(24,7,$policy->policy_number,'T-L-B',0, 'C',1);
+
+                if(!empty($policy->option->name)){
+                    if(!empty($policy->option->option_name)){
+                        $fpdf->Cell(50,7,$policy->option->name." / ".$policy->option->option_name,'T-L-B',0, 'C',1);
+                    }else{
+                        $fpdf->Cell(50,7,$policy->option->name,'T-L-B',0, 'C',1);
+                    }
+                }else{
+                    if(!empty($policy->option->option_name)){
+                        $fpdf->Cell(50,7,$policy->option->option_name,'T-L-B',0, 'C',1);
+                    }else{
+                        $fpdf->Cell(50,7,"",'T-L-B',0, 'C',1); 
+                    }
+                }
+                
+                $fpdf->Cell(15,7,substr($policy->customer->country->name, 0, 3),'T-L-B',0, 'C',1);
+                $fpdf->Cell(10,7,$this->modes[$policy->mode],'T-L-B',0, 'C',1);
+                if(!empty($renewal->last_renewal)){
+                    $fpdf->Cell(25,7,number_format(($renewal->last_renewal->premium+$renewal->last_renewal->fee), 2, ".", ",") ."USD",'T-L-B',0, 'C',1);
+                }else{
+                    $fpdf->Cell(25,7,"",'T-L-B',0, 'C',1);
+                }
+                
+                $fpdf->Cell(25,7,number_format(($renewal->premium+$renewal->fee), 2, ".", ",") ."USD",'T-L-B',0, 'C',1);
+                $fpdf->Cell(15,7,$percentage,'T-L-B',0, 'C',1);
+                $fpdf->Cell(22,7,date('M d Y', strtotime($policy->effective_date->i18nFormat('yyyy-MM-dd'))),'T-L-B',0, 'C',1);
+                $fpdf->Cell(20,7,date('M d Y', strtotime($renewal->renewal_date->i18nFormat('yyyy-MM-dd'))),'T-L-R-B',0, 'C',1);
+                $fpdf->Ln(7);
             }
-            $fpdf->Ln(7); 
+        }
+            
+        }
+        $fpdf->Ln(7);
         }
         $fpdf->Output('I');
         die();
@@ -450,5 +476,68 @@ class PoliciesController extends AppController
             echo json_encode($policies->toArray()); 
         }
         die();
+    }
+
+    public function getpoliciesforrenewal(){
+       $policies = $this->Policies->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'])));  
+       foreach($policies as $policy){
+        $this->setrenewals($policy, date("Y"));
+       }
+
+       return $this->redirect($this->referer());
+    }
+
+    public function generaterenewals(){
+        if($this->request->is(['patch', 'put', 'post'])){
+            $policy = $this->Policies->get($this->request->getData()['policy_id']);
+            $this->setrenewals($policy, $this->request->getData()['year']) ; 
+        }
+
+        return $this->redirect($this->referer());
+    }
+
+    public function setrenewals($policy, $current_year = false){
+        ini_set("memory_limit","-1");
+        $this->loadModel("Prenewals");
+        if($current_year == false){
+            $current_year = date("Y");
+        }
+        // set the renewals we have to create 
+        $renewal_status = $this->Prenewals->find("all", array("conditions" => array("policy_id" => $policy->id), "order" => array("renewal_date DESC")))->first();
+        if(empty($renewal_status) || $renewal_status->policy_status == 1){
+            $mode = $policy->mode; 
+            $effective_date = $policy->effective_date->i18nFormat('yyyy-MM-dd');
+            $renewal_year_start = date($current_year."-m-d", strtotime($effective_date));
+            $renewal_year_end =  date("Y-m-d", strtotime("+12 months", strtotime($renewal_year_start)));
+            // debug($renewal_year_start." - ".$renewal_year_end) ; die();
+            
+            $renewals = [];
+            $next_renewal =  date("Y-m-d", strtotime("+".$mode." months", strtotime($effective_date)));
+            while($next_renewal  < $renewal_year_end){
+                $year = date("Y", strtotime($next_renewal)); 
+                if($next_renewal  <= $renewal_year_end && $next_renewal >= $renewal_year_start){
+                    array_push($renewals, $next_renewal);
+                }
+                $next_renewal =  date("Y-m-d", strtotime("+".$mode." months", strtotime($next_renewal)));
+            }
+
+
+            foreach($renewals as $renewal){
+                $renewals = $this->Prenewals->find("all", array("conditions" => array("renewal_date" => $renewal, "policy_id" => $policy->id)));
+                if($renewals->count() == 0){
+                    // create renewal
+                    $prenewal = $this->Prenewals->newEmptyEntity(); 
+                    $prenewal->renewal_date = $renewal; 
+                    $prenewal->policy_id = $policy->id; 
+                    $prenewal->premium = $policy->premium; 
+                    $prenewal->fee = $policy->fee; 
+                    $prenewal->tenant_id = $policy->tenant_id;
+                    $prenewal->policy_status = 1; 
+                    $prenewal->status = 1;
+                    // debug($prenewal); die();
+                    $this->Prenewals->save($prenewal);
+                }
+            }
+        }
     }
 }

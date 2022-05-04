@@ -69,7 +69,7 @@ class CompaniesController extends AppController
     public function edit($id = null)
     {
         $company = $this->Companies->get($id, [
-            'contain' => ['Options' => ['Users']],
+            'contain' => ['Options' => ['Users', 'Policies']],
         ]);
         $old_data = json_encode($company);
         $option = $this->Companies->Options->newEmptyEntity();

@@ -45,6 +45,10 @@ class CountriesTable extends Table
             'foreignKey' => 'tenant_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->hasMany('Customers', [
+            'foreignKey' => 'country_id',
+        ]);
     }
 
     /**

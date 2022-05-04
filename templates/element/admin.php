@@ -64,9 +64,6 @@
                     <li><a class="" href="<?= ROOT_DIREC ?>/payments/report">
                         <span class="fa fa-arrow-right">&nbsp;</span> Payments
                     </a></li>
-                    <li><a class="" href="<?= ROOT_DIREC ?>/payments/renewals">
-                        <span class="fa fa-arrow-right">&nbsp;</span> Renewals
-                    </a></li>
                     <li><a class="" href="<?= ROOT_DIREC ?>/employees/report">
                         <span class="fa fa-arrow-right">&nbsp;</span> Coorporate Groups
                     </a></li>
@@ -100,8 +97,8 @@
                         <span class="fa fa-arrow-right">&nbsp;</span> Maternity
                     </a></li>
 
-                    <li><a class=""  href="<?= ROOT_DIREC ?>/payments">
-                        <span class="fa fa-arrow-right">&nbsp;</span> Payments
+                    <li><a class=""  href="<?= ROOT_DIREC ?>/prenewals">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Renewals
                     </a></li>
                 </ul>
             </li>
@@ -146,9 +143,9 @@
                     <li class="<?= ($this->request->getParam('controller') == 'Riders') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/riders">
                         <span class="fa fa-arrow-right">&nbsp;</span> Riders
                     </a></li>
-                    <li class="<?= ($this->request->getParam('controller') == 'Logs') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/logs">
+               <!--      <li class="<?= ($this->request->getParam('controller') == 'Logs') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/logs">
                         <span class="fa fa-arrow-right">&nbsp;</span> Activity
-                    </a></li>
+                    </a></li> -->
                 </ul>
             </li>
             <li><a  href="<?= ROOT_DIREC ?>/users/logout" style="color:red"><em class="fa fa-power-off">&nbsp;</em> Log Out</a></li>

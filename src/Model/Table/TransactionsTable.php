@@ -63,7 +63,7 @@ class TransactionsTable extends Table
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Groupings', [
-            'foreignKey' => 'group_id',
+            'foreignKey' => 'grouping_id',
             'joinType' => 'INNER',
         ]);
         $this->belongsTo('Users', [

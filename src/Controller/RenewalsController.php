@@ -286,6 +286,7 @@ class RenewalsController extends AppController
             }
             
             $transaction->type = $this->request->getData()['type'];
+            $transaction->status = $this->request->getData()['status'];
             $transaction->renewal_id = $renewal->id;
             $transaction->memo = $this->request->getData()['memo'];
             $transaction->user_id = $this->Auth->user()['id'];
@@ -293,6 +294,19 @@ class RenewalsController extends AppController
             return $this->redirect(['action' => 'view', $renewal->id]);
         }
         return $this->redirect($this->referer());
+    }
+
+    public function confirmtransaction(){
+        if($this->request->is(['patch', 'put', 'post'])){
+            $transaction = $this->Renewals->Transactions->get($this->request->getData()['transaction_id']);
+            $transaction->status = 2;
+            $transaction->credit = $this->request->getData()['credit'];
+            $transaction->debit = $this->request->getData()['debit'];
+            $transaction->memo = $this->request->getData()['memo'];
+            $this->Renewals->Transactions->save($transaction);
+        }
+
+        $this->redirect($this->referer());
     }
 
 

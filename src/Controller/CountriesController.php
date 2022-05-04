@@ -18,7 +18,7 @@ class CountriesController extends AppController
      */
     public function index()
     {
-        $countries = $this->Countries->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
+        $countries = $this->Countries->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")))->contain(['Customers']);
 
         $this->set(compact('countries'));
     }

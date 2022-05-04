@@ -22,13 +22,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Edit Insurance Company : <?= $company->name ?>
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a href="<?= ROOT_DIREC ?>/companies">
-                    <em class="fa fa-arrow-left"></em>
-                </a>
-                    
-                </li>
-            </ul>
+            <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-arrow-left"></em></a>
         </div>
         <div class="panel-body articles-container">       
             <?= $this->Form->create($company) ?>
@@ -53,13 +47,6 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Options
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a href="<?= ROOT_DIREC ?>/companies">
-                    <em class="fa fa-arrow-left"></em>
-                </a>
-                    
-                </li>
-            </ul>
         </div>
         <div class="panel-body articles-container">       
             <?= $this->Form->create($option, array("url" => "/options/add")) ?>
@@ -69,7 +56,7 @@
                         <?= $this->Form->control('name', array('class' => 'form-control', "label" => "Add Option", "placeholder" => "Product Name")); ?>
                     </div>
                     <div class="col-md-2">
-                        <?= $this->Form->control('option_name', array('class' => 'form-control', "label" => false, "placeholder" => "Option", 'style' => 'margin-top:25px')); ?>
+                        <?= $this->Form->control('option_name', array('class' => 'form-control', "label" => false, "placeholder" => "Option Name", 'style' => 'margin-top:25px')); ?>
                     </div>
                     <div class="col-md-1">
                         <?= $this->Form->control('plan', array('class' => 'form-control', "label" => false, 'style' => 'margin-top:25px', "empty" => "-- Plan --", 'options' => $plans)); ?>
@@ -96,8 +83,9 @@
                                     <th class="text-center">Option</th>
                                     <th class="text-center">Outside USA Deductible</th>
                                     <th class="text-center">Inside USA Deductible</th>
-                                    <th class="text-center">Maximum Coverage</th>
+                                    <th class="text-center">Max Coverage</th>
                                     <th class="text-center">Plan</th>
+                                    <th class="text-center">Policies</th>
                                     <th style="width:70px"></th>
                                 </tr>
                             </thead>
@@ -122,14 +110,16 @@
                                             <td class="text-center"></td>
                                         <?php endif; ?>
                                         <?php if(!empty($option->plan)) : ?>
-                                            <td><?= $plans[$option->plan] ?></td>
+                                            <td class="text-center"><?= $plans[$option->plan] ?></td>
                                             <?php else : ?>
                                                 <td></td>
                                             <?php endif; ?>
-                                            
-                                        <td class="text-right">
+                                        <td class="text-center"><span class="label label-info"><?= count($option->policies) ?></span></td>
+                                        <td class="text-center">
                                             <a href="<?= ROOT_DIREC ?>/options/edit/<?= $option->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                                            <?php if(count($option->policies) == 0) : ?>
                                             <a href="<?= ROOT_DIREC ?>/options/delete/<?= $option->id ?>" onclick="return confirm('Are you sure you would like to delete the option <?= $option->name ?>')" style="font-size:1.3em!important;margin-left:10px"><span class="fa fa-xl fa-trash color-red"></span></a></td>
+                                            <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

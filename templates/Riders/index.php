@@ -17,21 +17,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Riders
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                            <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                                <em class="fa fa-plus"></em>
-                            </a>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li>
-                                        <ul class="dropdown-settings">
-                                            <li><a href="<?= ROOT_DIREC ?>/riders/add">
-                                                <em class="fa fa-plus"></em> New Rider
-                                            </a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
+            <a href="<?= ROOT_DIREC ?>/riders/add" style="float:right"><button class="btn btn-warning">Add</button></a>
         </div>
     <div class="panel-body articles-container">
             <table class="table table-stripped datatable">
@@ -41,12 +27,12 @@
                 </thead>
             <tbody> 
         <?php foreach($riders as $rider) : ?>
-                <tr>
-                    <td><?= $rider->name ?></td>
-                    <td class="text-right"><a href="<?= ROOT_DIREC ?>/riders/edit/<?= $rider->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
-                    <a href="<?= ROOT_DIREC ?>/riders/delete/<?= $rider->id ?>" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
-                    </td>
-                </tr>
+            <tr>
+                <td><?= $rider->name ?></td>
+                <td class="text-right"><a href="<?= ROOT_DIREC ?>/riders/edit/<?= $rider->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                <a href="<?= ROOT_DIREC ?>/riders/delete/<?= $rider->id ?>" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                </td>
+            </tr>
         <?php endforeach; ?>
         </tbody>
         </table>

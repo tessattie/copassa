@@ -21,19 +21,13 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             New Insurance Company
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a href="<?= ROOT_DIREC ?>/companies">
-                    <em class="fa fa-arrow-left"></em>
-                </a>
-                    
-                </li>
-            </ul>
+            <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($company) ?>
                 <div class="row">
                     <div class="col-md-6"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?></div>
-                    <div class="col-md-6"><?= $this->Form->control('type', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $company_types, "label" => "Type", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
+                    <div class="col-md-6"><?= $this->Form->control('type', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $company_types, "label" => "Type *", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
                 </div>
                 <hr>
                 <div class="row">

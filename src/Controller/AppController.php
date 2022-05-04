@@ -69,7 +69,7 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        define('ROOT_DIREC', '');
+        define('ROOT_DIREC', '/copassa');
 
         date_default_timezone_set("America/New_York");
 
@@ -119,6 +119,7 @@ class AppController extends Controller
             $this->set("years", $years);
             $this->set("relationships", $this->relationships);
             $this->set('plans', $this->plans);
+            // debug($this->Auth->user()); die();
             $this->set('tenant', $this->Tenants->get($this->Auth->user()['tenant_id']));
             $this->set('filter_countries', $this->Countries->find("list", array("order" => array("name asc"), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']))));
         }
@@ -187,7 +188,7 @@ class AppController extends Controller
             }else{
                 return "move failed";
             }
-            }
+        }
             
         }else{
             return "general error";

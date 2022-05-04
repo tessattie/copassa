@@ -55,6 +55,7 @@ class Transaction extends Entity
         'user' => true,
         'renewal' => true,
         'memo' => true,
-        'tenant_id' => true
+        'tenant_id' => true,
+        'status' => 'true'
     ];
 }
