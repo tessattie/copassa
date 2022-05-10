@@ -66,6 +66,9 @@ class PoliciesTable extends Table
         $this->hasMany('Payments', [
             'foreignKey' => 'policy_id',
         ]);
+        $this->hasMany('Prenewals', [
+            'foreignKey' => 'policy_id',
+        ]);
         $this->hasMany('PoliciesRiders', [
             'foreignKey' => 'policy_id',
         ]);

@@ -129,7 +129,7 @@ class GroupingsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $grouping = $this->Groupings->get($id);
         if ($this->Groupings->delete($grouping)) {
             $this->Flash->success(__('The grouping has been deleted.'));

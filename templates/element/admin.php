@@ -85,10 +85,6 @@
                         <span class="fa fa-arrow-right">&nbsp;</span> Policies
                     </a></li>
 
-                    <li><a class="" href="<?= ROOT_DIREC ?>/policies/update">
-                        <span class="fa fa-arrow-right">&nbsp;</span> Updates
-                    </a></li>
-
                     <li><a class="" href="<?= ROOT_DIREC ?>/pendings">
                         <span class="fa fa-arrow-right">&nbsp;</span> PNB
                     </a></li>
@@ -124,6 +120,19 @@
                     </a></li>
                     <li class="<?= ($this->request->getParam('controller') == 'Renewals') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/renewals">
                         <span class="fa fa-arrow-right">&nbsp;</span> Renewals
+                    </a></li>
+                </ul>
+            </li>
+
+            <li class="parent <?= ($this->request->getParam('controller') == 'Claims' || $this->request->getParam('controller') == 'Types' || $this->request->getParam('controller') == 'ClaimsTypes') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-2">
+                <em class="fa fa-calendar">&nbsp;</em> Claims <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="fa fa-plus"></em></span>
+                </a>
+                <ul class="children collapse" id="sub-item-2">
+                    <li class="<?= ($this->request->getParam('controller') == 'Claims' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/claims">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Claims
+                    </a></li>
+                    <li class="<?= ($this->request->getParam('controller') == 'Types') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/types">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Types
                     </a></li>
                 </ul>
             </li>

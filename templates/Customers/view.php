@@ -29,21 +29,6 @@ if(!empty($customer->dob)){
             <div class="panel panel-default articles">
                 <div class="panel-heading">
                     Policy Holder : <?= $customer->name ?>
-                    <ul class="pull-right panel-settings panel-button-tab-right">
-                        <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                            <em class="fa fa-plus"></em>
-                        </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li>
-                                    <ul class="dropdown-settings">
-                                        <li><a href="<?= ROOT_DIREC ?>/customer/add">
-                                            <em class="fa fa-plus"></em> New Policy Holder
-                                        </a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">
@@ -84,7 +69,7 @@ if(!empty($customer->dob)){
                         <?php if(!empty($customer->dob)) : ?>
                             <tr>
                                 <th>Date of Birth</th>
-                                <td class="text-right"><?= $customer->dob->month."/".$customer->dob->day."/".$customer->dob->year ?></td>
+                                <td class="text-right"><?= date("M d Y", strtotime($customer->dob)) ?></td>
                             </tr>
                             <tr>
                                 <th>Age</th>
@@ -189,85 +174,6 @@ if(!empty($customer->dob)){
             </div>
         </div>
     </div>
-
-
-    <!-- payments -->
-    <div class="panel panel-default articles">
-        <div class="panel-heading">
-            Payments <?= (!empty($policy_id)) ? " : POLICY ".$policy->policy_number." - ".$policy->customer->name : "" ?>
-            <?php if(!empty($policy_id)) : ?>
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                    <em class="fa fa-plus"></em>
-                </a>
-
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <ul class="dropdown-settings">
-                            
-                                <li><a href="<?= ROOT_DIREC ?>/payments/add/<?= $policy->id ?>">
-                                    <em class="fa fa-plus"></em> New Payment
-                                </a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <?php endif; ?>
-    </div>
-    <div class="panel-body articles-container">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th class="text-center">#</th>
-                <th class="text-center">Policy</th>
-                <th class="text-center">Amount</th>
-                <th class="text-center">Date</th>
-                <th class="text-center">Created by</th>
-                <th class="text-center">Rate</th>
-                <th class="text-center">Memo</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Confirmed</th>
-                <th class="text-center">Photo</th>
-                <th class="text-center"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach($customer->payments as $p) : ?>
-                <tr>
-                    <td class="text-center"><?= 4000+$p->id ?></td>
-                    <td class="text-center"><?= $p->policy->policy_number ?></td>
-                    <td class="text-center"><?= number_format($p->amount, 2, ".", ",")." ".$p->rate->name;  ?></td>
-                    <td class="text-center"><?= date('d M Y', strtotime($p->created)); ?></td>
-                    <td class="text-center"><?= $p->user->name ?></td>
-                    <td class="text-center"><?= $p->daily_rate ?></td>
-                    <td class="text-center"><?= $p->memo ?></td>
-                    <?php if($p->status == 1) : ?>
-                        <td class="text-center"><span class="label label-success">YES</span></td>
-                    <?php else : ?>
-                        <td class="text-center"><span class="label label-success">NO</span></td>
-                    <?php endif; ?>
-
-                    <?php if($p->confirmed == 1) : ?>
-                        <td class="text-center"><span class="label label-success">YES</span></td>
-                    <?php else : ?>
-                        <td class="text-center"><span class="label label-danger">NO</span></td>
-                    <?php endif; ?>
-                    <td class="text-center">
-                       <?= $this->Html->link('Download', '/img/payments/'.$p->path_to_photo ,array('download'=> $p->path_to_photo)); ?> 
-                    </td>
-                    <td class="text-center">
-                        <a href="<?= ROOT_DIREC ?>/payments/edit/<?= $p->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a> 
-                        <a target="_blank" href="<?= ROOT_DIREC ?>/payments/receipt/<?= $p->id ?>" style="font-size:1.3em!important;color:green"> <span class="fa fa-xl fa-eye color-yellow"></span></a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-            <!--End .article-->
-        </div>
-    </div>
-    <!-- end payments -->
 
 
     <div class="panel panel-default articles">

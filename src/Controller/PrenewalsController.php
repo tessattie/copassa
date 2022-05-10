@@ -31,11 +31,11 @@ class PrenewalsController extends AppController
         if(!empty($policy_id)){
             $policy = $this->Prenewals->Policies->get($policy_id, ['contain' => ['Customers']]);
             $this->savelog(200, "Accessed renewals for policy #".$policy->policy_number, 1, 3, "", "");
-            $renewals = $this->Prenewals->find("all", array('order' => array('Prenewals.renewal_date desc'), "conditions" => array('Prenewals.tenant_id' => $this->Auth->user()['tenant_id'], 'Prenewals.policy_id' => $policy_id)));
+            $renewals = $this->Prenewals->find("all", array('order' => array('Prenewals.renewal_date desc'), "conditions" => array('Prenewals.tenant_id' => $this->Auth->user()['tenant_id'], 'Prenewals.policy_id' => $policy_id)))->contain(['Policies' => ['Customers']]);
         }else{
             $this->savelog(200, "Accessed renewals page", 1, 3, "", "");
             $policy = '';
-            $renewals = '';
+            $renewals = $this->Prenewals->find("all", array('order' => array('Prenewals.renewal_date desc'), "conditions" => array('Prenewals.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Customers']]);
         }
 
         $this->set(compact('policies', 'policy_id', 'policy', 'renewals'));

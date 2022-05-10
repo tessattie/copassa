@@ -112,7 +112,6 @@
                                 <th class="text-center">Deductible</th>
                                 <th class="text-center">Mode</th>
                                 <th class="text-center">Effective date</th>
-                                <th class="text-center">Paid until</th>
                                 <th class="text-center">Created By</th>
                                 <th class="text-center">Certificate</th>
                                 <th></th>
@@ -142,7 +141,6 @@
                                 <td class="text-center"><?= number_format($policy->deductible,2,".",",") ?> USD</td>
                                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
                                 <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
-                                <td class="text-center"><?= date("M d Y", strtotime($paiduntil)) ?></td>
            
                                 <td class="text-center"><?= $policy->user->name ?></td>
                                 <?php if(!empty($policy->certificate)) : ?>

@@ -13,7 +13,7 @@
         <li><a href="<?= ROOT_DIREC ?>/companies">
             Insurance Companies
         </a></li>
-        <li class="active">add</li>
+        <li class="active">Add</li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>

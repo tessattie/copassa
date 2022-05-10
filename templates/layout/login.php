@@ -58,6 +58,42 @@ $cakeDescription = 'AR';
     <?= $this->Html->script("bootstrap.js") ?>
     <?= $this->Html->script("bootstrap-datepicker.js") ?>
     <?= $this->Html->script("custom.js") ?>
-    
+    <style type="text/css">
+
+        .select2-container .select2-selection--single{
+            height:45px!important;
+        }
+        div.message.success{
+            background: #dff0d8;
+            padding: 13px;
+            text-align: center;
+        }
+        div.message.error{
+            background: #f2dede;
+            padding: 13px;
+            text-align: center;
+        }
+        /*.breadcrumb{
+            margin-top:-20px!important;
+        }*/
+        .fa-plus{
+            margin-top:10px!important;
+        }
+
+        .select2-container{
+            width:100%!important;
+        }
+
+        select.form-control{
+            height:46px!important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered{
+            line-height:45px!important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    margin-top: 6px;
+}
+    </style>
 </body>
 </html>

@@ -27,7 +27,7 @@ class RenewalsController extends AppController
     public function index()
     {
         $businesses = $this->Renewals->Businesses->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
-        $renewals = $this->Renewals->find("all", array("conditions" => array("Renewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Businesses']);
+        $renewals = $this->Renewals->find("all", array("conditions" => array("Renewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Transactions']);
 
         $this->set(compact('renewals', 'businesses'));
     }
@@ -246,7 +246,7 @@ class RenewalsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $renewal = $this->Renewals->get($id);
         if ($this->Renewals->delete($renewal)) {
             $this->Flash->success(__('The renewal has been deleted.'));

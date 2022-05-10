@@ -52,7 +52,9 @@
                     <?php endif; ?>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/families/edit/<?= $family->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                        <?php if(empty($family->transactions)) : ?>
                         <a href="<?= ROOT_DIREC ?>/families/delete/<?= $family->id ?>" onclick="return confirm('Are you sure you would like to delete the family member <?= $family->first_name." ".$family->last_name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

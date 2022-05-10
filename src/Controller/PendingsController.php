@@ -98,12 +98,12 @@ class PendingsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $pending = $this->Pendings->get($id);
         if ($this->Pendings->delete($pending)) {
-            $this->Flash->success(__('The pending has been deleted.'));
+            $this->Flash->success(__('The pending new business has been deleted.'));
         } else {
-            $this->Flash->error(__('The pending could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The pending new business could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);

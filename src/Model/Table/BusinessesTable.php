@@ -56,6 +56,9 @@ class BusinessesTable extends Table
         $this->hasMany('Employees', [
             'foreignKey' => 'business_id',
         ]);
+        $this->hasMany('Renewals', [
+            'foreignKey' => 'business_id',
+        ]);
         $this->hasMany('Groupings', [
             'foreignKey' => 'business_id',
         ]);

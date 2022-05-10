@@ -23,11 +23,11 @@ class PoliciesController extends AppController
         $this->savelog(200, "Accessed policies page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
         if(!empty($filter_country)){
-           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries']])->matching('Customers', function ($q) use ($filter_country) {
+           $policies = $this->Policies->find("all", array("conditions" => array('Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants'])->matching('Customers', function ($q) use ($filter_country) {
                 return $q->where(['Customers.country_id' => $filter_country]);
             }); 
         }else{
-           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
         }
 
         $this->set(compact('policies'));
@@ -478,14 +478,7 @@ class PoliciesController extends AppController
         die();
     }
 
-    public function getpoliciesforrenewal(){
-       $policies = $this->Policies->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'])));  
-       foreach($policies as $policy){
-        $this->setrenewals($policy, date("Y"));
-       }
-
-       return $this->redirect($this->referer());
-    }
+    
 
     public function generaterenewals(){
         if($this->request->is(['patch', 'put', 'post'])){
@@ -496,48 +489,5 @@ class PoliciesController extends AppController
         return $this->redirect($this->referer());
     }
 
-    public function setrenewals($policy, $current_year = false){
-        ini_set("memory_limit","-1");
-        $this->loadModel("Prenewals");
-        if($current_year == false){
-            $current_year = date("Y");
-        }
-        // set the renewals we have to create 
-        $renewal_status = $this->Prenewals->find("all", array("conditions" => array("policy_id" => $policy->id), "order" => array("renewal_date DESC")))->first();
-        if(empty($renewal_status) || $renewal_status->policy_status == 1){
-            $mode = $policy->mode; 
-            $effective_date = $policy->effective_date->i18nFormat('yyyy-MM-dd');
-            $renewal_year_start = date($current_year."-m-d", strtotime($effective_date));
-            $renewal_year_end =  date("Y-m-d", strtotime("+12 months", strtotime($renewal_year_start)));
-            // debug($renewal_year_start." - ".$renewal_year_end) ; die();
-            
-            $renewals = [];
-            $next_renewal =  date("Y-m-d", strtotime("+".$mode." months", strtotime($effective_date)));
-            while($next_renewal  < $renewal_year_end){
-                $year = date("Y", strtotime($next_renewal)); 
-                if($next_renewal  <= $renewal_year_end && $next_renewal >= $renewal_year_start){
-                    array_push($renewals, $next_renewal);
-                }
-                $next_renewal =  date("Y-m-d", strtotime("+".$mode." months", strtotime($next_renewal)));
-            }
-
-
-            foreach($renewals as $renewal){
-                $renewals = $this->Prenewals->find("all", array("conditions" => array("renewal_date" => $renewal, "policy_id" => $policy->id)));
-                if($renewals->count() == 0){
-                    // create renewal
-                    $prenewal = $this->Prenewals->newEmptyEntity(); 
-                    $prenewal->renewal_date = $renewal; 
-                    $prenewal->policy_id = $policy->id; 
-                    $prenewal->premium = $policy->premium; 
-                    $prenewal->fee = $policy->fee; 
-                    $prenewal->tenant_id = $policy->tenant_id;
-                    $prenewal->policy_status = 1; 
-                    $prenewal->status = 1;
-                    // debug($prenewal); die();
-                    $this->Prenewals->save($prenewal);
-                }
-            }
-        }
-    }
+    
 }

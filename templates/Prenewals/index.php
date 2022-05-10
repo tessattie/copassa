@@ -11,13 +11,13 @@
         <li><a href="<?= ROOT_DIREC ?>/sales/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li class="active">Renewals</li>
+        <li class="active"><a href="<?= ROOT_DIREC ?>/prenewals">Renewals</a></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="panel panel-default articles">
         <div class="panel-heading">
             Policies
@@ -38,14 +38,10 @@
         </div>
     </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-9">
         <div class="panel panel-default articles">
         <div class="panel-heading">
             Renewals <?= (!empty($policy_id)) ? " :  ".$policy->policy_number." - ".$policy->customer->name : "" ?>
-            
-            <?php if(!empty($policy_id)) : ?>
-                <button class="btn btn-info" data-target="#generaterenewals" data-toggle="modal" style="float:right">Generate Renewals</button>
-            <?php endif; ?>
         </div>
     <div class="panel-body articles-container" style="height:550px;overflow-y:scroll">
         <?php if(!empty($policy_id)) : ?>
@@ -53,10 +49,11 @@
         <small><strong>Mode : <?= $modes[$policy->mode]; ?></strong></small>
         <hr>
     <?php endif; ?>
-    <table class="table datable table-striped">
+    <table class="table datatable2 table-striped">
         <thead>
             <tr>
                 <th>Renewal Date</th>
+                <th>Policy</th>
                 <th class="text-center">Premium</th>
                 <th class="text-center">Fee</th>
                 <th class="text-center">Status</th>
@@ -70,6 +67,7 @@
                 <?php foreach($renewals as $renewal) : ?>
                     <tr>
                         <td><?= date('F d Y', strtotime($renewal->renewal_date)); ?></td>
+                        <td><?= $renewal->policy->customer->name . ' - ' . $renewal->policy->policy_number ?></td>
                         <td class="text-center"><?= number_format($renewal->premium, 2, ".", ",") ?></td>
                         <td class="text-center"><?= number_format($renewal->fee, 2, ".", ",") ?></td>
                         <?php if($renewal->status == 1) : ?>
@@ -138,6 +136,17 @@
 
 <script type="text/javascript">$(document).ready( function () {
     $('.datatable').DataTable({
+        scrollY: "400px",
+        scrollCollapse: true,
+        paging: false,
+        "language": {
+            "search": "",
+            "searchPlaceholder": "Search"
+        }
+    });
+
+
+    $('.datatable2').DataTable({
         scrollY: "400px",
         scrollCollapse: true,
         paging: false,

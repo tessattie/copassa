@@ -37,6 +37,9 @@
                     <td class="text-center"><?= $renewal->year  ?></td>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/renewals/view/<?= $renewal->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-eye color-blue"></span></a>
+                        <?php if(empty($renewal->transactions)) : ?>
+                        <a href="<?= ROOT_DIREC ?>/renewals/delete/<?= $renewal->id ?>" onclick="return confirm('Are you sure you would like to delete the renewal #<?= $renewal->renewal_number." for the company ".$renewal->business->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

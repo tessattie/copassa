@@ -110,6 +110,10 @@
                 <?= $this->Form->control('country_id', array('class' => 'form-control', "label" => "Country *", "empty" => "-- Choose --", "options" => $countries)); ?>
             </div> 
         </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-4"><?= $this->Form->control('last_contact_date', array('class' => 'form-control', "label" => "Last Contact Date", "type" => "Date", "value" => date('Y-m-d'), 'required' => true, 'style' => "height:46px")); ?></div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

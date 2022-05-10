@@ -9,7 +9,7 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li><a href="<?= ROOT_DIREC ?>/groupings">
+        <li><a href="<?= ROOT_DIREC ?>/employees">
             Employees
         </a></li>
         <li>Edit</li>

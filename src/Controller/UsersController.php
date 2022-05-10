@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace App\Controller;
+use Cake\Auth\DefaultPasswordHasher;
 
 /**
  * Users Controller
@@ -94,6 +95,37 @@ class UsersController extends AppController
             $roles = $this->Users->Roles->find('list', ['conditions' => [['id' => 2]]]);
         }
         $this->set(compact('user', 'roles'));
+    }
+
+
+    /**
+     * View method
+     *
+     * @param string|null $id Tenant id.
+     * @return \Cake\Http\Response|null|void Renders view
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function view($id = null)
+    {
+        $user = $this->Users->get($id, [
+        ]);
+
+        if ($this->request->is(['patch', 'post', 'put'])){
+            if($this->request->getData()['confirm_new_password'] == $this->request->getData()['new_password']){
+                if((new DefaultPasswordHasher)->check($this->request->getData()['old_password'], $user->password)){
+                    $user->password = $this->request->getData()['confirm_new_password'];
+                    $this->Users->save($user); 
+                    $this->Flash->success(__('Your password has been reset. Please log in with your new password to continue.'));
+                    return $this->redirect($this->Auth->logout());
+                }else{
+                    $this->Flash->error(__('Current password is incorrect'));
+                }
+            }else{
+                $this->Flash->error(__('Both the new password and password confirmation must be the same.'));
+            }
+        }
+
+        $this->set(compact('user'));
     }
 
 

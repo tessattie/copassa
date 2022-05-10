@@ -52,6 +52,10 @@ class FamiliesTable extends Table
             'joinType' => 'INNER',
         ]);
 
+        $this->hasMany('Transactions', [
+            'foreignKey' => 'family_id',
+        ]);
+
         $this->belongsTo('Tenants', [
             'foreignKey' => 'tenant_id',
             'joinType' => 'INNER',

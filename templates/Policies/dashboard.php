@@ -56,7 +56,7 @@
         <?php foreach($birthdays as $birthday) : ?>
             <tr>
                 <td class="text-left"><?= $birthday->name ?></td>
-                <td class="text-center"><?= $birthday->dob ?></td>
+                <td class="text-center"><?= date('M d Y', strtotime($birthday->dob)) ?></td>
                 <td class="text-center"><?= $birthday->home_phone ?></td>
             </tr>
         <?php endforeach; ?>
@@ -136,7 +136,7 @@
                     <td class="text-center"><?= $transaction->grouping->grouping_number ?></td>
                     <td class="text-center"><?= $transaction->employee->first_name." ".$transaction->employee->last_name ?></td>
                     <td class="text-center"><?= $transaction->family->first_name." ".$transaction->family->last_name ?></td>
-                    <td class="text-center"><?= date("F d Y", strtotime($transaction->created)) ?></td>
+                    <td class="text-center"><?= date("M d Y", strtotime($transaction->created)) ?></td>
                     <td class="text-center"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>">Confirm</button></td>
                 <?php endforeach; ?>
         </tbody>

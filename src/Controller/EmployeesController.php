@@ -20,7 +20,7 @@ class EmployeesController extends AppController
      */
     public function index()
     {
-        $employees = $this->Employees->find("all", array('conditions' => array('Employees.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Groupings' => ['Companies']]);
+        $employees = $this->Employees->find("all", array('conditions' => array('Employees.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Groupings' => ['Companies'], 'Transactions']);
 
         $this->set(compact('employees'));
     }
@@ -253,8 +253,12 @@ class EmployeesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $employee = $this->Employees->get($id);
+        $families = $this->Employees->Families->find("all", array("conditions" => array('employee_id' => $employee->id)));
+        foreach($families as $family){
+            $this->Employees->Families->delete($family);
+        }
         if ($this->Employees->delete($employee)) {
             $this->Flash->success(__('The employee has been deleted.'));
         } else {

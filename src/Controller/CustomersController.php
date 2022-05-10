@@ -27,7 +27,7 @@ class CustomersController extends AppController
     {
         $this->savelog(200, "Accessed policy holder page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
-          $customers = $this->Customers->find("all", array('conditions' => array('Customers.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Users', 'Countries', 'Policies' => 'Companies']);  
+          $customers = $this->Customers->find("all", array('conditions' => array('Customers.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Users', 'Countries', 'Notes', 'Policies' => 'Companies']);  
 
         $this->set(compact('customers', 'filter_country'));
     }
