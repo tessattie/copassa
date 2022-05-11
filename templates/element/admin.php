@@ -26,15 +26,15 @@
                 <ul class="nav navbar-top-links navbar-right">
                     <li>
                     <?= $this->Form->create(null, array("url" => "/app/update_session_variables")) ?>
-                    <select name="filter_country" style="margin-top: 16px;height: 31px!important;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;border:none!important">
+                    <select name="filter_country" style="margin-top: 10px;height: 39px!important;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;border:none!important">
                         <option value="">-- All --</option>
                         <?php foreach($filter_countries as $id => $name) : ?>
                             <option value="<?= $id ?>" <?= ($filter_country == $id) ? 'selected' : "" ?>><?= strtoupper($name) ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <input value="<?= $filterfrom  ?>" type="date" name="from" style="margin-top: 15px;height: 30px;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
-                    <input value="<?= $filterto  ?>" type="date" name="to" style="height: 30px;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
-                    <button class="btn btn-success" style="padding: 5px 12px!important;
+                    <input value="<?= $filterfrom  ?>" type="date" name="from" style="margin-top: 11px;height: 39px;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
+                    <input value="<?= $filterto  ?>" type="date" name="to" style="height: 39px;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
+                    <button class="btn btn-success" style="padding: 9px 12px!important;
     margin-top: -3px!important;"><span class="glyphicon glyphicon-ok" ></span></button>
                     <?= $this->Form->end() ?>
                 </li>
@@ -43,10 +43,10 @@
         </div><!-- /.container-fluid -->
     </nav>
     <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
-        <div class="profile-sidebar">
+        <div class="profile-sidebar" style="text-align:center">
             <div class="profile-usertitle" style="margin:auto;width:100%">
                 <div class="profile-usertitle-name text-center" style="margin-top:12px"><?= $user_connected['name'] ?></div>
-                <div class="profile-usertitle-status text-center"><?= $tenant->full_name ?></div>
+                <div class="profile-usertitle-status text-center"><?= $tenant->company ?></div>
             </div>
             <div class="clear"></div>
         </div>
@@ -71,9 +71,9 @@
             </li>
 
             <li class="<?= ($this->request->getParam('controller') == 'Companies') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-bank">&nbsp;</em> Insurance CO</a></li>
-            <li class="<?= ($this->request->getParam('controller') == 'Countries' && $this->request->getParam('action') == 'dashboard') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/countries"><em class="fa fa-map">&nbsp;</em> Countries</a></li>
+            <li class="<?= ($this->request->getParam('controller') == 'Countries') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/countries"><em class="fa fa-map">&nbsp;</em> Countries</a></li>
 
-            <li class="parent <?= ( ($this->request->getParam('controller') == 'Customers' || $this->request->getParam('controller') == 'Pendings' || $this->request->getParam('controller') == 'Policies') && $this->request->getParam('action') != 'dashboard' && $this->request->getParam('action') != 'report' ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-111">
+            <li class="parent <?= ( ($this->request->getParam('controller') == 'Prenewals' || $this->request->getParam('controller') == 'Newborns' || $this->request->getParam('controller') == 'Customers' || $this->request->getParam('controller') == 'Pendings' || $this->request->getParam('controller') == 'Policies') && $this->request->getParam('action') != 'dashboard' && $this->request->getParam('action') != 'report' ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-111">
                 <em class="fa fa-users">&nbsp;</em> Policy Holders <span data-toggle="collapse" href="#sub-item-111" class="icon pull-right"><em class="fa fa-plus"></em></span>
                 </a>
                 <ul class="children collapse" id="sub-item-111">
@@ -99,7 +99,7 @@
                 </ul>
             </li>
 
-            <li class="parent <?= ( ($this->request->getParam('controller') == 'Businesses' || $this->request->getParam('controller') == 'Groupings' || $this->request->getParam('controller') == 'Employees' || $this->request->getParam('controller') == 'Families') && $this->request->getParam('action') != 'report') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-1111">
+            <li class="parent <?= ( ($this->request->getParam('controller') == 'Renewals' || $this->request->getParam('controller') == 'Businesses' || $this->request->getParam('controller') == 'Groupings' || $this->request->getParam('controller') == 'Employees' || $this->request->getParam('controller') == 'Families') && $this->request->getParam('action') != 'report') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-1111">
                 <em class="fa fa-building">&nbsp;</em> Corporate <span data-toggle="collapse" href="#sub-item-1111" class="icon pull-right"><em class="fa fa-plus"></em></span>
                 </a>
                 <ul class="children collapse" id="sub-item-1111">
@@ -124,10 +124,10 @@
                 </ul>
             </li>
 
-            <li class="parent <?= ($this->request->getParam('controller') == 'Claims' || $this->request->getParam('controller') == 'Types' || $this->request->getParam('controller') == 'ClaimsTypes') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-2">
-                <em class="fa fa-calendar">&nbsp;</em> Claims <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="fa fa-plus"></em></span>
+            <li class="parent <?= ($this->request->getParam('controller') == 'Claims' || $this->request->getParam('controller') == 'Types' || $this->request->getParam('controller') == 'ClaimsTypes') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-24">
+                <em class="fa fa-calendar">&nbsp;</em> Claims <span data-toggle="collapse" href="#sub-item-24" class="icon pull-right"><em class="fa fa-plus"></em></span>
                 </a>
-                <ul class="children collapse" id="sub-item-2">
+                <ul class="children collapse" id="sub-item-24">
                     <li class="<?= ($this->request->getParam('controller') == 'Claims' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/claims">
                         <span class="fa fa-arrow-right">&nbsp;</span> Claims
                     </a></li>
@@ -139,7 +139,7 @@
 
             <li class="<?= ($this->request->getParam('controller') == 'Folders') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/folders/show"><em class="fa fa-folder">&nbsp;</em> Ressources</a></li>
 
-            <li class="parent <?= ($this->request->getParam('controller') == 'Users' || $this->request->getParam('controller') == 'Roles' || $this->request->getParam('controller') == 'Cards') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-2">
+            <li class="parent <?= ($this->request->getParam('controller') == 'Riders' ||$this->request->getParam('controller') == 'Authorizations' || $this->request->getParam('controller') == 'Users' || $this->request->getParam('controller') == 'Roles' || $this->request->getParam('controller') == 'Cards') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-2">
                 <em class="fa fa-lock">&nbsp;</em> Settings <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="fa fa-plus"></em></span>
                 </a>
                 <ul class="children collapse" id="sub-item-2">
@@ -152,6 +152,7 @@
                     <li class="<?= ($this->request->getParam('controller') == 'Riders') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/riders">
                         <span class="fa fa-arrow-right">&nbsp;</span> Riders
                     </a></li>
+                    
                <!--      <li class="<?= ($this->request->getParam('controller') == 'Logs') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/logs">
                         <span class="fa fa-arrow-right">&nbsp;</span> Activity
                     </a></li> -->

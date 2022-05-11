@@ -328,11 +328,11 @@ class RenewalsController extends AppController
 
         $excel = new PHPExcel();
         
-        $excel->getProperties()->setCreator("Copassa")
-             ->setLastModifiedBy("Copassa System")
-             ->setTitle("Copassa Exports")
-             ->setSubject("Copassa Exports")
-             ->setDescription("Copassa Exports");
+        $excel->getProperties()->setCreator("AR")
+             ->setLastModifiedBy("AR System")
+             ->setTitle("AR Exports")
+             ->setSubject("AR Exports")
+             ->setDescription("AR Exports");
         $excel->setActiveSheetIndex(0);
         $excel->getActiveSheet()->setTitle('Summary');
         $excel->createSheet(1);

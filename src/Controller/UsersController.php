@@ -107,7 +107,7 @@ class UsersController extends AppController
      */
     public function view($id = null)
     {
-        $user = $this->Users->get($id, [
+        $user = $this->Users->get($id, ['contain' => ['Tenants']
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])){
@@ -154,19 +154,26 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('login');
         if($this->request->is('post')){
             $user = $this->Auth->identify();
+
             if ($user) {
-                if($user['status'] == false){
-                    $this->savelog(500, "Blocked user attempted to log in", 0, 4, "", json_encode($user));
-                    $this->Flash->error(__('This account is blocked. Contact your administrator'));
-                }else{
-                    if($user['role_id'] == 1 || $user['role_id'] == 2){
-                        $this->Auth->setUser($user);
-                        $this->savelog(200, "User logged in", 1, 4, "", json_encode($user));
-                        return $this->redirect($this->Auth->redirectUrl());
+                $this->loadModel("Tenants"); $tenant= $this->Tenants->get($user['tenant_id']);
+                if($tenant->status == 1){
+                    if($user['status'] == 0){
+                        $this->savelog(500, "Blocked user attempted to log in", 0, 4, "", json_encode($user));
+                        $this->Flash->error(__('This account is inactive. Contact our team to fix this problem'));
                     }else{
-                        $this->Flash->error(__('You do not have access to this application. Contact your administrator'));
+                        if($user['role_id'] == 1 || $user['role_id'] == 2){
+                            $this->Auth->setUser($user);
+                            $this->savelog(200, "User logged in", 1, 4, "", json_encode($user));
+                            return $this->redirect($this->Auth->redirectUrl());
+                        }else{
+                            $this->Flash->error(__('You do not have access to this application. Contact your administrator'));
+                        }
                     }
+                }else{
+                    $this->Flash->error(__('This agent is inactive. Please contact our administrators for more information.'));
                 }
+                
             }else{
                 $this->savelog(500, "Unknown user attempted to logged in", 0, 4, "", json_encode($this->request->getData()));
                 $this->Flash->error(__('Wrong username or password'));

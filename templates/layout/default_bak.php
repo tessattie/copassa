@@ -111,7 +111,7 @@ $cakeDescription = 'AR';
             $('.select2').select2();
         })
     </script>
-<!-- Start of LiveChat (www.livechat.com) code -->
+    <!-- Start of LiveChat (www.livechat.com) code -->
 <script>
     window.__lc = window.__lc || {};
     window.__lc.license = 14120061;

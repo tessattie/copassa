@@ -10,7 +10,7 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li class="active">Countries</li>
+        <li class="active">Profile</li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
@@ -30,6 +30,14 @@
                         <tr>
                             <th><?= __('Username') ?></th>
                             <td class="text-right"><?= h($user->username) ?></td>
+                        </tr>
+                        <tr>
+                            <th><?= __('Company') ?></th>
+                            <td class="text-right"><?= h($user->tenant->company) ?></td>
+                        </tr>
+                        <tr>
+                            <th><?= __('Account Number') ?></th>
+                            <td class="text-right"><?= h($user->tenant->identification) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Status') ?></th>
@@ -52,7 +60,7 @@
         <div class="col-md-4">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Reset Password
+                    Reset Your Password
                 </div>
                 <div class="panel-body articles-container">
                     <?= $this->Form->create() ?>

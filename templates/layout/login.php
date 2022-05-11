@@ -37,22 +37,15 @@ $cakeDescription = 'AR';
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
 </head>
-<body>
-    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span></button>
-                <a class="navbar-brand" href="#" style="color:white"><span style="color:white">AR System</span></a>
+<body style="background:#008be5!important">
 
-            </div>
-        </div><!-- /.container-fluid -->
-    </nav>
 
         <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
+
+            <footer style="position:fixed;width:100%;bottom:0px;height:60px;color:white;text-align:center;padding-top:18px">
+                AR System LLC © <?= date("Y") ?>
+            </footer>
 
     <?= $this->Html->script("jquery-1.11.1.min.js") ?>
     <?= $this->Html->script("bootstrap.js") ?>
@@ -95,7 +88,7 @@ $cakeDescription = 'AR';
     margin-top: 6px;
 }
     </style>
-    <!-- Start of LiveChat (www.livechat.com) code -->
+<!-- Start of LiveChat (www.livechat.com) code -->
 <script>
     window.__lc = window.__lc || {};
     window.__lc.license = 14120061;
