@@ -12,11 +12,11 @@
 <div class="container-fluid">   
 <div class="row">
     <div class="col-md-6">
-        <div class="panel panel-default articles" style="height:300px;overflow-y:scroll">
+        <div class="panel panel-default articles">
             <div class="panel-heading">
                 Maternity Reminders
             </div>
-            <div class="panel-body articles-container">       
+            <div class="panel-body articles-container" style="height:300px;overflow-y:scroll">       
                 <table class="table table-striped table-bordered">
                 <thead> 
                     <th class="text-left">Policy Number</th>
@@ -41,11 +41,11 @@
     </div> 
 
     <div class="col-md-6">
-        <div class="panel panel-default articles" style="height:300px;overflow-y:scroll">
+        <div class="panel panel-default articles" >
             <div class="panel-heading">
                 Birthdays
             </div>
-            <div class="panel-body articles-container">       
+            <div class="panel-body articles-container" style="height:300px;overflow-y:scroll">       
                 <table class="table table-striped table-bordered">
                 <thead> 
                     <th class="text-left">Policy Holder</th>
@@ -71,11 +71,11 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default articles" style="height:300px;overflow-y:scroll">
+        <div class="panel panel-default articles" >
             <div class="panel-heading">
                 Pending New Business
             </div>
-            <div class="panel-body articles-container">       
+            <div class="panel-body articles-container" style="height:300px;overflow-y:scroll">       
 <table class="table table-striped table-bordered">
                 <thead> 
                     <th class="text-left">Name</th>
@@ -114,11 +114,11 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="panel panel-default articles" style="height:300px;overflow-y:scroll">
+        <div class="panel panel-default articles">
             <div class="panel-heading">
                 Corporate Groups Renewals - Awaiting Transactions
             </div>
-            <div class="panel-body articles-container">       
+            <div class="panel-body articles-container" style="height:300px;overflow-y:scroll">       
 <table class="table table-striped table-bordered">
                 <thead> 
                     <th class="text-left">Renewal #</th>
@@ -139,6 +139,63 @@
                     <td class="text-center"><?= date("M d Y", strtotime($transaction->created)) ?></td>
                     <td class="text-center"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>">Confirm</button></td>
                 <?php endforeach; ?>
+        </tbody>
+        </table>
+            </div>
+            
+        </div>
+    </div> 
+ 
+</div> 
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default articles" >
+            <div class="panel-heading">
+                New Policies
+            </div>
+            <div class="panel-body articles-container" style="height:300px;overflow-y:scroll">       
+    <table class="table table-bordered">
+                <thead> 
+                    <th class="text-left">Number</th>
+                    <th class="text-center">Holder</th>
+                    <th class="text-center">Country</th>
+                    <th class="text-center">Company</th>
+                    <th class="text-center">Premium</th>
+
+                    <th class="text-center">Mode</th>
+                    <th class="text-right">Effective Date</th>
+                </thead>
+            <tbody> 
+        <?php foreach($newBusiness as $policy) : ?>
+            <tr>
+                <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
+                <td class="text-center"><?= $policy->customer->name ?></td>
+                <td class="text-center"><?= substr($policy->customer->country->name, 0, 5) ?></td>
+                <?php if(!empty($policy->company)) : ?>
+                    <?php if(!empty($policy->option)) : ?>
+                    <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
+                    <?php else : ?>
+                        <td class="text-center"><?= $policy->company->name ?></td>
+                    <?php endif; ?>
+                <?php else : ?>
+                    <?php if(!empty($policy->option)) : ?>
+                    <td class="text-center"><?= $policy->option->name ?></td>
+                    <?php else : ?>
+                        <td class="text-center"></td>
+                    <?php endif; ?>
+                <?php endif; ?>
+                
+                <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
+                <td class="text-center"><?= $modes[$policy->mode] ?></td>
+            
+                <td class="text-right">
+                    <?= date("M d Y", strtotime($policy->effective_date)) ?>
+                </td>
+
+            </tr>
+        <?php endforeach; ?>
         </tbody>
         </table>
             </div>

@@ -52,11 +52,15 @@ class PoliciesController extends AppController
     public function dashboard(){
         $this->loadModel("Newborns");$this->loadModel("Pendings");$this->loadModel("Transactions");
 
+        $new_business_date = date("Y-m-d", strtotime("-1 year")); 
+
         $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1, 'Newborns.tenant_id' => $this->Auth->user()['tenant_id']), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
 
         $pendings = $this->Pendings->find("all", array("conditions" => array("Pendings.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Countries', 'Users']);
 
-        $transactions = $this->Transactions->find("all", array("conditions" => array("Transactions.status" => 1)))->contain(['Employees', 'Families', 'Groupings', 'Renewals' => ['Businesses']]);
+        $newBusiness = $this->Policies->find("all", array("conditions" => array('Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'effective_date >=' => $new_business_date)))->contain(['Customers' => ['Countries'], 'Companies', 'Options']);
+
+        $transactions = $this->Transactions->find("all", array("conditions" => array("Transactions.status" => 1, 'Transactions.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Employees', 'Families', 'Groupings', 'Renewals' => ['Businesses']]);
 
         $all_birthdays = $this->Policies->Customers->find("all", array("conditions" => array("Customers.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies']);
 
@@ -70,7 +74,7 @@ class PoliciesController extends AppController
             }
             
         }
-        $this->set(compact('newborns', 'birthdays', 'pendings', 'transactions'));
+        $this->set(compact('newborns', 'birthdays', 'pendings', 'transactions', 'newBusiness'));
     }
 
     /**
