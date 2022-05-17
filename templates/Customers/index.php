@@ -117,7 +117,7 @@
     $('.datatable').DataTable({
         dom: 'Bfrtip',
         buttons: [
-            'excel', 'pdf', 'print'
+            'excel'
         ]
     } );
 } );</script>
