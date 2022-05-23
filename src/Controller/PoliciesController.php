@@ -220,8 +220,8 @@ class PoliciesController extends AppController
         $type_filter="9999";
         $company_filter = "9999";
         // Get each company 
-        $comps = $this->Policies->Companies->find("list", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
-        $companies = $this->Policies->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+        $comps = $this->Policies->Companies->find("list", array("order" => array("name ASC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+        $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
         if($this->request->is(['patch', 'put', 'post'])){
             if(!empty($this->request->getData()['type'])){
                 $type_filter = $this->request->getData()['type'];

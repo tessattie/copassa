@@ -16,7 +16,8 @@ $months = array(
   10 => "October", 
   11 => "November", 
   12 => "December"
-)
+);
+
 ?>
 
 <div class="row" style="margin-bottom:15px">
