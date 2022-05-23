@@ -295,7 +295,7 @@ class PoliciesController extends AppController
         $from = $this->session->read("from"); 
         $to = $this->session->read("to"); 
 
-        $companies = $this->Policies->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+        $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
 
         if($company_id != '9999'){
             $companies->where(['id' => $company_id]);
