@@ -136,7 +136,6 @@ if(!empty($customer->dob)){
                                 <th class="text-center">Deductible</th>
                                 <th class="text-center">Mode</th>
                                 <th class="text-center">Effective date</th>
-                                <th class="text-center">Pending Business</th>
                                 <th class="text-center">Certificate</th>
                                 <th></th>
                             </tr>
@@ -154,12 +153,6 @@ if(!empty($customer->dob)){
                                 <td class="text-center"><?= number_format($policy->deductible,2,".",",") ?> USD</td>
                                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
                                 <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
-
-                                <?php if($policy->pending_business == 1) : ?>
-                                    <td class="text-center"><span class="label label-warning">Yes</span></td>
-                                <?php else : ?>
-                                    <td></td>
-                                <?php endif; ?>
                       
                                 <td class="text-center">
                                     <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
