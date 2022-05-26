@@ -18,7 +18,7 @@ class TypesController extends AppController
      */
     public function index()
     {
-        $types = $this->Types->find("all", array("order" => array("name ASC")));
+        $types = $this->Types->find("all", array("order" => array("name ASC")))->contain(["ClaimsTypes"]);
 
         $this->set(compact('types'));
     }
@@ -48,7 +48,14 @@ class TypesController extends AppController
     {
         $type = $this->Types->newEmptyEntity();
         if ($this->request->is('post')) {
+            $types = $this->Types->find("all", array("conditions" => ("tenant_id" => $this->Auth->user()['tenant_id'], 'is_deductible' => 1) )); 
+
             $type = $this->Types->patchEntity($type, $this->request->getData());
+            if($types->count() == 0){
+                $type->is_deductible = 1;
+            }else{
+                $type->is_deductible = 2;
+            }
             $type->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Types->save($type)) {
                 $this->Flash->success(__('The type has been saved.'));
@@ -91,7 +98,7 @@ class TypesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $type = $this->Types->get($id);
         if ($this->Types->delete($type)) {
             $this->Flash->success(__('The type has been deleted.'));
@@ -100,5 +107,23 @@ class TypesController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+
+    public function deductible(){
+        if($this->request->is(['ajax'])){
+            $types = $this->Types->find("all", array("conditions" => ("tenant_id" => $this->Auth->user()['tenant_id']) )); 
+            foreach($types as $type){
+                if($type->id == $this->request->getData()['type_id']){
+                    $type->is_deductible = 1;
+                }else{
+                    $type->is_deductible = 2;
+                }
+
+                $this->Types->save($type);
+            }
+            echo json_encode(array()); 
+        }
+        die();
     }
 }

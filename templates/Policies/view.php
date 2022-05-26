@@ -32,10 +32,7 @@ $paiduntil = $yesterday->format('Y-m-d');
         <div class="col-md-9">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?> 
-                    <?php if($policy->pending_business == 1) : ?>
-                        <span class="label label-warning">Pending Business</span>
-                    <?php endif; ?>
+                    Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?> <button class="btn btn-info" style="float:right;margin-top:4px;margin-left:5px" data-toggle="modal" data-target="#newclaim">New Claim</button>
                     <a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a>
                 </div>
             <div class="panel-body articles-container">
@@ -302,6 +299,35 @@ $paiduntil = $yesterday->format('Y-m-d');
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
         <button type="submit" class="btn btn-success">ADD</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="newclaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Claim</h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => '/claims/add')) ?>
+      <div class="modal-body">
+                <div class="col-md-12"><?= $this->Form->control('policy_id', array('type' => 'hidden', "value" => $policy->id)); ?></div>
+
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Diagnosis *", "placeholder" => "Diagnosis")); ?></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description")); ?></div>
+            </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Add</button>
       </div>
       <?= $this->Form->end() ?>
     </div>

@@ -28,7 +28,7 @@ if(!empty($customer->dob)){
         <div class="col-md-9">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Policy Holder : <?= $customer->name ?>
+                    Policy Holder : <?= $customer->name ?><button class="btn btn-info" style="float:right" data-toggle="modal" data-target="#newclaim">New Claim</button>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">
@@ -103,7 +103,6 @@ if(!empty($customer->dob)){
                 <div class="panel-body articles-container" style="height: 384px; overflow-y:scroll">       
                     <?php foreach($customer->notes as $n) : ?>
                         <p class="bg-info" style="padding:10px">
-                            <a href="<?= ROOT_DIREC ?>/notes/delete/<?= $n->id ?>" style="float:right;padding:2px 5px;background:red"><span class="fa fa-remove"></span></a>
                             <label>Created By :</label> <?= $n->user->name ?><br>
                             <label>Date :</label> <?= date("M d Y H:i", strtotime($n->created)) ?><br><br>
                             <?= $n->comment ?>
@@ -155,7 +154,11 @@ if(!empty($customer->dob)){
                                 <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
                       
                                 <td class="text-center">
-                                    <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
+                                    <?php if(!empty($policy->certificate)) : ?>
+                                        <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
+                                    <?php else : ?>
+                                        -
+                                    <?php endif; ?>
                                 </td>
                                 <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a></td>
                             </tr>
@@ -167,6 +170,37 @@ if(!empty($customer->dob)){
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="newclaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Claim</h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => '/claims/add')) ?>
+      <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('policy_id', array('class' => 'form-control', "label" => "Policy Number *", "empty" => "-- Choose Policy --", 'options' => $policies)); ?></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Diagnosis *", "placeholder" => "Diagnosis")); ?></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description")); ?></div>
+            </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Add</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div>
 
 
     <div class="panel panel-default articles">

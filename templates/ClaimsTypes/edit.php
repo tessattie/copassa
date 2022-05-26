@@ -21,7 +21,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Edit Claim Detail : <?= $claimsType->title ?>
-            <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/claims/view/claimsType->claim_id"><em class="fa fa-arrow-left"></em></a>
+            <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/claims/view/<?= $claimsType->claim_id ?>"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($claimsType, array('type' => 'file')) ?>
@@ -50,6 +50,15 @@
             <hr>
             <div class="row">
                 <div class="col-md-6"><?= $this->Form->control('amount', array('class' => 'form-control', "label" => "Amount *", "placeholder" => "Amount", 'value' => 0)); ?></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-4"><?= $this->Form->control('received_date', array('class' => 'form-control', "type" => "date", "label" => "Date Received", 'value' => date("Y-m-d"))); ?>
+                    </div>
+                    <div class="col-md-4"><?= $this->Form->control('service_date', array('class' => 'form-control', "type" => "date", "label" => "Date of Service")); ?>
+                    </div>
+                    <div class="col-md-4"><?= $this->Form->control('processed_date', array('class' => 'form-control', "type" => "date", "label" => "Date Processed")); ?>
+                    </div>
             </div>
             <div class="row">
                     <div class="col-md-12"><?= $this->Form->button(__('Update'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>

@@ -24,7 +24,7 @@
                 <thead> 
                     <th>Policy</th>
                     <th class="text-center">Policy Holder</th>
-                    <th class="text-center">Title</th>
+                    <th class="text-center">Diagnosis</th>
                     <th class="text-center">Description</th>
                     <th class="text-center">Total</th>
                     <th class="text-center">Created</th>

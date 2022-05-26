@@ -3,6 +3,7 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Claim $claim
  */
+
 ?>
 
 <div class="row" style="margin-bottom:15px">
@@ -20,14 +21,8 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            New Corporate Group
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a href="<?= ROOT_DIREC ?>/businesses">
-                    <em class="fa fa-arrow-left"></em>
-                </a>
-                    
-                </li>
-            </ul>
+            New Claim
+           <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/claims"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($claim) ?>
@@ -37,7 +32,7 @@
                 </div>
                 <hr>
                   <div class="row">
-                <div class="col-md-6"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Title *", "placeholder" => "Title")); ?></div>
+                <div class="col-md-6"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Diagnosis *", "placeholder" => "Diagnosis")); ?></div>
                    <div class="col-md-6"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description / Diagnosis")); ?></div> 
                 </div>  
                 <div class="row">

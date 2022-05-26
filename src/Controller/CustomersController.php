@@ -53,8 +53,9 @@ class CustomersController extends AppController
             'contain' => ['Notes' => ['sort' => 'Notes.created DESC', 'Users'], 'Countries', 'Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users']],
         ]);
         $note = $this->Customers->Notes->newEmptyEntity();
+        $policies = $this->Customers->Policies->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'customer_id' => $id)));
 
-        $this->set(compact('customer', 'note'));
+        $this->set(compact('customer', 'note', 'policies'));
     }
 
     /**

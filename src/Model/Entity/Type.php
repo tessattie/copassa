@@ -30,6 +30,7 @@ class Type extends Entity
     protected $_accessible = [
         'name' => true,
         'color' => true,
+        'is_deductible' => true,
         'tenant_id' => true,
         'tenant' => true,
         'claims' => true,
