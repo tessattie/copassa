@@ -89,6 +89,33 @@ class PendingsController extends AppController
         $this->set(compact('pending', 'companies', 'options', 'countries', 'users'));
     }
 
+
+    /**
+     * Update method
+     *
+     * @param string|null $id Pending id.
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function update($id = null)
+    {
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $pending = $this->Pendings->get($this->request->getData()['pending_id'], [
+                'contain' => [],
+            ]);
+            $pending->status = $this->request->getData()['status'];
+            $pending->last_contact_date = $this->request->getData()['last_contact_date'];
+            if ($this->Pendings->save($pending)) {
+                $this->Flash->success(__('PNB updated for '.$pending->name));
+            }else{
+                $this->Flash->error(__('PNB could not be saved. Please contact administrator'));
+            }
+            
+        }
+        return $this->redirect(['action' => 'dashboard', 'controller' => 'policies']);
+    }
+
+
     /**
      * Delete method
      *

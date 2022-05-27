@@ -141,6 +141,31 @@ class PoliciesController extends AppController
         $this->set(compact('policy', 'companies', 'customers', 'customer_id'));
     }
 
+    public function adddependant(){
+        if($this->request->is(['patch', 'put', 'post'])){
+            $this->loadModel("Newborns");
+            // update newborn status
+            $newborn = $this->Newborns->get($this->request->getData()['newborn_id']);
+            $newborn->status = 2; 
+            $this->Newborns->save($newborn); 
+
+            $this->loadmodel('Dependants'); 
+            $dependant = $this->Dependants->newEmptyEntity(); 
+            $dependant->name = $this->request->getData()['name'];
+            $dependant->tenant_id = $this->Auth->user()['tenant_id'];
+            $dependant->sexe = $this->request->getData()['sexe'];
+            $dependant->relation = $this->request->getData()['relation'];
+            $dependant->dob = $this->request->getData()['dob'];
+            $dependant->limitations = $this->request->getData()['limitations'];
+            $dependant->policy_id = $this->request->getData()['policy_id'];
+            $dependant->user_id = $this->Auth->user()['id'];
+            $this->Dependants->save($dependant);
+            // add dependant
+        }
+
+        return $this->redirect(['action' => 'dashboard']);
+    }
+
     /**
      * Edit method
      *

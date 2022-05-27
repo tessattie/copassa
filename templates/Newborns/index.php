@@ -3,14 +3,14 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li>Maternity Reminder</li>
+        <li>Maternity Reminders</li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Maternity Reminder
+            Maternity Reminders
             <button class="btn btn-success" style="float:right" data-target="#newmaternity" data-toggle="modal">Add</button>
         </div>
     <div class="panel-body articles-container">
@@ -125,7 +125,7 @@
                 <hr>
                 <?= $this->Form->control('dob', array('class' => 'form-control', "type" => "date", "label" => "DOB *")); ?>
                 <hr>
-                <?= $this->Form->control('limitations', array('class' => 'form-control', "label" => "Exclusions *", "placeholder" => "Exclusions / Limitations")); ?>
+                <?= $this->Form->control('limitations', array('class' => 'form-control', "label" => "Exclusions", "placeholder" => "Exclusions / Limitations")); ?>
             </div>
         </div>
       </div>
