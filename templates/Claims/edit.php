@@ -12,7 +12,8 @@
         <li><a href="<?= ROOT_DIREC ?>/claims">
             Claims
         </a></li>
-        <li class="active">Add</li>
+        <li class="active">Edit</li>
+        <li class="active"><?= $claim->title ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
@@ -20,7 +21,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             New Claim
-           <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/claims"><em class="fa fa-arrow-left"></em></a>
+           <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($claim) ?>
@@ -46,6 +47,16 @@
         
     </div>
 </div><!--End .articles-->
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>
 
 
 <?php 

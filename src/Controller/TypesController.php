@@ -48,7 +48,7 @@ class TypesController extends AppController
     {
         $type = $this->Types->newEmptyEntity();
         if ($this->request->is('post')) {
-            $types = $this->Types->find("all", array("conditions" => ("tenant_id" => $this->Auth->user()['tenant_id'], 'is_deductible' => 1) )); 
+            $types = $this->Types->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'is_deductible' => 1))); 
 
             $type = $this->Types->patchEntity($type, $this->request->getData());
             if($types->count() == 0){
@@ -112,7 +112,7 @@ class TypesController extends AppController
 
     public function deductible(){
         if($this->request->is(['ajax'])){
-            $types = $this->Types->find("all", array("conditions" => ("tenant_id" => $this->Auth->user()['tenant_id']) )); 
+            $types = $this->Types->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']) )); 
             foreach($types as $type){
                 if($type->id == $this->request->getData()['type_id']){
                     $type->is_deductible = 1;

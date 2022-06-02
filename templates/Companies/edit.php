@@ -11,7 +11,7 @@
             <em class="fa fa-home"></em>
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/companies">
-            Insurance Companies
+            Companies
         </a></li>
         <li>Edit</li>
         <li><?= $company->name ?></li>
@@ -21,7 +21,7 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Insurance Company : <?= $company->name ?>
+            Edit : <?= $company->name ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-arrow-left"></em></a>
         </div>
         <div class="panel-body articles-container">       
@@ -76,6 +76,7 @@
                 </div> 
                 <div class="row">
                     <div class="col-md-12">
+                        <div class="table-responsive">
                         <table class="table table-bordered" style="margin-top:15px">
                             <thead>
                                 <tr>
@@ -123,10 +124,20 @@
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
-                        </table>
+                        </table></div>
                     </div>
                 </div>
             <?= $this->Form->end() ?>
         </div>
     </div>
 </div><!--End .articles-->
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

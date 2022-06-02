@@ -20,7 +20,7 @@
             <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/policies/add">New</a>
         </div>
     <div class="panel-body articles-container">
-        <div style="">
+        <div class="table-responsive">
             <table class="table table-striped datatable">
                 <thead> 
                     <th class="text-left">Number</th>

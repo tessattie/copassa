@@ -50,7 +50,7 @@ class CustomersController extends AppController
     public function view($id = null)
     {
         $customer = $this->Customers->get($id, [
-            'contain' => ['Notes' => ['sort' => 'Notes.created DESC', 'Users'], 'Countries', 'Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users']],
+            'contain' => ['Notes' => ['sort' => 'Notes.created DESC', 'Users'], 'Countries', 'Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users', 'Claims' => ['ClaimsTypes']]],
         ]);
         $note = $this->Customers->Notes->newEmptyEntity();
         $policies = $this->Customers->Policies->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'customer_id' => $id)));

@@ -11,6 +11,7 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
+        <li class="active">Reports</li>
         <li class="active">Payments</li>
     </ol>
 </div>
@@ -20,9 +21,10 @@
     <div class="col-md-12">
         <div class="panel panel-default articles">
         <div class="panel-heading">Payments
-            <a target="_blank" href="<?= ROOT_DIREC ?>/payments/export" style="float:right;margin-top:-27px"><button type="button" class="btn btn-warning" style="margin-top:24px;height:46px">Export</button></a>
+            <a target="_blank" href="<?= ROOT_DIREC ?>/payments/export" style="float:right;margin-bottom:7px"><button type="button" class="btn btn-warning" style="height:46px"><span class="fa fa-download"></span></button></a>
         </div>
     <div class="panel-body articles-container">
+        <div class="table-responsive">
     <table class="table datatable table-striped">
         <thead>
             <tr>
@@ -59,7 +61,7 @@
                 <?php endforeach; ?>
             <?php endif; ?>
         </tbody>
-    </table>
+    </table></div>
             <!--End .article-->
         </div>
     </div>

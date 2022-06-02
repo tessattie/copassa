@@ -96,5 +96,15 @@ $cakeDescription = 'AR';
 </script>
 <noscript><a href="https://www.livechat.com/chat-with/14120061/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
 <!-- End of LiveChat code -->
+
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .login-panel{
+        margin: 30px;
+      }
+    }
+</style>
+
 </body>
 </html>

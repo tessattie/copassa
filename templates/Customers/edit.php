@@ -21,8 +21,8 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Policy Holder <?= $customer->name ?>
-            <a href="<?= ROOT_DIREC ?>/policies/add/<?= $customer->id ?>"><button style="float:right" class="btn btn-warning" type="button">New Policy</button></a>
+            Edit <?= $customer->name ?>
+            
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($customer) ?>
@@ -43,7 +43,7 @@
                     <div class="col-md-4">
                         <label>Home Phone</label>
                         <div class="row">
-                            <div class="col-md-4" style="padding-right:0px">
+                            <div class="col-md-4">
                                 <?= $this->Form->control('home_area_code', array('class' => 'form-control', "label" => false, 'options' => $area_codes)); ?>
                             </div>
                             <div class="col-md-8">
@@ -55,7 +55,7 @@
                     <div class="col-md-4">
                         <label>Cell Phone</label>
                         <div class="row">
-                            <div class="col-md-4" style="padding-right:0px">
+                            <div class="col-md-4">
                                 <?= $this->Form->control('cell_area_code', array('class' => 'form-control', "label" => false, 'options' => $area_codes)); ?>
                             </div>
                             <div class="col-md-8">
@@ -66,7 +66,7 @@
                     <div class="col-md-4">
                         <label>Other Phone</label>
                         <div class="row">
-                            <div class="col-md-4" style="padding-right:0px">
+                            <div class="col-md-4">
                                 <?= $this->Form->control('other_area_code', array('class' => 'form-control', "label" => false, 'options' => $area_codes)); ?>
                             </div>
                             <div class="col-md-8">
@@ -94,7 +94,7 @@
 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Policies
+            Policies <a href="<?= ROOT_DIREC ?>/policies/add/<?= $customer->id ?>"><button style="float:right" class="btn btn-warning" type="button">New Policy</button></a>
         </div>
         <div class="panel-body articles-container">       
             <div class="row">
@@ -163,3 +163,14 @@
         </div>
     </div>
 </div><!--End .articles-->
+
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

@@ -28,7 +28,7 @@ if(!empty($customer->dob)){
         <div class="col-md-9">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Policy Holder : <?= $customer->name ?><button class="btn btn-info" style="float:right" data-toggle="modal" data-target="#newclaim">New Claim</button>
+                    <?= $customer->name ?>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">
@@ -93,36 +93,15 @@ if(!empty($customer->dob)){
                 </div>
                 
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="panel panel-default articles">
-                <div class="panel-heading">
-                    Notes
-                    <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-success" style="float:right;padding:3px 10px 5px"><span class="fa fa-plus"></span></button>
-                </div>
-                <div class="panel-body articles-container" style="height: 384px; overflow-y:scroll">       
-                    <?php foreach($customer->notes as $n) : ?>
-                        <p class="bg-info" style="padding:10px">
-                            <label>Created By :</label> <?= $n->user->name ?><br>
-                            <label>Date :</label> <?= date("M d Y H:i", strtotime($n->created)) ?><br><br>
-                            <?= $n->comment ?>
-                        </p>
-                    <?php endforeach; ?>
-                </div>
-                
-            </div>
-        </div>
-    </div>
-    
 
-    <div class="panel panel-default articles">
+            <div class="panel panel-default articles">
         <div class="panel-heading">
-            Policies
+            Policies <a class="btn btn-default"  style="float:right;padding:1px 10px 5px" href="<?= ROOT_DIREC ?>/policies/add/<?= $customer->id ?>"><span class="fa fa-plus"></span></a>
         </div>
         <div class="panel-body articles-container">       
             <div class="row">
                 <div class="col-md-12">
-                    <div style="width:100%;overflow-y:scroll">
+                    <div class="table-responsive">
                     <table class="table table-bordered" style="width:2000px">
                         <thead>
                             <tr>
@@ -171,6 +150,88 @@ if(!empty($customer->dob)){
         </div>
     </div>
 
+    <div class="panel panel-default articles">
+        <div class="panel-heading">
+            Exclusions 
+    </div>
+    <div class="panel-body articles-container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="text-center">Policy</th>
+                <th class="text-center">Exclusions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($customer->policies as $p) : ?>
+                <tr>
+                    <td class="text-center"><?= $p->policy_number ?></td>
+                    <td class="text-center"><?= $p->exclusions ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+            <!--End .article-->
+        </div>
+    </div>
+        </div>
+        <div class="col-md-3">
+
+            <div class="panel panel-teal">
+            <div class="panel-heading">
+                CLaims <button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#newclaim"><span class="fa fa-plus"></span></button>
+                </div>
+            <div class="panel-body" style="height:365px;overflow-y:scroll;background:white">
+                    <?php foreach($customer->policies as $policy) : ?>
+                        <?php foreach($policy->claims as $claim) : ?>
+                    <?php  
+                        $total = 0; 
+                        foreach($claim->claims_types as $ct){
+                            $total = $total + $ct->amount;
+                        }
+                    ?>
+
+                    <div class="row">
+                            <div class="col-xs-8">
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $customer->name . " - " . $policy->policy_number ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= $claim->title ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= $claim->description ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= number_format($total, 2, ".", ",") ?></p>
+                            </div>
+                            <div class="col-xs-4" class="text-right">
+                                <a class="btn btn-info" target="_blank" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="float:right;margin-top:40px"><span class="fa fa-eye"></span></a>
+                            </div>
+                        </div>
+                        <hr>
+                        <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+            <div class="panel panel-warning articles">
+                <div class="panel-heading">
+                    Notes
+                    <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-default" style="float:right;padding:1px 10px 5px"><span class="fa fa-plus"></span></button>
+                </div>
+                <div class="panel-body articles-container" style="height: 384px; overflow-y:scroll">       
+                    <?php foreach($customer->notes as $n) : ?>
+                        <p class="bg-info" style="padding:10px">
+                            <label>Created By :</label> <?= $n->user->name ?><br>
+                            <label>Date :</label> <?= date("M d Y H:i", strtotime($n->created)) ?><br><br>
+                            <?= $n->comment ?>
+                        </p>
+                    <?php endforeach; ?>
+                </div>
+                
+            </div>
+
+            
+        </div>
+    </div>
+    
+
+    
+
 
     <div class="modal fade" id="newclaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -203,30 +264,7 @@ if(!empty($customer->dob)){
 </div>
 
 
-    <div class="panel panel-default articles">
-        <div class="panel-heading">
-            Exclusions 
-    </div>
-    <div class="panel-body articles-container">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th class="text-center">Policy</th>
-                <th class="text-center">Exclusions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach($customer->policies as $p) : ?>
-                <tr>
-                    <td class="text-center"><?= $p->policy_number ?></td>
-                    <td class="text-center"><?= $p->exclusions ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-            <!--End .article-->
-        </div>
-    </div>
+    
 </div>
 
 

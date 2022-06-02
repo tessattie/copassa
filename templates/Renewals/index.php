@@ -20,6 +20,7 @@
             <button class="btn btn-warning float-right" data-toggle="modal" data-target="#newrenewal" style="float:right">New Renewal</button>
         </div>
     <div class="panel-body articles-container">
+        <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>#</th>
@@ -44,7 +45,7 @@
                 </tr>
             <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
             <!--End .article-->
         </div>
         
@@ -132,3 +133,11 @@
     //     })
     // })
 </script>
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+    }
+</style>

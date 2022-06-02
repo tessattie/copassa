@@ -3,34 +3,52 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li class="active">Report</li>
+        <li class="active">Reports</li>
         <li class="active">Coorporate Groups</li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
+
+<div class="modal fade" id="filters" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <?= $this->Form->create() ?>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+            Filter
+        </h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+                    <div class="col-md-12">
+                        <?= $this->Form->control('business_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $businesses, "label" => "Corporate Group", "multiple" => false, 'style' => "height:46px")); ?>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Choose --',"label" => "Group", "multiple" => false, 'style' => "height:46px")); ?>
+                    </div>
+                </div>
+            </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-success">Filter</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div></div>
+
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Corporate Groups
-            <a target="_blank" href="<?= ROOT_DIREC ?>/employees/export/<?= $business_id ?>/<?= $grouping_id ?>" style="float:right;margin-top:-27px"><button type="button" class="btn btn-warning" style="margin-top:24px;height:46px">Export</button></a>
-        </div>
-        <div class="panel-body articles-container">       
-            <?= $this->Form->create() ?>
-                <div class="row">
-                    <div class="col-md-3">
-                        <?= $this->Form->control('business_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $businesses, "label" => "Corporate Group", "multiple" => false, 'style' => "height:46px")); ?>
-                    </div>
-                    <div class="col-md-3">
-                        <?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Choose --',"label" => "Group", "multiple" => false, 'style' => "height:46px")); ?>
-                    </div>
-                    <div class="col-md-1">
-                        <?= $this->Form->button(__('Valider'), array('class'=>'btn btn-success', "style"=>"margin-top:24px;height:46px")) ?>
-                    </div>
-                </div>
-
-            <?= $this->Form->end() ?>
+            <a target="_blank" href="<?= ROOT_DIREC ?>/employees/export/<?= $business_id ?>/<?= $grouping_id ?>" style="float:right;margin-top:-28px"><button type="button" class="btn btn-warning" style="margin-top:28px;height:46px"><span class="fa fa-download"></span></button></a>
+            <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="height:46px;float:right;margin-bottom:6px;margin-right:10px"><span class="fa fa-filter"></span></button>
         </div>
     <div class="panel-body articles-container">
+        <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>#</th>
@@ -83,7 +101,7 @@
             
             <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
             <!--End .article-->
         </div>
         

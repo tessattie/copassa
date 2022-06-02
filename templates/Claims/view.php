@@ -18,7 +18,7 @@ if(!empty($claim->policy->customer->dob)){
             <em class="fa fa-home"></em>
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/claims">Claims</a></li>
-        <li><?= $claim->policy->customer->name ?></li>
+        <li>View</li>
         <li><?= $claim->policy->policy_number ?></li>
         <li><?= $claim->title ?></li>
     </ol>
@@ -29,7 +29,7 @@ if(!empty($claim->policy->customer->dob)){
         <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Claim Profile : <?= $claim->title ?> <a href="<?= ROOT_DIREC ?>/claims/edit/<?= $claim->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a><a target="_blank" href="<?= ROOT_DIREC ?>/claims/export/<?= $claim->id ?>" style="float:right;margin-right:5px"><button class="btn btn-default">Export</button></a>
+                    Claim : <?= $claim->title ?> <a href="<?= ROOT_DIREC ?>/claims/edit/<?= $claim->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a><a target="_blank" href="<?= ROOT_DIREC ?>/claims/export/<?= $claim->id ?>" style="float:right;margin-right:5px"><button class="btn btn-default">Export</button></a>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">
@@ -78,7 +78,7 @@ if(!empty($claim->policy->customer->dob)){
                             <td class="text-right"><?= number_format($claim->policy->max_coverage, 2, ".", ",") ?></td>
                         </tr>
                         <tr>
-                            <th><?= __('Title') ?></th>
+                            <th><?= __('Diagnosis') ?></th>
                             <td class="text-right"><?= $claim->title ?></td>
                         </tr>
                         <tr>
@@ -113,10 +113,10 @@ if(!empty($claim->policy->customer->dob)){
         <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Details
+                    
                     <button class="btn btn-info" style="float:right" data-toggle="modal" data-target="#new_ct">Add</button>
-                    <a href="<?= ROOT_DIREC ?>/claims/deductible/<?= $claim->id ?>/1" class="btn btn-primary" style="float:right;margin-right:5px" data-toggle="modal">Apply Full Deductible</a>
-                    <a href="<?= ROOT_DIREC ?>/claims/deductible/<?= $claim->id ?>/0" class="btn btn-warning" style="float:right;margin-right:5px" data-toggle="modal">Apply 0 Deductible</a>
+                    <a href="<?= ROOT_DIREC ?>/claims/deductible/<?= $claim->id ?>/1" class="btn btn-primary" style="float:right;margin-right:5px" data-toggle="modal">Full Deductible</a>
+                    <a href="<?= ROOT_DIREC ?>/claims/deductible/<?= $claim->id ?>/0" class="btn btn-warning" style="float:right;margin-right:5px" data-toggle="modal">0 Deductible</a>
                 </div>
                 <div class="panel-body articles-container">
                   <div class="table-responsive">
@@ -240,10 +240,6 @@ if(!empty($claim->policy->customer->dob)){
 
 <script type="text/javascript">$(document).ready( function () {
     $('.datatable').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'excel', 'pdf', 'print'
-        ]
     } );
 } );</script>
 

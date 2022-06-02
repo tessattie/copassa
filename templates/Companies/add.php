@@ -45,3 +45,13 @@
         
     </div>
 </div><!--End .articles-->
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

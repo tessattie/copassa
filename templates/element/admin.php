@@ -9,7 +9,7 @@
                 
                 <ul class="nav navbar-top-links navbar-right">
 
-                    <li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                    <li class="dropdown" style="float:right"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
                         <span class="fa fa-user" style="font-size: 28px;margin-top: -5px;margin-left: 1px;"></span>
                     </a>
                         <ul class="dropdown-menu dropdown-messages">
@@ -22,23 +22,36 @@
                             </li>
                         </ul>
                     </li>
+                       
+                    <li class="dropdown" style="float:right;margin-right:-5px"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <span class="fa fa-filter" style="font-size: 28px;margin-top: -5px;margin-left: 1px;"></span>
+                    </a>
+                    
+                        <ul class="dropdown-menu dropdown-messages">
+                             <?= $this->Form->create(null, array("url" => "/app/update_session_variables")) ?>
+                            <li style="padding-right:10px;padding-left:10px;padding-top:10px"><strong>Filter by Date</strong></li>
+                            <li class="divider"></li>
+                            <li style="padding-right:10px;padding-left:10px">
+                                <input value="<?= $filterfrom  ?>" type="date" name="from" style="border: 1px solid #ddd;height: 39px;width: 100%;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
+                            </li>
+                            <li class="divider"></li>
+                            <li style="padding-right:10px;padding-left:10px">
+                                <input value="<?= $filterto  ?>" type="date" name="to" style="border: 1px solid #ddd;height: 39px;width: 100%;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
+                            </li>
+                            <li class="divider"></li>
+                            <li style="padding-right:10px;padding-left:10px">
+                                <button class="btn btn-success" style="padding: 9px 12px!important;"><span class="glyphicon glyphicon-ok" ></span></button>
+                            </li>
+                            <?= $this->Form->end() ?>
+                        </ul>
+                    </li>
+                    
                 </ul>
-                <ul class="nav navbar-top-links navbar-right">
-                    <li>
-                    <?= $this->Form->create(null, array("url" => "/app/update_session_variables")) ?>
-                    <select name="filter_country" style="margin-top: 10px;height: 39px!important;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;border:none!important">
-                        <option value="">-- All --</option>
-                        <?php foreach($filter_countries as $id => $name) : ?>
-                            <option value="<?= $id ?>" <?= ($filter_country == $id) ? 'selected' : "" ?>><?= strtoupper($name) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <input value="<?= $filterfrom  ?>" type="date" name="from" style="margin-top: 11px;height: 39px;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
-                    <input value="<?= $filterto  ?>" type="date" name="to" style="height: 39px;width: 187px;background: #f2f2f2;color: black;border-radius: 3px;margin-right: 5px;">
-                    <button class="btn btn-success" style="padding: 9px 12px!important;
-    margin-top: -3px!important;"><span class="glyphicon glyphicon-ok" ></span></button>
-                    <?= $this->Form->end() ?>
-                </li>
-                </ul>
+
+
+                
+
+   
             </div>
         </div><!-- /.container-fluid -->
     </nav>
@@ -175,3 +188,26 @@
         })
     })
 </script>
+
+
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .panel-heading{
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .table-responsive{
+        border-color: white;
+      }
+
+      .panel-heading{
+        font-size:15px;
+      }
+
+      .btn{
+        height: auto!important;
+      }
+    }
+</style>

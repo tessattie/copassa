@@ -14,7 +14,7 @@
             <button class="btn btn-success" style="float:right" data-target="#newmaternity" data-toggle="modal">Add</button>
         </div>
     <div class="panel-body articles-container">
-        <div style="">
+        <div class="table-responsive">
             <table class="table table-striped datatable">
                 <thead> 
                     <th class="text-left">Policy Number</th>

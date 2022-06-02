@@ -20,6 +20,7 @@
             <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/employees/add">New</a>
         </div>
     <div class="panel-body articles-container">
+        <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>Full Name</th>
@@ -54,7 +55,7 @@
                 </tr>
             <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
             <!--End .article-->
         </div>
         

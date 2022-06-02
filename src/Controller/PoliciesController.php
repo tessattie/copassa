@@ -50,9 +50,11 @@ class PoliciesController extends AppController
     }
 
     public function dashboard(){
-        $this->loadModel("Newborns");$this->loadModel("Pendings");$this->loadModel("Transactions");
+        $this->loadModel("Newborns");$this->loadModel("Pendings");$this->loadModel("Transactions");$this->loadModel("Claims");
 
         $new_business_date = date("Y-m-d", strtotime("-1 year")); 
+
+        $claims = $this->Claims->find("all", array("conditions" => array("Claims.tenant_id" => $this->Auth->user()['tenant_id'], 'Claims.status' => 1)))->contain(['Policies' => ['Customers'], 'ClaimsTypes']);
 
         $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1, 'Newborns.tenant_id' => $this->Auth->user()['tenant_id']), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
 
@@ -74,7 +76,7 @@ class PoliciesController extends AppController
             }
             
         }
-        $this->set(compact('newborns', 'birthdays', 'pendings', 'transactions', 'newBusiness'));
+        $this->set(compact('newborns', 'birthdays', 'pendings', 'transactions', 'newBusiness', 'claims'));
     }
 
     /**
@@ -93,7 +95,7 @@ class PoliciesController extends AppController
         }
 
         $policy = $this->Policies->get($id, [
-            'contain' => ['Companies', 'Options', 'Customers', 'Users', 'Payments', 'Dependants', 'Prenewals', 'PoliciesRiders' => ['Riders']],
+            'contain' => ['Companies', 'Options', 'Customers', 'Users', 'Payments', 'Dependants', 'Prenewals', 'Claims' => ['ClaimsTypes'], 'PoliciesRiders' => ['Riders']],
         ]);
         $riders = $this->Riders->find("all");
         $dependant = $this->Policies->Dependants->newEmptyEntity();

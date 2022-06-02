@@ -14,7 +14,7 @@
             <button class="btn btn-success" style="float:right" data-target="#newmaternity" data-toggle="modal">Add</button>
         </div>
     <div class="panel-body articles-container">
-        <div style="">
+        <div class="table-responsive">
             <table class="table table-striped datatable">
                 <thead> 
                     <th class="text-left">Name</th>
@@ -161,3 +161,13 @@ echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
         })
     })
 </script>
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

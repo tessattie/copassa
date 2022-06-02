@@ -12,142 +12,82 @@
 <div class="container-fluid">  
 
 <div class="row">
-    <?php if($newborns->count() > 0) : ?> 
-    <div class="col-md-7">
-        <div class="panel panel-default articles">
+    <div class="col-md-4">
+        <div class="panel panel-info">
             <div class="panel-heading">
                 Maternity Reminders
-            </div>
-            <div class="panel-body articles-container" style="height:300px;overflow-y:scroll">       
-                <table class="table table-striped datatable">
-                <thead> 
-                    <th class="text-left">Policy Number</th>
-                    <th class="text-center">Policy Holder</th>
-                    <th class="text-center">Company</th>
-                    <th class="text-center">Due Date</th>
-                    <th class="text-right">Actions</th>
-                </thead>
-            <tbody> 
-        <?php foreach($newborns as $newborn) : ?>
-            <tr>
-                <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $newborn->policy->id ?>"><?= $newborn->policy->policy_number ?></a></td>
-                <td class="text-center"><?= $newborn->policy->customer->name ?></td>
-                <td class="text-center"><?= $newborn->policy->company->name . " / ".  $newborn->policy->option->name ?></td>
-                <td class="text-center"><?= date("M d Y", strtotime($newborn->due_date)) ?></td>
-                <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_maternity_<?= $newborn->id ?>"><span class="fa fa-check"></span></button></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-        </table>
+                </div>
+            <div class="panel-body" style="height:300px;overflow-y:scroll">
+                    <?php foreach($newborns as $newborn) : ?>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $newborn->policy->customer->name ?></p>
+                                <p style="color:black"><span class="fa fa-hashtag" style="margin-right:8px"></span> <?= "Policy : " . $newborn->policy->policy_number ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-bank" style="margin-right:8px"></span> <?= $newborn->policy->company->name . " / ".  $newborn->policy->option->name ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:11px"></span> <strong>Due Date :</strong> <?= date("M d Y", strtotime($newborn->due_date)) ?></p>
+                            </div>
+                            <div class="col-xs-4" class="text-right">
+                                <button class="btn btn-success" data-toggle="modal" data-target="#confirm_maternity_<?= $newborn->id ?>" style="float:right;margin-top:40px"><span class="fa fa-check"></span></button>
+                            </div>
+                        </div>
+                        <hr>
+                <?php endforeach; ?>
             </div>
         </div>
     </div> 
-    <?php   endif; ?>
-    <div class="col-md-5">
-        <div class="panel panel-default articles" >
+    <div class="col-md-4">
+        <div class="panel panel-warning">
             <div class="panel-heading">
                 Birthdays
+                </div>
+            <div class="panel-body" style="height:300px;overflow-y:scroll">
+                    <?php foreach($birthdays as $birthday) : ?>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:13px"></span> <?= $birthday->name ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:10px"></span> <?= date('M d Y', strtotime($birthday->dob)) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-phone" style="margin-right:13px"></span> <?= $birthday->home_phone ?></p>
+                            </div>
+                        </div>
+                        <hr>
+                <?php endforeach; ?>
             </div>
-            <div class="panel-body articles-container" style="height:300px;overflow-y:scroll">       
-                <table class="table table-striped datatable">
-                <thead> 
-                    <th class="text-left">Policy Holder</th>
-                    <th class="text-center">DOB</th>
-                    <th class="text-right">Phone</th>
-                </thead>
-            <tbody> 
-        <?php foreach($birthdays as $birthday) : ?>
-            <tr>
-                <td class="text-left"><?= $birthday->name ?></td>
-                <td class="text-center"><?= date('M d Y', strtotime($birthday->dob)) ?></td>
-                <td class="text-right"><?= $birthday->home_phone ?></td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-        </table>
+        </div>
+    </div> 
+    <div class="col-md-4">
+        <div class="panel panel-teal">
+            <div class="panel-heading">
+                Open CLaims
+                </div>
+            <div class="panel-body" style="height:300px;overflow-y:scroll;background:white">
+                    <?php foreach($claims as $claim) : ?>
+                    <?php  
+                        $total = 0; 
+                        foreach($claim->claims_types as $ct){
+                            $total = $total + $ct->amount;
+                        }
+                    ?>
+
+                    <div class="row">
+                            <div class="col-xs-8">
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $claim->policy->customer->name . " - " . $claim->policy->policy_number ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= $claim->title ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= $claim->description ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= number_format($total, 2, ".", ",") ?></p>
+                            </div>
+                            <div class="col-xs-4" class="text-right">
+                                <a class="btn btn-info" target="_blank" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="float:right;margin-top:40px"><span class="fa fa-eye"></span></a>
+                            </div>
+                        </div>
+                        <hr>
+                <?php endforeach; ?>
+
             </div>
-            
         </div>
     </div> 
     
 </div>
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default articles" >
-            <div class="panel-heading">
-                Pending New Business
-            </div>
-            <div class="panel-body articles-container" style="max-height:300px;overflow-y:scroll">       
-<table class="table table-striped datatable">
-                <thead> 
-                    <th class="text-left">Name</th>
-                    <th class="text-center">Company / Option</th>
-                    <th class="text-center">Country</th>
-                    <th class="text-center">Dependants</th>
-                    <th class="text-center">Last Contact Date</th>
-                    <th class="text-right">Action(s)</th>
-                </thead>
-            <tbody> 
-        <?php foreach($pendings as $pending) : ?>
-          <?php if($pending->country_id == $filter_country || empty($filter_country)) : ?>
-            <tr>
-                <td class="text-left"><?= $pending->name ?></td>
-                <td class="text-center"><?= $pending->company->name. " / ".$pending->option->name ?></td>
-                <td class="text-center"><?= $pending->country->name ?></td>
-                <td class="text-center"><?= $pending->dependants ?></td>
-                <?php if(!empty($pending->last_contact_date)) : ?>
-                <td class="text-center"><?= date("M d Y", strtotime($pending->last_contact_date)) ?></td> 
-                <?php else : ?>
-                    <td></td>
-                <?php endif; ?>
-                <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_pending_<?= $pending->id ?>"><span class="fa fa-check"></span></button></td>
-            </tr>
-          <?php endif; ?>
-        <?php endforeach; ?>
-        </tbody>
-        </table>
-            </div>
-            
-        </div>
-    </div> 
- 
-</div> 
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default articles">
-            <div class="panel-heading">
-                Corporate Groups Renewals - Awaiting Transactions
-            </div>
-            <div class="panel-body articles-container" style="max-height:300px;overflow-y:scroll">       
-<table class="table table-striped datatable">
-                <thead> 
-                    <th class="text-left">Renewal #</th>
-                    <th class="text-center">Corporate Group</th>
-                    <th class="text-center">Group</th>
-                    <th class="text-center">Employee</th>
-                    <th class="text-center">Family Member</th>
-                    <th class="text-center">Created</th>
-                    <th class="text-right">Action(s)</th>
-                </thead>
-            <tbody> 
-                <?php foreach($transactions as $transaction) : ?>
-                    <td><a target="_blank" href="<?= ROOT_DIREC ?>/renewals/view/<?= $transaction->renewal_id ?>"><?= $transaction->renewal->renewal_number ?></a></td>
-                    <td class="text-center"><?= $transaction->renewal->business->name ?></td>
-                    <td class="text-center"><?= $transaction->grouping->grouping_number ?></td>
-                    <td class="text-center"><?= $transaction->employee->first_name." ".$transaction->employee->last_name ?></td>
-                    <td class="text-center"><?= $transaction->family->first_name." ".$transaction->family->last_name ?></td>
-                    <td class="text-center"><?= date("M d Y", strtotime($transaction->created)) ?></td>
-                    <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>"><span class="fa fa-check"></span></button></td>
-                <?php endforeach; ?>
-        </tbody>
-        </table>
-            </div>
-            
-        </div>
-    </div> 
- 
-</div> 
 
 <div class="row">
     <div class="col-md-12">
@@ -204,6 +144,88 @@
     </div> 
  
 </div> 
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default articles" >
+            <div class="panel-heading">
+                Pending New Business
+            </div>
+            <div class="panel-body articles-container" style="max-height:300px;overflow-y:scroll">       
+<table class="table table-striped datatable">
+                <thead> 
+                    <th class="text-left">Name</th>
+                    <th class="text-center">Company / Option</th>
+                    <th class="text-center">Country</th>
+                    <th class="text-center">Dependants</th>
+                    <th class="text-center">Last Contact Date</th>
+                    <th class="text-right">Action(s)</th>
+                </thead>
+            <tbody> 
+        <?php foreach($pendings as $pending) : ?>
+          <?php if($pending->country_id == $filter_country || empty($filter_country)) : ?>
+            <tr>
+                <td class="text-left"><?= $pending->name ?></td>
+                <td class="text-center"><?= $pending->company->name. " / ".$pending->option->name ?></td>
+                <td class="text-center"><?= $pending->country->name ?></td>
+                <td class="text-center"><?= $pending->dependants ?></td>
+                <?php if(!empty($pending->last_contact_date)) : ?>
+                <td class="text-center"><?= date("M d Y", strtotime($pending->last_contact_date)) ?></td> 
+                <?php else : ?>
+                    <td></td>
+                <?php endif; ?>
+                <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_pending_<?= $pending->id ?>"><span class="fa fa-check"></span></button></td>
+            </tr>
+          <?php endif; ?>
+        <?php endforeach; ?>
+        </tbody>
+        </table>
+            </div>
+            
+        </div>
+    </div> 
+ 
+</div> 
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default articles">
+            <div class="panel-heading">
+                CGR - Awaiting Transactions
+            </div>
+            <div class="panel-body articles-container" style="max-height:300px;overflow-y:scroll">       
+<table class="table table-striped datatable">
+                <thead> 
+                    <th class="text-left">Renewal #</th>
+                    <th class="text-center">Corporate Group</th>
+                    <th class="text-center">Group</th>
+                    <th class="text-center">Employee</th>
+                    <th class="text-center">Family Member</th>
+                    <th class="text-center">Created</th>
+                    <th class="text-right">Action(s)</th>
+                </thead>
+            <tbody> 
+                <?php foreach($transactions as $transaction) : ?>
+                    <td><a target="_blank" href="<?= ROOT_DIREC ?>/renewals/view/<?= $transaction->renewal_id ?>"><?= $transaction->renewal->renewal_number ?></a></td>
+                    <td class="text-center"><?= $transaction->renewal->business->name ?></td>
+                    <td class="text-center"><?= $transaction->grouping->grouping_number ?></td>
+                    <td class="text-center"><?= $transaction->employee->first_name." ".$transaction->employee->last_name ?></td>
+                    <td class="text-center"><?= $transaction->family->first_name." ".$transaction->family->last_name ?></td>
+                    <td class="text-center"><?= date("M d Y", strtotime($transaction->created)) ?></td>
+                    <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>"><span class="fa fa-check"></span></button></td>
+                <?php endforeach; ?>
+        </tbody>
+        </table>
+            </div>
+            
+        </div>
+    </div> 
+ 
+</div> 
+
+
 
 </div><!--End .articles-->
 
@@ -316,5 +338,12 @@
 <style type="text/css">
     th,td{
         vertical-align: middle!important;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .panel-heading{
+        font-weight: bold;
+        font-size: 18px;
+      }
     }
 </style>

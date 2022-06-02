@@ -32,7 +32,7 @@ $paiduntil = $yesterday->format('Y-m-d');
         <div class="col-md-9">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?> <button class="btn btn-info" style="float:right;margin-top:4px;margin-left:5px" data-toggle="modal" data-target="#newclaim">New Claim</button>
+                    Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?>
                     <a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a>
                 </div>
             <div class="panel-body articles-container">
@@ -119,10 +119,11 @@ $paiduntil = $yesterday->format('Y-m-d');
                     <?php else : ?>
                         Dependants
                     <?php endif; ?>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal" style="padding:2px 10px 5px;float:right"><span class="fa fa-plus"></span></button>
+                    <button class="btn btn-default" data-toggle="modal" data-target="#exampleModal" style="padding:2px 10px 5px;float:right"><span class="fa fa-plus"></span></button>
                 </div>
 
                 <div class="panel-body articles-container">
+                    <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -166,7 +167,7 @@ $paiduntil = $yesterday->format('Y-m-d');
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
-                    </table>
+                    </table></div>
                 </div>
             </div>
         </div>
@@ -178,7 +179,8 @@ $paiduntil = $yesterday->format('Y-m-d');
                     Renewals
                 </div>
 
-                <div class="panel-body articles-container"  style="height:350px;overflow-y:scroll">
+                <div class="panel-body articles-container"  style="max-height:350px;overflow-y:scroll">
+                    <div class="table-responsive">
                     <table class="table datable table-striped">
         <thead>
             <tr>
@@ -224,12 +226,16 @@ $paiduntil = $yesterday->format('Y-m-d');
             <?php endif; ?>
         </tbody>
     </table>
+</div>
                 </div>
             </div>
         </div>
     </div>
         </div>
         <div class="col-md-3">
+
+            
+
             <div class="panel panel-default articles">
                 <div class="panel-heading">
                     Riders
@@ -252,6 +258,8 @@ $paiduntil = $yesterday->format('Y-m-d');
                 </div>
             </div>
 
+
+
             <div class="panel panel-default articles">
                 <div class="panel-heading">
                     Exclusions
@@ -260,6 +268,35 @@ $paiduntil = $yesterday->format('Y-m-d');
                     <p><?= $policy->exclusions ?></p>
                 </div>
             </div>
+
+            <div class="panel panel-teal">
+            <div class="panel-heading">
+                CLaims <button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#newclaim"><span class="fa fa-plus"></span></button>
+                </div>
+            <div class="panel-body" style="max-height:365px;overflow-y:scroll;background:white">
+                        <?php foreach($policy->claims as $claim) : ?>
+                    <?php  
+                        $total = 0; 
+                        foreach($claim->claims_types as $ct){
+                            $total = $total + $ct->amount;
+                        }
+                    ?>
+
+                    <div class="row">
+                            <div class="col-xs-8">
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $customer->name . " - " . $policy->policy_number ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= $claim->title ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= $claim->description ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= number_format($total, 2, ".", ",") ?></p>
+                            </div>
+                            <div class="col-xs-4" class="text-right">
+                                <a class="btn btn-info" target="_blank" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="float:right;margin-top:40px"><span class="fa fa-eye"></span></a>
+                            </div>
+                        </div>
+                        <hr>
+                        <?php endforeach; ?>
+            </div>
+        </div>
         </div>
     </div>
 

@@ -41,7 +41,7 @@
     <div class="col-md-9">
         <div class="panel panel-default articles">
         <div class="panel-heading">
-            Renewals <?= (!empty($policy_id)) ? " :  ".$policy->policy_number." - ".$policy->customer->name : "" ?>
+            Renewals <?= (!empty($policy_id)) ? " :  ".$policy->policy_number : "" ?>
         </div>
     <div class="panel-body articles-container" style="height:550px;overflow-y:scroll">
         <?php if(!empty($policy_id)) : ?>

@@ -20,6 +20,7 @@
             <a href="<?= ROOT_DIREC ?>/users/add" style="float:right"><button class="btn btn-warning">Add</button></a>
         </div>
     <div class="panel-body articles-container">
+        <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>Name</th>
@@ -47,7 +48,7 @@
                 </tr>
         <?php endforeach; ?>
         </tbody>
-        </table>
+        </table></div>
             <!--End .article-->
         </div>
         
@@ -56,10 +57,6 @@
 
 <script type="text/javascript">$(document).ready( function () {
     $('.datatable').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'excel', 'pdf', 'print'
-        ]
     } );
 } );</script>
 
