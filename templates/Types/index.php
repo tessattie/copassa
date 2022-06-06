@@ -9,7 +9,10 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li class="active">Claim Types</li>
+        <li><a href="<?= ROOT_DIREC ?>/claims">
+            Claims
+        </a></li>
+        <li class="active">Settings</li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
@@ -17,7 +20,7 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Claim Types
+            Settings
             <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/types/add">New</a>
         </div>
     <div class="panel-body articles-container">

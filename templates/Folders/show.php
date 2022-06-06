@@ -4,7 +4,7 @@
             <em class="fa fa-home"></em>
         </a></li>
         <li>
-            Ressources
+            Resources
         </li>
     </ol>
 </div>

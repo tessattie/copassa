@@ -273,6 +273,147 @@ class PoliciesController extends AppController
         
     }
 
+    public function listing(){
+        $this->savelog(200, "Accessed policies page", 1, 3, "", "");
+
+        $type = 'ZZZZ';
+        $country_id = 'ZZZZ';
+        $company_id = 'ZZZZ';
+        $mode = 'ZZZZ';
+        $young_policies = 0;
+
+        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
+
+        if($this->request->is(['patch', 'put', 'post'])){
+            // country
+            if(!empty($this->request->getData()['country_id'])){
+                $country_id = $this->request->getData()['country_id'];
+                $policies->matching('Customers', function ($q) use ($country_id) {
+                    return $q->where(['Customers.country_id' => $country_id]);
+                });
+            }
+
+            // type
+            if(!empty($this->request->getData()['type'])){
+                $type = $this->request->getData()['type'];
+                $policies->matching('Companies', function ($q) use ($type) {
+                    return $q->where(['Companies.type' => $type]);
+                });
+            }
+
+            // company
+            if(!empty($this->request->getData()['company_id'])){
+                $company_id = $this->request->getData()['company_id'];
+                $policies->where(['Policies.company_id' => $company_id]);
+            }
+
+            // young policies
+            if(!empty($this->request->getData()['young_policies'])){
+                $young_policies = $this->request->getData()['young_policies'];
+                $policies->where(['Policies.effective_date >' => date("Y-m-d", strtotime("-1 year"))]);
+            }
+
+            // mode
+            if(!empty($this->request->getData()['mode'])){
+                $mode = $this->request->getData()['mode'];
+                $policies->where(['Policies.mode' => $mode]);
+            }
+        }
+        
+
+        $companies = $this->Policies->Companies->find("list", array("order" => array("name ASC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+
+        $this->set(compact('policies', 'companies', 'type', 'company_id', 'mode', 'country_id', 'young_policies'));
+    }
+
+    public function exportlisting($country_id, $company_id, $type, $mode, $young_policies){
+
+        $modes = array(12 => "A", 6 => "SA", 4 => "T", 3 => 'Q', 1 => 'M');
+
+        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
+        // country
+        if($country_id != 'ZZZZ'){
+            $policies->matching('Customers', function ($q) use ($country_id) {
+                return $q->where(['Customers.country_id' => $country_id]);
+            });
+        }
+
+        // type
+        if($type != 'ZZZZ'){
+            $policies->matching('Companies', function ($q) use ($type) {
+                return $q->where(['Companies.type' => $type]);
+            });
+        }
+
+        // company
+        if($company_id != 'ZZZZ'){
+            $policies->where(['Policies.company_id' => $company_id]);
+        }
+
+        // mode
+        if($mode != 'ZZZZ'){
+            $policies->where(['Policies.mode' => $mode]);
+        }
+
+        // young policies
+        if($young_policies == 1){
+            $policies->where(['Policies.effective_date >' => date("Y-m-d", strtotime("-1 year"))]);
+        }
+
+
+        // start PDF export
+
+        require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
+        
+        $fpdf = new FPDF();
+        $fpdf->AddPage("L");
+        $fpdf->SetFont('Arial','B',9);
+        $fpdf->Cell(275,0,"Policies Report",0,0, 'L');
+        $fpdf->Ln(5);
+        $fpdf->Cell(275,0,"",'B',0, 'R');
+        $fpdf->Ln();
+
+        $fpdf->Cell(40,7,"Number",'L-R-B',0, 'C');
+
+        $fpdf->Cell(80,7,"Holder",'L-R-B',0, 'C');
+        $fpdf->Cell(20,7,"Country",'L-R-B',0, 'C');
+        $fpdf->Cell(75,7,"Company",'L-R-B',0, 'C');
+        $fpdf->Cell(25,7,"Premium",'L-R-B',0, 'C');
+        $fpdf->Cell(15,7,"Mode",'L-R-B',0, 'C');
+        $fpdf->Cell(20,7,"Effective",'L-R-B',0, 'C');
+        $fpdf->SetFont('Arial','',7);
+        foreach($policies as $policy){
+            $fpdf->Ln();
+            $fpdf->Cell(40,6,utf8_decode($policy->policy_number),'L-R-B',0, 'C');
+            $fpdf->Cell(80,6,utf8_decode($policy->customer->name),'L-R-B',0, 'C');
+            $fpdf->Cell(20,6,utf8_decode(substr($policy->customer->country->name, 0, 5)),'L-R-B',0, 'C');
+            if(!empty($policy->company)){
+                if(!empty($policy->option)){
+                    $fpdf->Cell(75,6,utf8_decode($policy->company->name . " / ".  $policy->option->name),'L-R-B',0, 'C');
+                }else{
+                    $fpdf->Cell(75,6,utf8_decode($policy->company->name),'L-R-B',0, 'C');
+                }
+            }else{
+                if(!empty($policy->option)){
+                    $fpdf->Cell(75,6,utf8_decode($policy->option->name),'L-R-B',0, 'C');
+                }else{
+                    $fpdf->Cell(75,6,"",'L-R-B',0, 'C');
+                }
+            }
+            $fpdf->Cell(25,6,number_format($policy->premium,2,".",","),'L-R-B',0, 'C');
+            $fpdf->Cell(15,6,$modes[$policy->mode] ,'L-R-B',0, 'C');
+            $fpdf->Cell(20,6,date('M d Y', strtotime($policy->effective_date->i18nFormat('yyyy-MM-dd'))) ,'L-R-B',0, 'C');
+        }
+
+
+        $fpdf->Output('I', 'policies_report');
+        die();
+
+
+
+
+    }
+
 
     public function renewals(){
         $policies = $this->Policies->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'])));
@@ -353,7 +494,7 @@ class PoliciesController extends AppController
         foreach($companies as $company){
             $fpdf->SetFont('Arial','B',8);
             $fpdf->SetFillColor(220,220,220);
-            $fpdf->Cell(275,7,$company->name,"T-L-R",0, 'L', 1);
+            $fpdf->Cell(275,7,utf8_decode($company->name),"T-L-R",0, 'L', 1);
             $fpdf->SetFillColor(255,255,255);
             $fpdf->Ln(7);
             $fpdf->Cell(59,7,"Insured Name",'T-L-B',0, 'L');
@@ -392,7 +533,7 @@ class PoliciesController extends AppController
                     $fpdf->SetFillColor(255,255,255);
                 }
 
-                $fpdf->Cell(59,7,$policy->customer->name,'T-L-B',0, 'L',1);
+                $fpdf->Cell(59,7,utf8_decode($policy->customer->name),'T-L-B',0, 'L',1);
                 if(!empty($age)){
                     $fpdf->Cell(10,7,$age,'T-L-B',0, 'C',1);
                 }else{

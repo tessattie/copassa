@@ -116,7 +116,7 @@ if(!empty($claim->policy->customer->dob)){
                     
                     <button class="btn btn-info" style="float:right" data-toggle="modal" data-target="#new_ct">Add</button>
                     <a href="<?= ROOT_DIREC ?>/claims/deductible/<?= $claim->id ?>/1" class="btn btn-primary" style="float:right;margin-right:5px" data-toggle="modal">Full Deductible</a>
-                    <a href="<?= ROOT_DIREC ?>/claims/deductible/<?= $claim->id ?>/0" class="btn btn-warning" style="float:right;margin-right:5px" data-toggle="modal">0 Deductible</a>
+                    <a href="<?= ROOT_DIREC ?>/claims/deductible/<?= $claim->id ?>/0" class="btn btn-success" style="float:right;margin-right:5px" data-toggle="modal">0 Deductible</a>
                 </div>
                 <div class="panel-body articles-container">
                   <div class="table-responsive">
@@ -195,11 +195,11 @@ if(!empty($claim->policy->customer->dob)){
       <?= $this->Form->create(null, array("url" => '/claims/addct', 'type' => 'file')) ?>
       <div class="modal-body">
             <div class="row">
-                <div class="col-md-12"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Title *", "placeholder" => "Title")); ?></div>
+                <div class="col-md-12"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Title / Service *", "placeholder" => "Title")); ?></div>
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-12"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description")); ?></div>
+                <div class="col-md-12"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description / Contact Information *", "placeholder" => "Description")); ?></div>
             </div>
             <hr>
             <div class="row">

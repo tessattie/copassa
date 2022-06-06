@@ -61,22 +61,12 @@
                 </div>
             <div class="panel-body" style="height:300px;overflow-y:scroll;background:white">
                     <?php foreach($claims as $claim) : ?>
-                    <?php  
-                        $total = 0; 
-                        foreach($claim->claims_types as $ct){
-                            $total = $total + $ct->amount;
-                        }
-                    ?>
-
                     <div class="row">
                             <div class="col-xs-8">
                                 <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $claim->policy->customer->name . " - " . $claim->policy->policy_number ?></p>
-                        <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= $claim->title ?></p>
-                        <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= $claim->description ?></p>
-                        <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= number_format($total, 2, ".", ",") ?></p>
                             </div>
                             <div class="col-xs-4" class="text-right">
-                                <a class="btn btn-info" target="_blank" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="float:right;margin-top:40px"><span class="fa fa-eye"></span></a>
+                                <a class="btn btn-info" target="_blank" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="float:right"><span class="fa fa-eye"></span></a>
                             </div>
                         </div>
                         <hr>

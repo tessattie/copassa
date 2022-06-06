@@ -9,8 +9,11 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
+        <li><a href="<?= ROOT_DIREC ?>/claims">
+            Claims
+        </a></li>
         <li><a href="<?= ROOT_DIREC ?>/types">
-            Claim Types
+            Settings
         </a></li>
         <li class="active">Edit</li>
         <li class="active"><?= $type->name ?></li>

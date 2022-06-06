@@ -26,11 +26,11 @@
     <div class="panel-body articles-container">       
             <?= $this->Form->create($claimsType, array('type' => 'file')) ?>
                 <div class="row">
-                <div class="col-md-12"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Title *", "placeholder" => "Title")); ?></div>
+                <div class="col-md-12"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Title / Service *", "placeholder" => "Title")); ?></div>
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-12"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description")); ?></div>
+                <div class="col-md-12"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description / Contact Information *", "placeholder" => "Description")); ?></div>
             </div>
             <hr>
             <div class="row">

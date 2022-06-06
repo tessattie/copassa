@@ -9,8 +9,11 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
+        <li><a href="<?= ROOT_DIREC ?>/claims">
+            Claims
+        </a></li>
         <li><a href="<?= ROOT_DIREC ?>/types">
-            Claim Types
+            Settings
         </a></li>
         <li class="active">Add</li>
     </ol>
@@ -19,7 +22,7 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            New Claim Type
+            New Settings
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/types"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

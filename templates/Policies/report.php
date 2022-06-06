@@ -4,7 +4,7 @@
             <em class="fa fa-home"></em>
         </a></li>
         <li class="active">Reports</li>
-        <li class="active">Policies</li>
+        <li class="active">Renewals</li>
     </ol>
 </div>
 
@@ -38,16 +38,16 @@
       <?= $this->Form->end() ?>
     </div>
   </div>
-</div></div>
+</div>
 
 
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="row">
         <div class="col-md-12">
-        <a target="_blank" href="<?= ROOT_DIREC ?>/policies/export/<?= $type_filter ?>/<?= $company_filter ?>" style="float:right;margin-bottom:7px"><button type="button" class="btn btn-warning" style="height:46px"><span class="fa fa-download"></span></button></a>
+        <a target="_blank" href="<?= ROOT_DIREC ?>/policies/export/<?= $type_filter ?>/<?= $company_filter ?>" class="btn btn-warning" style="float:right;margin-bottom:7px;"><span class="fa fa-download"></span></a>
 
-        <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="height:46px;float:right;margin-bottom:7px;margin-right:10px"><span class="fa fa-filter"></span></button></div>
+        <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="float:right;margin-bottom:7px;margin-right:10px"><span class="fa fa-filter"></span></button></div>
     </div>
     
     <?php foreach($companies as $company) : ?>

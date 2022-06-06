@@ -21,7 +21,7 @@
     <div class="col-md-12">
         <div class="panel panel-default articles">
         <div class="panel-heading">Payments
-            <a target="_blank" href="<?= ROOT_DIREC ?>/payments/export" style="float:right;margin-bottom:7px"><button type="button" class="btn btn-warning" style="height:46px"><span class="fa fa-download"></span></button></a>
+            <a target="_blank" href="<?= ROOT_DIREC ?>/payments/export" style="float:right;" class="btn btn-warning"><span class="fa fa-download"></span></a>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">

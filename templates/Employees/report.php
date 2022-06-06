@@ -38,14 +38,14 @@
       <?= $this->Form->end() ?>
     </div>
   </div>
-</div></div>
+</div>
 
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Corporate Groups
-            <a target="_blank" href="<?= ROOT_DIREC ?>/employees/export/<?= $business_id ?>/<?= $grouping_id ?>" style="float:right;margin-top:-28px"><button type="button" class="btn btn-warning" style="margin-top:28px;height:46px"><span class="fa fa-download"></span></button></a>
-            <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="height:46px;float:right;margin-bottom:6px;margin-right:10px"><span class="fa fa-filter"></span></button>
+            <a target="_blank" href="<?= ROOT_DIREC ?>/employees/export/<?= $business_id ?>/<?= $grouping_id ?>" class="btn btn-warning" style="float:right;"><span class="fa fa-download"></span></a>
+            <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="float:right;margin-right:10px"><span class="fa fa-filter"></span></button>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">
