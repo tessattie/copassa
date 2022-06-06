@@ -404,8 +404,14 @@ class PoliciesController extends AppController
         $i=3;
         foreach($policies as $policy){
             $sheet->SetCellValue('A'.$i, $policy->policy_number);
-            $sheet->SetCellValue('B'.$i, $policy->customer->name);
+            if(!empty($policy->customer)){
+                $sheet->SetCellValue('B'.$i, $policy->customer->name);
             $sheet->SetCellValue('C'.$i, substr($policy->customer->country->name, 0, 5));
+        }else{
+            $sheet->SetCellValue('B'.$i, '');
+            $sheet->SetCellValue('C'.$i, '');
+        }
+            
 
             if(!empty($policy->company)){
                 if(!empty($policy->option)){
