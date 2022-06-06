@@ -68,7 +68,9 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Policies
-            <a target="_blank" href="<?= ROOT_DIREC ?>/policies/exportlisting/<?= $country_id ?>/<?= $company_id ?>/<?= $type ?>/<?= $mode ?>/<?= $young_policies ?>" style="float:right;" class="btn btn-warning"><span class="fa fa-download"></span></a>
+            <a target="_blank" href="<?= ROOT_DIREC ?>/policies/exportlisting/<?= $country_id ?>/<?= $company_id ?>/<?= $type ?>/<?= $mode ?>/<?= $young_policies ?>" style="float:right;" class="btn btn-danger"><span class="fa fa-file-pdf-o"></span></a>
+
+            <a href="<?= ROOT_DIREC ?>/policies/exportlistingexcel/<?= $country_id ?>/<?= $company_id ?>/<?= $type ?>/<?= $mode ?>/<?= $young_policies ?>" style="float:right;margin-right:10px;background:#26580F;border:1px solid #26580F" class="btn btn-success"><span class="fa fa-file-excel-o"></span></a>
 
         <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="float:right;margin-right:10px"><span class="fa fa-filter"></span></button>
         </div>

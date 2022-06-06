@@ -21,7 +21,9 @@
     <div class="col-md-12">
         <div class="panel panel-default articles">
         <div class="panel-heading">Payments
-            <a target="_blank" href="<?= ROOT_DIREC ?>/payments/export" style="float:right;" class="btn btn-warning"><span class="fa fa-download"></span></a>
+            <a target="_blank" href="<?= ROOT_DIREC ?>/payments/export" style="float:right;" class="btn btn-danger"><span class="fa fa-file-pdf-o"></span></a>
+
+            <a href="<?= ROOT_DIREC ?>/payments/exportexcel" style="float:right;margin-right:10px;background:#26580F;border:1px solid #26580F" class="btn btn-success"><span class="fa fa-file-excel-o"></span></a>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">
