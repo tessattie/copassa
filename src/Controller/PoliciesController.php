@@ -516,8 +516,14 @@ class PoliciesController extends AppController
         foreach($policies as $policy){
             $fpdf->Ln();
             $fpdf->Cell(40,6,utf8_decode($policy->policy_number),'L-R-B',0, 'C');
-            $fpdf->Cell(80,6,utf8_decode($policy->customer->name),'L-R-B',0, 'C');
+            if(!empty($policy->customer)){
+                $fpdf->Cell(80,6,utf8_decode($policy->customer->name),'L-R-B',0, 'C');
             $fpdf->Cell(20,6,utf8_decode(substr($policy->customer->country->name, 0, 5)),'L-R-B',0, 'C');
+            }else{
+                $fpdf->Cell(80,6,'','L-R-B',0, 'C');
+            $fpdf->Cell(20,6,'','L-R-B',0, 'C');
+            }
+            
             if(!empty($policy->company)){
                 if(!empty($policy->option)){
                     $fpdf->Cell(75,6,utf8_decode($policy->company->name . " / ".  $policy->option->name),'L-R-B',0, 'C');
