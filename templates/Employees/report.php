@@ -27,7 +27,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $this->Form->control('grouping_id', array('class' => 'form-control', "empty" => '-- Choose --',"label" => "Group", "multiple" => false, 'style' => "height:46px")); ?>
+                        <?= $this->Form->control('grouping_id', array('class' => 'form-control', 'options' => $groupings, "empty" => '-- Choose --',"label" => "Group", "multiple" => false, 'style' => "height:46px", 'value' => $grouping_id)); ?>
                     </div>
                 </div>
             </div>
@@ -44,7 +44,10 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Corporate Groups
-            <a target="_blank" href="<?= ROOT_DIREC ?>/employees/export/<?= $business_id ?>/<?= $grouping_id ?>" class="btn btn-warning" style="float:right;"><span class="fa fa-download"></span></a>
+            <a target="_blank" href="<?= ROOT_DIREC ?>/employees/export/<?= $business_id ?>/<?= $grouping_id ?>" style="float:right;" class="btn btn-danger"><span class="fa fa-file-pdf-o"></span></a>
+
+            <a href="<?= ROOT_DIREC ?>/employees/exportexcel/<?= $business_id ?>/<?= $grouping_id ?>" style="float:right;margin-right:10px;background:#26580F;border:1px solid #26580F" class="btn btn-success"><span class="fa fa-file-excel-o"></span></a>
+
             <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="float:right;margin-right:10px"><span class="fa fa-filter"></span></button>
         </div>
     <div class="panel-body articles-container">

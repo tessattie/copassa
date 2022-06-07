@@ -658,6 +658,26 @@ class PoliciesController extends AppController
             $sheet->getColumnDimension('K')->setWidth(20);
 
             foreach($renewals as $renewal){
+
+                $background = "ffffff";
+
+                if(!empty($renewal->payment_date) || $renewal->status == 2){
+                    $background = 'dff0d8';
+                }
+
+                if(empty($renewal->payment_date) && $renewal->renewal_date->i18nFormat('yyyy-MM-dd') < date('Y-m-d')){
+                    $background = "fcf8e3";
+                }
+
+                $sheet->getStyle('A'.$j.":K".$j)->applyFromArray(
+                    array(
+                        'fill' => array(
+                            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                            'color' => array('rgb' => $background)
+                        )
+                        )
+                    );
+
                 if($renewal->policy->company_id == $company->id){
                     $policy = $renewal->policy;
                     $percentage = ""; 
@@ -805,11 +825,20 @@ class PoliciesController extends AppController
                     $diff = date_diff(date_create($dob), date_create($today));
                     $age = $diff->format('%y');
                 }
+                $fpdf->SetFillColor(255,255,255);
                 if(!empty($renewal->payment_date) || $renewal->status == 2){
-                    $fpdf->SetFillColor(255,250,205);
-                }else{
-                    $fpdf->SetFillColor(255,255,255);
+                    $fpdf->SetFillColor(223,240,216);
                 }
+
+                if(empty($renewal->payment_date) && $renewal->renewal_date->i18nFormat('yyyy-MM-dd') < date('Y-m-d')){
+                    $fpdf->SetFillColor(255,250,205);
+                }
+
+                // if(!empty($renewal->payment_date) || $renewal->status == 2){
+                //     $fpdf->SetFillColor(255,250,205);
+                // }else{
+                //     $fpdf->SetFillColor(255,255,255);
+                // }
 
                 $fpdf->Cell(59,7,utf8_decode($policy->customer->name),'T-L-B',0, 'L',1);
                 if(!empty($age)){
