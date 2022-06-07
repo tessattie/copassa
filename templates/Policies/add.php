@@ -42,10 +42,10 @@ $months = array(
             <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 23px;">Profile</h4>
                 <div class="row">
                     <?php if(!empty($customer_id)) : ?>
-                        <div class="col-md-3"><?= $this->Form->control('customer_id', array('class' => 'form-control', "label" => "Policy Holder *", "empty" => "-- Choose --", "options" => $customers, 'value' => $customer_id)); ?>
+                        <div class="col-md-3"><?= $this->Form->control('customer_id', array('class' => 'form-control', "label" => "Policy Holder *", "empty" => "-- Choose --", "options" => $customers, 'value' => $customer_id, 'required' => true)); ?>
                         </div>
                     <?php else : ?>
-                        <div class="col-md-3"><?= $this->Form->control('customer_id', array('class' => 'form-control', "label" => "Policy Holder *", "empty" => "-- Choose --", "options" => $customers)); ?>
+                        <div class="col-md-3"><?= $this->Form->control('customer_id', array('class' => 'form-control', "label" => "Policy Holder *", "empty" => "-- Choose --", "options" => $customers, 'required' => true)); ?>
                         </div>
                     <?php endif; ?>
                     

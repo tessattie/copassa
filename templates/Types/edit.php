@@ -23,7 +23,7 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Claim Type : <?= $type->name ?>
+            Edit Setting : <?= $type->name ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/types"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       
