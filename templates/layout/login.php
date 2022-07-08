@@ -13,7 +13,7 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = 'AR';
+$cakeDescription = 'ARS';
 ?>
 <!DOCTYPE html>
 <html>
@@ -21,8 +21,7 @@ $cakeDescription = 'AR';
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <?= $cakeDescription ?>:
-        <?= $this->fetch('title') ?>
+        <?= $cakeDescription ?> - Login
     </title>
     <?= $this->Html->meta('icon') ?>
 

@@ -26,9 +26,8 @@
                 <thead> 
                     <th>Name</th>
                     <th class="text-center">Country</th>
-                    <th class="text-center">Home Phone</th>
                     <th class="text-center">Cell Phone</th>
-                    <th class="text-center">Other Phone</th>
+                    <th class="text-center">Email</th>
                     <th class="text-center">DOB</th>
                     <th class="text-center">Age</th>
                     <th class="text-center">Status</th>
@@ -61,12 +60,6 @@
                     <?php else : ?>
                         <td class="text-center">N/A</td>
                     <?php endif; ?>
-                    
-                    <?php if(!empty($customer->home_phone)) : ?>
-                        <td class="text-center">+(<?= $customer->home_area_code ?>)-<?= $customer->home_phone ?></td>
-                    <?php else : ?>
-                        <td class="text-center">-</td>
-                    <?php endif; ?>
 
                     
 
@@ -76,11 +69,7 @@
                         <td class="text-center">-</td>
                     <?php endif; ?>
 
-                    <?php if(!empty($customer->other_phone)) : ?>
-                        <td class="text-center">+(<?= $customer->other_area_code ?>)-<?= $customer->other_phone ?></td>
-                    <?php else : ?>
-                        <td class="text-center">-</td>
-                    <?php endif; ?>
+                    <td class="text-center"><?= $customer->email ?></td>
                     <?php if(!empty($customer->dob)) : ?>
                         <td class="text-center"><?= date("M d Y", strtotime($customer->dob)) ?></td>
                     <?php else : ?>

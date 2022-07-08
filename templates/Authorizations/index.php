@@ -3,7 +3,7 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\User[]|\Cake\Collection\CollectionInterface $users
  */
-$types = array(1 => "Dashboard", 2 => "Reports", 3 => "Insurance Companies", 4 => "Countries", 5 => "Policies", 6 => "Pending New Business", 7 => "Maternity Reminders", 8 => "Policy Payments / Renewals", 9 => "Corporate Groups", 10 => "Ressources", 11 => "Users", 12 => "Riders", 13 => "Activity / Logs");
+$types = array(1 => "Dashboard", 2 => "Reports", 3 => "Insurance Companies", 4 => "Countries", 5 => "Policies", 6 => "Pending New Business", 7 => "Maternity Reminders", 8 => "Policy Payments / Renewals", 9 => "Corporate Groups", 10 => "Ressources", 11 => "Users", 12 => "Riders", 13 => "Claims");
 ?>
 <div class="row" style="margin-bottom:15px">
     <ol class="breadcrumb">
