@@ -188,7 +188,7 @@ $summary_cancelations = 0;
                                     <?php endif; ?>
 
                                     <?php if($transaction->status == 1) : ?>
-                                        <td class="text-center"><span class="label label-warning">AWAITING</span></td>
+                                        <td class="text-center"><span class="label label-warning">PENDING</span></td>
                                     <?php else : ?>
                                         <td class="text-center"><span class="label label-success">CONFIRMED</span></td>
                                     <?php endif; ?>
@@ -332,7 +332,7 @@ $summary_cancelations = 0;
         </div>
         <hr>
         <div class="row">
-            <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "label" => "Operation", 'options' => array(1=>"Awaiting", 2 => "Confirmed") , "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
+            <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "label" => "Operation", 'options' => array(1=>"Pending", 2 => "Confirmed") , "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
         </div>
         <hr>
         <div class="row">

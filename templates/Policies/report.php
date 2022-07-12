@@ -72,7 +72,8 @@
                             $percentage .="%";
                         }                        
                     ?>
-                    <tr <?= (!empty($renewal->payment_date) || $renewal->status == 2) ? "style='background:#FFF8DC
+                    <tr <?= (!empty($renewal->payment_date) || $renewal->status == 2) ? "style='background:#dff0d8
+'" : '' ?>  <?= (empty($renewal->payment_date) && (date("Y-m-d") > date("Y-m-d", strtotime($renewal->renewal_date)))) ? "style='background:#f2dede
 '" : '' ?>>
                         <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
 
