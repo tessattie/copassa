@@ -820,9 +820,11 @@ class PoliciesController extends AppController
                 $policy = $renewal->policy;
                 $percentage = ""; 
                 if(!empty($renewal->last_renewal)){
+                    if(!empty($renewal->last_renewal->premium)){
                     $percentage = ($renewal->premium - $renewal->last_renewal->premium)*100/$renewal->last_renewal->premium;
                     $percentage = number_format($percentage, 2, ".",",");
                     $percentage .="%";
+                    }
                 }    
                 $age = "N/A";
                 if(!empty($policy->customer->dob)){
