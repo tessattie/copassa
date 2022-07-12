@@ -4,6 +4,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use FPDF;
+use PHPExcel; 
+use PHPExcel_IOFactory;
+use PHPExcel_Style_Border;
+use PHPExcel_Worksheet_PageSetup;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Fill;
+use PHPExcel_Cell_DataValidation;
+use PHPExcel_Writer_Excel7;
 
 /**
  * Employees Controller
@@ -20,20 +28,22 @@ class EmployeesController extends AppController
      */
     public function index()
     {
-        $employees = $this->Employees->find("all", array('conditions' => array('Employees.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Groupings' => ['Companies']]);
+        $employees = $this->Employees->find("all", array('conditions' => array('Employees.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Groupings' => ['Companies'], 'Transactions']);
 
         $this->set(compact('employees'));
     }
 
     public function report($group_id = false){
         $employees = array();
-        $business_id = "9999";
-        $grouping_id = "9999";
+        $business_id = "ZZZZ";
+        $grouping_id = "ZZZZ";
+        $groupings = [];
         $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
         $employees->where(['Employees.tenant_id' => $this->Auth->user()['tenant_id']]);
         if($this->request->is(['patch', 'put', 'post'])){
             if(!empty($this->request->getData()['business_id'])){
                 $business_id = $this->request->getData()['business_id'];
+                $groupings = $this->Employees->Groupings->find('list', ['conditions' => array('tenant_id' => $this->Auth->user()['tenant_id'], 'business_id' => $business_id), 'order' => 'grouping_number ASC']);
                 $employees->where(['Employees.business_id' => $this->request->getData()['business_id']]);
             }
             if(!empty($this->request->getData()['grouping_id'])){
@@ -43,22 +53,164 @@ class EmployeesController extends AppController
         }
 
          $businesses = $this->Employees->Businesses->find('list', ['conditions' => array('tenant_id' => $this->Auth->user()['tenant_id']), 'order' => 'name ASC']);
-        $this->set(compact('employees', 'businesses', 'business_id', 'grouping_id'));
+        $this->set(compact('employees', 'businesses', 'business_id', 'grouping_id', 'groupings'));
     }
 
-    public function export($business_id = '9999', $grouping_id = '9999'){
+    public function exportexcel($business_id = 'ZZZZ', $grouping_id = 'ZZZZ'){
         $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
         $employees->where(['Employees.tenant_id' => $this->Auth->user()['tenant_id']]);
         $business = false;
         $relationships = array(1 => "Spouse", 2 => "Child", 3  => "Other", 4 => "Employee");
         $genders = array(1 => "Male", 2 => "Female", 3 => "Other");
         $group = false;
-        if($business_id != '9999'){
+        if($business_id != 'ZZZZ'){
             $business = $this->Employees->Businesses->get($business_id);
             $employees->where(['Employees.business_id' => $business_id]);
         }
 
-        if($grouping_id != '9999'){
+        if($grouping_id != 'ZZZZ'){
+            $group = $this->Employees->Groupings->get($grouping_id);
+            $employees->where(['Employees.grouping_id' => $grouping_id]);
+        }
+
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel.php');
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel' . DS . 'IOFactory.php');
+
+        $excel = new PHPExcel();
+        
+        $excel->getProperties()->setCreator("AR")
+             ->setLastModifiedBy("AR System")
+             ->setTitle("AR Exports")
+             ->setSubject("AR Exports")
+             ->setDescription("AR Exports");
+        $excel->setActiveSheetIndex(0);
+        $excel->getActiveSheet()->mergeCells('A1:I1');
+        $sheet = $excel->getActiveSheet();
+        $sheet->setTitle('Corporate Groups');
+        if(!empty($business)){
+            if(!empty($group)){
+                $sheet->SetCellValue('A1', "Corporate Groups Report - ".$business->name." - ".$group->grouping_number);
+            }else{
+                $sheet->SetCellValue("A1", "Corporate Groups Report - ".$business->name); 
+            }
+        }else{
+            if(!empty($group)){
+                $sheet->SetCellValue("A1", "Corporate Groups Report - ".$group->grouping_number); 
+            }else{
+                $sheet->SetCellValue("A1", "Corporate Groups Report - All Corporate Groups included"); 
+            }
+        }
+        
+        
+
+        // fill report here
+        
+        $sheet->SetCellValue('A2', '#');
+        $sheet->SetCellValue('B2', 'Last Name');
+        $sheet->SetCellValue('C2', 'First Name');
+        $sheet->SetCellValue('D2', 'DOB');
+        $sheet->SetCellValue('E2', 'Age');
+        $sheet->SetCellValue('F2', 'Gender');
+        $sheet->SetCellValue('G2', 'Residence');
+        $sheet->SetCellValue('H2', 'Relationship');
+        $sheet->SetCellValue('I2', 'Premium');
+
+        $sheet->getColumnDimension('A')->setWidth(25);
+        $sheet->getColumnDimension('B')->setWidth(40);
+        $sheet->getColumnDimension('C')->setWidth(40);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(12);
+        $sheet->getColumnDimension('G')->setWidth(15);
+        $sheet->getColumnDimension('H')->setWidth(20);
+        $sheet->getColumnDimension('I')->setWidth(12);
+
+        $row = 3; $i=1;$real_total=0;
+
+        foreach($employees as $employee){
+            if($i % 2 == 0){
+                $background = 'f2f2f2'; 
+            }else{
+                 $background = 'ffffff';
+            }
+            $i++;
+
+            foreach($employee->families as $family){
+
+                $age = "N/A";
+                $dob = "N/A";
+                
+                if(!empty($family->dob)){
+                    $dob = $family->dob->i18nFormat('yyyy-MM-dd');
+                    $today = date("Y-m-d");
+                    $diff = date_diff(date_create($dob), date_create($today));
+                    $age = $diff->format('%y');
+                }
+
+                $sheet->SetCellValue('A'.$row, $employee->membership_number);
+                $sheet->SetCellValue('B'.$row, $family->last_name);
+                $sheet->SetCellValue('C'.$row, $family->first_name);
+
+                if($dob != "N/A"){
+                    $sheet->SetCellValue('D'.$row, date('m/d/Y', strtotime($dob)));
+                }else{
+                    $sheet->SetCellValue('D'.$row, $dob);
+                }
+                
+                $sheet->SetCellValue('E'.$row, $age);
+                $sheet->SetCellValue('F'.$row, $genders[$family->gender]);
+                $sheet->SetCellValue('G'.$row, $family->country);
+                $sheet->SetCellValue('H'.$row, $relationships[$family->relationship ]);
+                $sheet->SetCellValue('I'.$row, number_format($family->premium, 2, ".", ","));
+                $sheet->getStyle('A'.$row.":I".$row)->applyFromArray(
+                    array(
+                        'fill' => array(
+                            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                            'color' => array('rgb' => $background)
+                        )
+                        )
+                    );
+
+                $row++;
+            }
+        }
+
+        $styleArray = array(
+          'borders' => array(
+            'allborders' => array(
+              'style' => PHPExcel_Style_Border::BORDER_THIN
+            )
+          ),
+          'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            )
+        );
+
+        $sheet->getStyle('A1:I'.($row-1))->applyFromArray($styleArray);
+
+        $file = 'corporate_groups.xlsx';
+        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file.'"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+        die();
+    }
+
+    public function export($business_id = 'ZZZZ', $grouping_id = 'ZZZZ'){
+        $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
+        $employees->where(['Employees.tenant_id' => $this->Auth->user()['tenant_id']]);
+        $business = false;
+        $relationships = array(1 => "Spouse", 2 => "Child", 3  => "Other", 4 => "Employee");
+        $genders = array(1 => "Male", 2 => "Female", 3 => "Other");
+        $group = false;
+        if($business_id != 'ZZZZ'){
+            $business = $this->Employees->Businesses->get($business_id);
+            $employees->where(['Employees.business_id' => $business_id]);
+        }
+
+        if($grouping_id != 'ZZZZ'){
             $group = $this->Employees->Groupings->get($grouping_id);
             $employees->where(['Employees.grouping_id' => $grouping_id]);
         }
@@ -191,7 +343,7 @@ class EmployeesController extends AppController
                     $family->status = 1 ;
                     $this->Families->save($family);
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'view', $employee->id]);
             }
             $this->Flash->error(__('The employee could not be saved. Please, try again.'));
         }
@@ -253,8 +405,12 @@ class EmployeesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $employee = $this->Employees->get($id);
+        $families = $this->Employees->Families->find("all", array("conditions" => array('employee_id' => $employee->id)));
+        foreach($families as $family){
+            $this->Employees->Families->delete($family);
+        }
         if ($this->Employees->delete($employee)) {
             $this->Flash->success(__('The employee has been deleted.'));
         } else {

@@ -14,7 +14,7 @@
             <button class="btn btn-success" style="float:right" data-target="#newmaternity" data-toggle="modal">Add</button>
         </div>
     <div class="panel-body articles-container">
-        <div style="">
+        <div class="table-responsive">
             <table class="table table-striped datatable">
                 <thead> 
                     <th class="text-left">Name</th>
@@ -110,6 +110,10 @@
                 <?= $this->Form->control('country_id', array('class' => 'form-control', "label" => "Country *", "empty" => "-- Choose --", "options" => $countries)); ?>
             </div> 
         </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-4"><?= $this->Form->control('last_contact_date', array('class' => 'form-control', "label" => "Last Contact Date", "type" => "Date", "value" => date('Y-m-d'), 'required' => true, 'style' => "height:46px")); ?></div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -157,3 +161,13 @@ echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
         })
     })
 </script>
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

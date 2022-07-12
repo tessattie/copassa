@@ -13,7 +13,7 @@
         <li><a href="<?= ROOT_DIREC ?>/companies">
             Insurance Companies
         </a></li>
-        <li class="active">add</li>
+        <li class="active">Add</li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
@@ -45,3 +45,13 @@
         
     </div>
 </div><!--End .articles-->
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

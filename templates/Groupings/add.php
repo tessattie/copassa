@@ -20,13 +20,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             New Group
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a href="<?= ROOT_DIREC ?>/groupings">
-                    <em class="fa fa-arrow-left"></em>
-                </a>
-                    
-                </li>
-            </ul>
+            <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/groupings"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($grouping) ?>
@@ -50,3 +44,13 @@
         
     </div>
 </div><!--End .articles-->
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

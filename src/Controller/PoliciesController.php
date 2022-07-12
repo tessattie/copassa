@@ -4,6 +4,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use FPDF;
+use PHPExcel; 
+use PHPExcel_IOFactory;
+use PHPExcel_Style_Border;
+use PHPExcel_Worksheet_PageSetup;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Fill;
+use PHPExcel_Cell_DataValidation;
+use PHPExcel_Writer_Excel7;
 
 /**
  * Policies Controller
@@ -23,11 +31,11 @@ class PoliciesController extends AppController
         $this->savelog(200, "Accessed policies page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
         if(!empty($filter_country)){
-           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries']])->matching('Customers', function ($q) use ($filter_country) {
+           $policies = $this->Policies->find("all", array("conditions" => array('Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants'])->matching('Customers', function ($q) use ($filter_country) {
                 return $q->where(['Customers.country_id' => $filter_country]);
             }); 
         }else{
-           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries']]); 
+           $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
         }
 
         $this->set(compact('policies'));
@@ -50,13 +58,19 @@ class PoliciesController extends AppController
     }
 
     public function dashboard(){
-        $this->loadModel("Newborns");$this->loadModel("Pendings");$this->loadModel("Transactions");
+        $this->loadModel("Newborns");$this->loadModel("Pendings");$this->loadModel("Transactions");$this->loadModel("Claims");
+
+        $new_business_date = date("Y-m-d", strtotime("-1 year")); 
+
+        $claims = $this->Claims->find("all", array("conditions" => array("Claims.tenant_id" => $this->Auth->user()['tenant_id'], 'Claims.status' => 1)))->contain(['Policies' => ['Customers'], 'ClaimsTypes']);
 
         $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1, 'Newborns.tenant_id' => $this->Auth->user()['tenant_id']), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
 
-        $pendings = $this->Pendings->find("all", array("conditions" => array("Pendings.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Countries', 'Users']);
+        $pendings = $this->Pendings->find("all", array("conditions" => array("Pendings.tenant_id" => $this->Auth->user()['tenant_id'], 'Pendings.status' => 1)))->contain(['Companies', 'Options', 'Countries', 'Users']);
 
-        $transactions = $this->Transactions->find("all", array("conditions" => array("Transactions.status" => 1)))->contain(['Employees', 'Families', 'Groupings', 'Renewals' => ['Businesses']]);
+        $newBusiness = $this->Policies->find("all", array("conditions" => array('Policies.tenant_id' => $this->Auth->user()['tenant_id'], 'effective_date >=' => $new_business_date)))->contain(['Customers' => ['Countries'], 'Companies', 'Options']);
+
+        $transactions = $this->Transactions->find("all", array("conditions" => array("Transactions.status" => 1, 'Transactions.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Employees', 'Families', 'Groupings', 'Renewals' => ['Businesses']]);
 
         $all_birthdays = $this->Policies->Customers->find("all", array("conditions" => array("Customers.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies']);
 
@@ -70,7 +84,7 @@ class PoliciesController extends AppController
             }
             
         }
-        $this->set(compact('newborns', 'birthdays', 'pendings', 'transactions'));
+        $this->set(compact('newborns', 'birthdays', 'pendings', 'transactions', 'newBusiness', 'claims'));
     }
 
     /**
@@ -89,7 +103,7 @@ class PoliciesController extends AppController
         }
 
         $policy = $this->Policies->get($id, [
-            'contain' => ['Companies', 'Options', 'Customers', 'Users', 'Payments', 'Dependants', 'Prenewals', 'PoliciesRiders' => ['Riders']],
+            'contain' => ['Companies', 'Options', 'Customers', 'Users', 'Payments', 'Dependants', 'Prenewals', 'Claims' => ['ClaimsTypes'], 'PoliciesRiders' => ['Riders']],
         ]);
         $riders = $this->Riders->find("all");
         $dependant = $this->Policies->Dependants->newEmptyEntity();
@@ -135,6 +149,31 @@ class PoliciesController extends AppController
         $companies = $this->Policies->Companies->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
         $customers = $this->Policies->Customers->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
         $this->set(compact('policy', 'companies', 'customers', 'customer_id'));
+    }
+
+    public function adddependant(){
+        if($this->request->is(['patch', 'put', 'post'])){
+            $this->loadModel("Newborns");
+            // update newborn status
+            $newborn = $this->Newborns->get($this->request->getData()['newborn_id']);
+            $newborn->status = 2; 
+            $this->Newborns->save($newborn); 
+
+            $this->loadmodel('Dependants'); 
+            $dependant = $this->Dependants->newEmptyEntity(); 
+            $dependant->name = $this->request->getData()['name'];
+            $dependant->tenant_id = $this->Auth->user()['tenant_id'];
+            $dependant->sexe = $this->request->getData()['sexe'];
+            $dependant->relation = $this->request->getData()['relation'];
+            $dependant->dob = $this->request->getData()['dob'];
+            $dependant->limitations = $this->request->getData()['limitations'];
+            $dependant->policy_id = $this->request->getData()['policy_id'];
+            $dependant->user_id = $this->Auth->user()['id'];
+            $this->Dependants->save($dependant);
+            // add dependant
+        }
+
+        return $this->redirect(['action' => 'dashboard']);
     }
 
     /**
@@ -213,11 +252,11 @@ class PoliciesController extends AppController
         // Set Dates
         $from = $this->session->read("from"); 
         $to = $this->session->read("to");
-        $type_filter="9999";
-        $company_filter = "9999";
+        $type_filter="ZZZZ";
+        $company_filter = "ZZZZ";
         // Get each company 
-        $comps = $this->Policies->Companies->find("list", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
-        $companies = $this->Policies->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+        $comps = $this->Policies->Companies->find("list", array("order" => array("name ASC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+        $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
         if($this->request->is(['patch', 'put', 'post'])){
             if(!empty($this->request->getData()['type'])){
                 $type_filter = $this->request->getData()['type'];
@@ -240,6 +279,276 @@ class PoliciesController extends AppController
 
     public function alerts(){
         
+    }
+
+    public function listing(){
+        $this->savelog(200, "Accessed policies page", 1, 3, "", "");
+
+        $type = 'ZZZZ';
+        $country_id = 'ZZZZ';
+        $company_id = 'ZZZZ';
+        $mode = 'ZZZZ';
+        $young_policies = 0;
+
+        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
+
+        if($this->request->is(['patch', 'put', 'post'])){
+            // country
+            if(!empty($this->request->getData()['country_id'])){
+                $country_id = $this->request->getData()['country_id'];
+                $policies->matching('Customers', function ($q) use ($country_id) {
+                    return $q->where(['Customers.country_id' => $country_id]);
+                });
+            }
+
+            // type
+            if(!empty($this->request->getData()['type'])){
+                $type = $this->request->getData()['type'];
+                $policies->matching('Companies', function ($q) use ($type) {
+                    return $q->where(['Companies.type' => $type]);
+                });
+            }
+
+            // company
+            if(!empty($this->request->getData()['company_id'])){
+                $company_id = $this->request->getData()['company_id'];
+                $policies->where(['Policies.company_id' => $company_id]);
+            }
+
+            // young policies
+            if(!empty($this->request->getData()['young_policies'])){
+                $young_policies = $this->request->getData()['young_policies'];
+                $policies->where(['Policies.effective_date >' => date("Y-m-d", strtotime("-1 year"))]);
+            }
+
+            // mode
+            if(!empty($this->request->getData()['mode'])){
+                $mode = $this->request->getData()['mode'];
+                $policies->where(['Policies.mode' => $mode]);
+            }
+        }
+        
+
+        $companies = $this->Policies->Companies->find("list", array("order" => array("name ASC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+
+        $this->set(compact('policies', 'companies', 'type', 'company_id', 'mode', 'country_id', 'young_policies'));
+    }
+
+    public function exportlistingexcel($country_id, $company_id, $type, $mode, $young_policies){
+        $modes = array(12 => "A", 6 => "SA", 4 => "T", 3 => 'Q', 1 => 'M');
+
+        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
+        // country
+        if($country_id != 'ZZZZ'){
+            $policies->matching('Customers', function ($q) use ($country_id) {
+                return $q->where(['Customers.country_id' => $country_id]);
+            });
+        }
+
+        // type
+        if($type != 'ZZZZ'){
+            $policies->matching('Companies', function ($q) use ($type) {
+                return $q->where(['Companies.type' => $type]);
+            });
+        }
+
+        // company
+        if($company_id != 'ZZZZ'){
+            $policies->where(['Policies.company_id' => $company_id]);
+        }
+
+        // mode
+        if($mode != 'ZZZZ'){
+            $policies->where(['Policies.mode' => $mode]);
+        }
+
+        // young policies
+        if($young_policies == 1){
+            $policies->where(['Policies.effective_date >' => date("Y-m-d", strtotime("-1 year"))]);
+        }
+
+
+        // start Excel export
+
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel.php');
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel' . DS . 'IOFactory.php');
+
+        $excel = new PHPExcel();
+        
+        $excel->getProperties()->setCreator("AR")
+             ->setLastModifiedBy("AR System")
+             ->setTitle("AR Exports")
+             ->setSubject("AR Exports")
+             ->setDescription("AR Exports");
+        $excel->setActiveSheetIndex(0);
+        $excel->getActiveSheet()->setTitle('Policies');
+        $sheet = $excel->getActiveSheet();
+        $sheet->SetCellValue("A1", 'Policies Report'); 
+        $excel->getActiveSheet()->mergeCells('A1:G1');
+        $sheet->SetCellValue('A2', '#');
+        $sheet->SetCellValue('B2', 'Holder');
+        $sheet->SetCellValue('C2', 'Country');
+        $sheet->SetCellValue('D2', 'Company');
+        $sheet->SetCellValue('E2', 'Premium');
+        $sheet->SetCellValue('F2', 'Mode');
+        $sheet->SetCellValue('G2', 'Effective Date');
+
+        $sheet->getColumnDimension('A')->setWidth(25);
+        $sheet->getColumnDimension('B')->setWidth(45);
+        $sheet->getColumnDimension('C')->setWidth(10);
+        $sheet->getColumnDimension('D')->setWidth(60);
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(20);
+
+        $i=3;
+        foreach($policies as $policy){
+            $sheet->SetCellValue('A'.$i, $policy->policy_number);
+            if(!empty($policy->customer)){
+                $sheet->SetCellValue('B'.$i, $policy->customer->name);
+            $sheet->SetCellValue('C'.$i, substr($policy->customer->country->name, 0, 5));
+        }else{
+            $sheet->SetCellValue('B'.$i, '');
+            $sheet->SetCellValue('C'.$i, '');
+        }
+            
+
+            if(!empty($policy->company)){
+                if(!empty($policy->option)){
+                    $sheet->SetCellValue('D'.$i, $policy->company->name . " / ".  $policy->option->name);
+                }else{
+                    $sheet->SetCellValue('D'.$i, $policy->company->name);
+                }
+            }else{
+                if(!empty($policy->option)){
+                    $sheet->SetCellValue('D'.$i, $policy->option->name);
+                }else{
+                    $sheet->SetCellValue('D'.$i, '');
+                }
+            }
+
+            $sheet->SetCellValue('E'.$i, number_format($policy->premium));
+            $sheet->SetCellValue('F'.$i, $modes[$policy->mode]);
+            $sheet->SetCellValue('G'.$i, date('M d Y', strtotime($policy->effective_date->i18nFormat('yyyy-MM-dd'))));
+            $i++;
+        }
+
+        $styleArray = array(
+          'borders' => array(
+            'allborders' => array(
+              'style' => PHPExcel_Style_Border::BORDER_THIN
+            )
+          ),
+          'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            )
+        );
+
+        $sheet->getStyle('A1:G'.($i-1))->applyFromArray($styleArray);
+
+        $file = 'policies_report.xlsx';
+        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file.'"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+        die();
+
+    }
+
+    public function exportlisting($country_id, $company_id, $type, $mode, $young_policies){
+
+        $modes = array(12 => "A", 6 => "SA", 4 => "T", 3 => 'Q', 1 => 'M');
+
+        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
+        // country
+        if($country_id != 'ZZZZ'){
+            $policies->matching('Customers', function ($q) use ($country_id) {
+                return $q->where(['Customers.country_id' => $country_id]);
+            });
+        }
+
+        // type
+        if($type != 'ZZZZ'){
+            $policies->matching('Companies', function ($q) use ($type) {
+                return $q->where(['Companies.type' => $type]);
+            });
+        }
+
+        // company
+        if($company_id != 'ZZZZ'){
+            $policies->where(['Policies.company_id' => $company_id]);
+        }
+
+        // mode
+        if($mode != 'ZZZZ'){
+            $policies->where(['Policies.mode' => $mode]);
+        }
+
+        // young policies
+        if($young_policies == 1){
+            $policies->where(['Policies.effective_date >' => date("Y-m-d", strtotime("-1 year"))]);
+        }
+
+
+        // start PDF export
+
+        require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
+        
+        $fpdf = new FPDF();
+        $fpdf->AddPage("L");
+        $fpdf->SetFont('Arial','B',9);
+        $fpdf->Cell(275,0,"Policies Report",0,0, 'L');
+        $fpdf->Ln(5);
+        $fpdf->Cell(275,0,"",'B',0, 'R');
+        $fpdf->Ln();
+
+        $fpdf->Cell(40,7,"Number",'L-R-B',0, 'C');
+
+        $fpdf->Cell(80,7,"Holder",'L-R-B',0, 'C');
+        $fpdf->Cell(20,7,"Country",'L-R-B',0, 'C');
+        $fpdf->Cell(75,7,"Company",'L-R-B',0, 'C');
+        $fpdf->Cell(25,7,"Premium",'L-R-B',0, 'C');
+        $fpdf->Cell(15,7,"Mode",'L-R-B',0, 'C');
+        $fpdf->Cell(20,7,"Effective",'L-R-B',0, 'C');
+        $fpdf->SetFont('Arial','',7);
+        foreach($policies as $policy){
+            $fpdf->Ln();
+            $fpdf->Cell(40,6,utf8_decode($policy->policy_number),'L-R-B',0, 'C');
+            if(!empty($policy->customer)){
+                $fpdf->Cell(80,6,utf8_decode($policy->customer->name),'L-R-B',0, 'C');
+            $fpdf->Cell(20,6,utf8_decode(substr($policy->customer->country->name, 0, 5)),'L-R-B',0, 'C');
+            }else{
+                $fpdf->Cell(80,6,'','L-R-B',0, 'C');
+            $fpdf->Cell(20,6,'','L-R-B',0, 'C');
+            }
+            
+            if(!empty($policy->company)){
+                if(!empty($policy->option)){
+                    $fpdf->Cell(75,6,utf8_decode($policy->company->name . " / ".  $policy->option->name),'L-R-B',0, 'C');
+                }else{
+                    $fpdf->Cell(75,6,utf8_decode($policy->company->name),'L-R-B',0, 'C');
+                }
+            }else{
+                if(!empty($policy->option)){
+                    $fpdf->Cell(75,6,utf8_decode($policy->option->name),'L-R-B',0, 'C');
+                }else{
+                    $fpdf->Cell(75,6,"",'L-R-B',0, 'C');
+                }
+            }
+            $fpdf->Cell(25,6,number_format($policy->premium,2,".",","),'L-R-B',0, 'C');
+            $fpdf->Cell(15,6,$modes[$policy->mode] ,'L-R-B',0, 'C');
+            $fpdf->Cell(20,6,date('M d Y', strtotime($policy->effective_date->i18nFormat('yyyy-MM-dd'))) ,'L-R-B',0, 'C');
+        }
+
+
+        $fpdf->Output('I', 'policies_report');
+        die();
+
+
+
+
     }
 
 
@@ -287,17 +596,184 @@ class PoliciesController extends AppController
         }
     }
 
+    public function exportexcel($type, $company_id){
+        $from = $this->session->read("from"); 
+        $to = $this->session->read("to"); 
+
+        $companies = $this->Policies->Companies->find("all", array("order" => array("name DESC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+
+        if($company_id != 'ZZZZ'){
+            $companies->where(['id' => $company_id]);
+        }
+
+        if($type != 'ZZZZ'){
+            $companies->where(['type' => $type]);
+        }
+
+        $renewals = $this->Policies->Prenewals->find("all", array("conditions" => array("renewal_date >=" => $from, "renewal_date <=" => $to,"Prenewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Companies', 'Options', 'Customers' => ['Countries']]]);
+        foreach($renewals as $renewal){
+            $renewal->last_renewal = $this->Policies->Prenewals->find("all", array("order" => array("renewal_date DESC"), "conditions" => array("Prenewals.tenant_id" => $this->Auth->user()['tenant_id'], "Prenewals.id <>" => $renewal->id, 'Prenewals.policy_id' => $renewal->policy_id)))->first();
+        }
+
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel.php');
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel' . DS . 'IOFactory.php');
+
+        $excel = new PHPExcel();
+        
+        $excel->getProperties()->setCreator("AR")
+             ->setLastModifiedBy("AR System")
+             ->setTitle("AR Exports")
+             ->setSubject("AR Exports")
+             ->setDescription("AR Exports");
+
+        $i=0;
+        foreach($companies as $company){
+            $j=2;
+            $excel->createSheet($i);
+            $excel->setActiveSheetIndex($i);
+            $excel->getActiveSheet()->setTitle(substr($company->name, 0, 30));
+            $sheet = $excel->setActiveSheetIndex($i); 
+            $sheet->SetCellValue('A1', 'Insured Name');
+            $sheet->SetCellValue('B1', 'Age');
+            $sheet->SetCellValue('C1', 'Policy');
+            $sheet->SetCellValue('D1', 'Plan');
+            $sheet->SetCellValue('E1', 'Country');
+            $sheet->SetCellValue('F1', 'Mode');
+            $sheet->SetCellValue('G1', 'Last Premium');
+            $sheet->SetCellValue('H1', 'Premium');
+            $sheet->SetCellValue('I1', '%');
+            $sheet->SetCellValue('J1', 'Effective Date');
+            $sheet->SetCellValue('K1', 'Due Date');
+
+            $sheet->getColumnDimension('A')->setWidth(50);
+            $sheet->getColumnDimension('B')->setWidth(10);
+            $sheet->getColumnDimension('C')->setWidth(25);
+            $sheet->getColumnDimension('D')->setWidth(50);
+            $sheet->getColumnDimension('E')->setWidth(10);
+            $sheet->getColumnDimension('F')->setWidth(10);
+            $sheet->getColumnDimension('G')->setWidth(20);
+            $sheet->getColumnDimension('H')->setWidth(20);
+            $sheet->getColumnDimension('I')->setWidth(15);
+            $sheet->getColumnDimension('J')->setWidth(20);
+            $sheet->getColumnDimension('K')->setWidth(20);
+
+            foreach($renewals as $renewal){
+
+                $background = "ffffff";
+
+                if(!empty($renewal->payment_date) || $renewal->status == 2){
+                    $background = 'dff0d8';
+                }
+
+                if(empty($renewal->payment_date) && $renewal->renewal_date->i18nFormat('yyyy-MM-dd') < date('Y-m-d')){
+                    $background = "fcf8e3";
+                }
+
+                $sheet->getStyle('A'.$j.":K".$j)->applyFromArray(
+                    array(
+                        'fill' => array(
+                            'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                            'color' => array('rgb' => $background)
+                        )
+                        )
+                    );
+
+                if($renewal->policy->company_id == $company->id){
+                    $policy = $renewal->policy;
+                    $percentage = ""; 
+                    if(!empty($renewal->last_renewal)){
+                        $percentage = ($renewal->premium - $renewal->last_renewal->premium)*100/$renewal->last_renewal->premium;
+                        $percentage = number_format($percentage, 2, ".",",");
+                        $percentage .="%";
+                    }    
+                    $age = "N/A";
+                    if(!empty($policy->customer->dob)){
+                        $dob = $policy->customer->dob->year."-".$policy->customer->dob->month."-".$policy->customer->dob->day;
+                        $today = date("Y-m-d");
+                        $diff = date_diff(date_create($dob), date_create($today));
+                        $age = $diff->format('%y');
+                    }
+                    if(!empty($policy->customer)){
+                        $sheet->SetCellValue('A'.$j, $policy->customer->name);
+                    }
+                    
+                    if(!empty($age)){
+                        $sheet->SetCellValue('B'.$j, $age);
+                    }else{
+                        $sheet->SetCellValue('B'.$j, 'N/A');
+                    }
+
+                    
+                    $sheet->SetCellValue('C'.$j, $policy->policy_number);
+                    if(!empty($policy->option->name)){
+                        if(!empty($policy->option->option_name)){
+                            $sheet->SetCellValue('D'.$j, $policy->option->name." / ".$policy->option->option_name);
+                        }else{
+                            $sheet->SetCellValue('D'.$j, $policy->option->name);
+                        }
+                    }else{
+                        if(!empty($policy->option->option_name)){
+                            $sheet->SetCellValue('D'.$j, $policy->option->option_name);
+                        }else{
+                            $sheet->SetCellValue('D'.$j, '');
+                        }
+                    }
+                    if(!empty($policy->customer)){
+                        $sheet->SetCellValue('E'.$j, substr($policy->customer->country->name, 0, 5));
+                    }
+                    
+                    $sheet->SetCellValue('F'.$j, $this->modes[$policy->mode]);
+                    if(!empty($renewal->last_renewal)){
+                        $sheet->SetCellValue('G'.$j, number_format(($renewal->last_renewal->premium+$renewal->last_renewal->fee)));
+                    }else{
+                        $sheet->SetCellValue('G'.$j, '');
+                    }
+                    
+                    $sheet->SetCellValue('H'.$j, number_format(($renewal->premium+$renewal->fee)));
+                    $sheet->SetCellValue('I'.$j, $percentage);
+                    $sheet->SetCellValue('J'.$j, date('M d Y', strtotime($policy->effective_date->i18nFormat('yyyy-MM-dd'))));
+                    $sheet->SetCellValue('K'.$j, date('M d Y', strtotime($renewal->renewal_date->i18nFormat('yyyy-MM-dd'))));
+                    $j++;
+
+                    $styleArray = array(
+                      'borders' => array(
+                        'allborders' => array(
+                          'style' => PHPExcel_Style_Border::BORDER_THIN
+                        )
+                      ),
+                      'alignment' => array(
+                            'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                            'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                        )
+                    );
+
+                    $sheet->getStyle('A1:K'.($j-1))->applyFromArray($styleArray);
+                }
+                
+            }
+        }
+
+        $file = 'renewal_report.xlsx';
+        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file.'"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+        die();
+
+    }
+
     public function export($type, $company_id){
         $from = $this->session->read("from"); 
         $to = $this->session->read("to"); 
 
-        $companies = $this->Policies->Companies->find("all", array("conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
+        $companies = $this->Policies->Companies->find("all", array("order" => array("name ASC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
 
-        if($company_id != '9999'){
+        if($company_id != 'ZZZZ'){
             $companies->where(['id' => $company_id]);
         }
 
-        if($type != '9999'){
+        if($type != 'ZZZZ'){
             $companies->where(['type' => $type]);
         }
 
@@ -322,7 +798,7 @@ class PoliciesController extends AppController
         foreach($companies as $company){
             $fpdf->SetFont('Arial','B',8);
             $fpdf->SetFillColor(220,220,220);
-            $fpdf->Cell(275,7,$company->name,"T-L-R",0, 'L', 1);
+            $fpdf->Cell(275,7,utf8_decode($company->name),"T-L-R",0, 'L', 1);
             $fpdf->SetFillColor(255,255,255);
             $fpdf->Ln(7);
             $fpdf->Cell(59,7,"Insured Name",'T-L-B',0, 'L');
@@ -355,13 +831,26 @@ class PoliciesController extends AppController
                     $diff = date_diff(date_create($dob), date_create($today));
                     $age = $diff->format('%y');
                 }
+                $fpdf->SetFillColor(255,255,255);
                 if(!empty($renewal->payment_date) || $renewal->status == 2){
-                    $fpdf->SetFillColor(255,250,205);
-                }else{
-                    $fpdf->SetFillColor(255,255,255);
+                    $fpdf->SetFillColor(223,240,216);
                 }
 
-                $fpdf->Cell(59,7,$policy->customer->name,'T-L-B',0, 'L',1);
+                if(empty($renewal->payment_date) && $renewal->renewal_date->i18nFormat('yyyy-MM-dd') < date('Y-m-d')){
+                    $fpdf->SetFillColor(255,250,205);
+                }
+
+                // if(!empty($renewal->payment_date) || $renewal->status == 2){
+                //     $fpdf->SetFillColor(255,250,205);
+                // }else{
+                //     $fpdf->SetFillColor(255,255,255);
+                // }
+                if(!empty($policy->customer)){
+                    $fpdf->Cell(59,7,utf8_decode($policy->customer->name),'T-L-B',0, 'L',1);    
+                }else{
+                    $fpdf->Cell(59,7, "",'T-L-B',0, 'L',1);    
+                }       
+                
                 if(!empty($age)){
                     $fpdf->Cell(10,7,$age,'T-L-B',0, 'C',1);
                 }else{
@@ -384,7 +873,13 @@ class PoliciesController extends AppController
                     }
                 }
                 
-                $fpdf->Cell(15,7,substr($policy->customer->country->name, 0, 3),'T-L-B',0, 'C',1);
+                if(!empty($policy->customer)){
+                    $fpdf->Cell(15,7,substr($policy->customer->country->name, 0, 3),'T-L-B',0, 'C',1); 
+                }else{
+                    $fpdf->Cell(15,7,"",'T-L-B',0, 'C',1);    
+                }  
+
+                
                 $fpdf->Cell(10,7,$this->modes[$policy->mode],'T-L-B',0, 'C',1);
                 if(!empty($renewal->last_renewal)){
                     $fpdf->Cell(25,7,number_format(($renewal->last_renewal->premium+$renewal->last_renewal->fee), 2, ".", ",") ."USD",'T-L-B',0, 'C',1);
@@ -478,14 +973,7 @@ class PoliciesController extends AppController
         die();
     }
 
-    public function getpoliciesforrenewal(){
-       $policies = $this->Policies->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'])));  
-       foreach($policies as $policy){
-        $this->setrenewals($policy, date("Y"));
-       }
-
-       return $this->redirect($this->referer());
-    }
+    
 
     public function generaterenewals(){
         if($this->request->is(['patch', 'put', 'post'])){
@@ -496,48 +984,5 @@ class PoliciesController extends AppController
         return $this->redirect($this->referer());
     }
 
-    public function setrenewals($policy, $current_year = false){
-        ini_set("memory_limit","-1");
-        $this->loadModel("Prenewals");
-        if($current_year == false){
-            $current_year = date("Y");
-        }
-        // set the renewals we have to create 
-        $renewal_status = $this->Prenewals->find("all", array("conditions" => array("policy_id" => $policy->id), "order" => array("renewal_date DESC")))->first();
-        if(empty($renewal_status) || $renewal_status->policy_status == 1){
-            $mode = $policy->mode; 
-            $effective_date = $policy->effective_date->i18nFormat('yyyy-MM-dd');
-            $renewal_year_start = date($current_year."-m-d", strtotime($effective_date));
-            $renewal_year_end =  date("Y-m-d", strtotime("+12 months", strtotime($renewal_year_start)));
-            // debug($renewal_year_start." - ".$renewal_year_end) ; die();
-            
-            $renewals = [];
-            $next_renewal =  date("Y-m-d", strtotime("+".$mode." months", strtotime($effective_date)));
-            while($next_renewal  < $renewal_year_end){
-                $year = date("Y", strtotime($next_renewal)); 
-                if($next_renewal  <= $renewal_year_end && $next_renewal >= $renewal_year_start){
-                    array_push($renewals, $next_renewal);
-                }
-                $next_renewal =  date("Y-m-d", strtotime("+".$mode." months", strtotime($next_renewal)));
-            }
-
-
-            foreach($renewals as $renewal){
-                $renewals = $this->Prenewals->find("all", array("conditions" => array("renewal_date" => $renewal, "policy_id" => $policy->id)));
-                if($renewals->count() == 0){
-                    // create renewal
-                    $prenewal = $this->Prenewals->newEmptyEntity(); 
-                    $prenewal->renewal_date = $renewal; 
-                    $prenewal->policy_id = $policy->id; 
-                    $prenewal->premium = $policy->premium; 
-                    $prenewal->fee = $policy->fee; 
-                    $prenewal->tenant_id = $policy->tenant_id;
-                    $prenewal->policy_status = 1; 
-                    $prenewal->status = 1;
-                    // debug($prenewal); die();
-                    $this->Prenewals->save($prenewal);
-                }
-            }
-        }
-    }
+    
 }

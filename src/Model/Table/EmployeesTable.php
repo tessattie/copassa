@@ -57,6 +57,9 @@ class EmployeesTable extends Table
             'foreignKey' => 'grouping_id',
             'joinType' => 'INNER',
         ]);
+        $this->hasMany('Transactions', [
+            'foreignKey' => 'employee_id',
+        ]);
         $this->hasMany('Families', [
             'foreignKey' => 'employee_id',
         ]);

@@ -4,6 +4,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use FPDF;
+use PHPExcel; 
+use PHPExcel_IOFactory;
+use PHPExcel_Style_Border;
+use PHPExcel_Worksheet_PageSetup;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Fill;
+use PHPExcel_Cell_DataValidation;
+use PHPExcel_Writer_Excel7;
 
 /**
  * Payments Controller
@@ -379,6 +387,81 @@ class PaymentsController extends AppController
         $payments = $this->Payments->Policies->Prenewals->find("all", array("conditions" => array("payment_date >=" => $from, "payment_date <=" => $to,"Prenewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Companies', 'Options', 'Customers' => ['Countries']]]);
         
         $this->set(compact('payments'));
+    }
+
+    public function exportexcel(){
+        $from = $this->session->read("from"); 
+        $to = $this->session->read("to");
+
+        $filter_country = $this->session->read("filter_country");
+        $payments = $this->Payments->Policies->Prenewals->find("all", array("conditions" => array("payment_date >=" => $from, "payment_date <=" => $to,"Prenewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Companies', 'Options', 'Customers' => ['Countries']]]);
+
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel.php');
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel' . DS . 'IOFactory.php');
+
+        $excel = new PHPExcel();
+        
+        $excel->getProperties()->setCreator("AR")
+             ->setLastModifiedBy("AR System")
+             ->setTitle("AR Exports")
+             ->setSubject("AR Exports")
+             ->setDescription("AR Exports");
+        $excel->setActiveSheetIndex(0);
+        $excel->getActiveSheet()->setTitle('Payments');
+
+        $sheet = $excel->getActiveSheet();
+        $sheet->SetCellValue("A1",'Payments'); 
+        $excel->getActiveSheet()->mergeCells('A1:G1');
+        $sheet->SetCellValue('A2', 'Policy Number');
+        $sheet->SetCellValue('B2', 'Policy Holder');
+        $sheet->SetCellValue('C2', 'Company');
+        $sheet->SetCellValue('D2', 'Amount');
+        $sheet->SetCellValue('E2', 'Payment Date');
+        $sheet->SetCellValue('F2', 'Due Date');
+        $sheet->SetCellValue('G2', 'Memo');
+
+        $sheet->getColumnDimension('A')->setWidth(30);
+        $sheet->getColumnDimension('B')->setWidth(60);
+        $sheet->getColumnDimension('C')->setWidth(50);
+        $sheet->getColumnDimension('D')->setWidth(25);
+        $sheet->getColumnDimension('E')->setWidth(25);
+        $sheet->getColumnDimension('F')->setWidth(25);
+        $sheet->getColumnDimension('G')->setWidth(60);
+
+        $i=3;
+        foreach($payments as $p){
+            $sheet->SetCellValue('A2', $p->policy->policy_number);
+            $sheet->SetCellValue('B2', $p->policy->customer->name);
+            $sheet->SetCellValue('C2', $p->policy->company->name);
+            $sheet->SetCellValue('D2', number_format($p->premium));
+            $sheet->SetCellValue('E2', date('M d Y', strtotime($p->payment_date->i18nFormat('yyyy-MM-dd'))));
+            $sheet->SetCellValue('F2', date('M d Y', strtotime($p->renewal_date->i18nFormat('yyyy-MM-dd'))));
+            $sheet->SetCellValue('G2', $p->memo);
+            $i++;
+        }
+
+        $styleArray = array(
+          'borders' => array(
+            'allborders' => array(
+              'style' => PHPExcel_Style_Border::BORDER_THIN
+            )
+          ),
+          'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            )
+        );
+
+        $sheet->getStyle('A1:G'.($i-1))->applyFromArray($styleArray);
+
+        $file = 'payments_report.xlsx';
+        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file.'"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+        die();
+
     }
 
     public function export(){

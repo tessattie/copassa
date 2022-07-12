@@ -175,3 +175,12 @@
     </div>
   </div>
 </div>
+
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+    }
+</style>

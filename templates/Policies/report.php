@@ -4,40 +4,61 @@
             <em class="fa fa-home"></em>
         </a></li>
         <li class="active">Reports</li>
-        <li class="active">Policies</li>
+        <li class="active">Renewals</li>
     </ol>
 </div>
-<?= $this->Flash->render() ?>
-<div class="container-fluid"> 
-    <div class="panel panel-default articles">
-    <div class="panel-body articles-container">       
-            <?= $this->Form->create() ?>
-                <div class="row">
-                    <div class="col-md-3">
+
+
+<div class="modal fade" id="filters" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <?= $this->Form->create() ?>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+            Filter
+        </h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+                    <div class="col-md-12">
                         <?= $this->Form->control('type', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $company_types, "label" => "Type", "multiple" => false,  'style' => "height:46px")); ?>
                     </div>
-                    <div class="col-md-3">
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
                         <?= $this->Form->control('company_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $comps, "label" => "Company", "multiple" => false, 'style' => "height:46px")); ?>
                     </div>
-                    <div class="col-md-1">
-                        <?= $this->Form->button(__('Valider'), array('class'=>'btn btn-success', "style"=>"margin-top:24px;height:46px")) ?>
-                    </div>
-                    <div class="col-md-5 text-right">
-                        <a target="_blank" href="<?= ROOT_DIREC ?>/policies/export/<?= $type_filter ?>/<?= $company_filter ?>"><button type="button" class="btn btn-warning" style="margin-top:24px;height:46px">Export</button></a>
-                    </div>
                 </div>
-
-            <?= $this->Form->end() ?>
-        </div>
-        
+            </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-success">Filter</button>
+      </div>
+      <?= $this->Form->end() ?>
     </div>
+  </div>
+</div>
+
+
+<?= $this->Flash->render() ?>
+<div class="container-fluid"> 
+    <div class="row">
+        <div class="col-md-12">
+        <a target="_blank" href="<?= ROOT_DIREC ?>/policies/export/<?= $type_filter ?>/<?= $company_filter ?>" style="float:right;" class="btn btn-danger"><span class="fa fa-file-pdf-o"></span></a>
+
+        <a href="<?= ROOT_DIREC ?>/policies/exportexcel/<?= $type_filter ?>/<?= $company_filter ?>" style="float:right;margin-right:10px;background:#26580F;border:1px solid #26580F" class="btn btn-success"><span class="fa fa-file-excel-o"></span></a>
+
+        <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="float:right;margin-bottom:7px;margin-right:10px"><span class="fa fa-filter"></span></button></div>
+    </div>
+    
     <?php foreach($companies as $company) : ?>
     <div class="panel panel-default articles">
         <div class="panel-heading">
             <?= $company->name ?>
         </div>
     <div class="panel-body articles-container">
-        
+            <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>Insured Name</th>
@@ -72,9 +93,10 @@
                             $percentage .="%";
                         }                        
                     ?>
-                    <tr <?= (!empty($renewal->payment_date) || $renewal->status == 2) ? "style='background:#dff0d8
-'" : '' ?>  <?= (empty($renewal->payment_date) && (date("Y-m-d") > date("Y-m-d", strtotime($renewal->renewal_date)))) ? "style='background:#f2dede
-'" : '' ?>>
+
+                    <tr <?= (!empty($renewal->payment_date) || $renewal->status == 2) ? "style='background:#dff0d8'" : '' ?>
+
+                    <?= (empty($renewal->payment_date) && date("Y-m-d", strtotime($renewal->renewal_date)) < date('Y-m-d')) ? "style='background:#fcf8e3'" : '' ?> >
                         <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
 
                         <?php if(!empty($age)) : ?>
@@ -114,7 +136,7 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-        
+        </div>
             <!--End .article-->
         </div>
         

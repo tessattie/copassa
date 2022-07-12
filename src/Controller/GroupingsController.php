@@ -51,11 +51,11 @@ class GroupingsController extends AppController
             $grouping = $this->Groupings->patchEntity($grouping, $this->request->getData());
             $grouping->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Groupings->save($grouping)) {
-                $this->Flash->success(__('The grouping has been saved.'));
+                $this->Flash->success(__('The group has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The grouping could not be saved. Please, try again.'));
+            $this->Flash->error(__('The group could not be saved. Please, try again.'));
         }
         $businesses = $this->Groupings->Businesses->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
         $companies = $this->Groupings->Companies->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
@@ -109,11 +109,11 @@ class GroupingsController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $grouping = $this->Groupings->patchEntity($grouping, $this->request->getData());
             if ($this->Groupings->save($grouping)) {
-                $this->Flash->success(__('The grouping has been saved.'));
+                $this->Flash->success(__('The group has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The grouping could not be saved. Please, try again.'));
+            $this->Flash->error(__('The group could not be saved. Please, try again.'));
         }
         $businesses = $this->Groupings->Businesses->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
         $companies = $this->Groupings->Companies->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
@@ -129,12 +129,12 @@ class GroupingsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $grouping = $this->Groupings->get($id);
         if ($this->Groupings->delete($grouping)) {
-            $this->Flash->success(__('The grouping has been deleted.'));
+            $this->Flash->success(__('The group has been deleted.'));
         } else {
-            $this->Flash->error(__('The grouping could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The group could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);

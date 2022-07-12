@@ -18,7 +18,7 @@ class BusinessesController extends AppController
      */
     public function index()
     {
-        $businesses = $this->Businesses->find("all", array("conditions" => array("Businesses.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Groupings' => ['Employees' => ['Families']]]);
+        $businesses = $this->Businesses->find("all", array("conditions" => array("Businesses.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Renewals', 'Groupings' => ['Employees' => ['Families']]]);
 
         $this->set(compact('businesses'));
     }

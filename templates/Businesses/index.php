@@ -20,6 +20,7 @@
             <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/businesses/add">New</a>
         </div>
     <div class="panel-body articles-container">
+        <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>#</th>
@@ -51,12 +52,14 @@
                     <td class="text-center"><?= number_format($total, 2, ".", ",") ?></td>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/businesses/edit/<?= $business->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                        <?php if(empty($business->groupings) && empty($business->renewals)) : ?>
                         <a href="<?= ROOT_DIREC ?>/businesses/delete/<?= $business->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= $business->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
             <!--End .article-->
         </div>
         

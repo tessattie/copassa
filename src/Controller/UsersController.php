@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace App\Controller;
+use Cake\Auth\DefaultPasswordHasher;
 
 /**
  * Users Controller
@@ -98,6 +99,37 @@ class UsersController extends AppController
 
 
     /**
+     * View method
+     *
+     * @param string|null $id Tenant id.
+     * @return \Cake\Http\Response|null|void Renders view
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function view($id = null)
+    {
+        $user = $this->Users->get($id, ['contain' => ['Tenants']
+        ]);
+
+        if ($this->request->is(['patch', 'post', 'put'])){
+            if($this->request->getData()['confirm_new_password'] == $this->request->getData()['new_password']){
+                if((new DefaultPasswordHasher)->check($this->request->getData()['old_password'], $user->password)){
+                    $user->password = $this->request->getData()['confirm_new_password'];
+                    $this->Users->save($user); 
+                    $this->Flash->success(__('Your password has been reset. Please log in with your new password to continue.'));
+                    return $this->redirect($this->Auth->logout());
+                }else{
+                    $this->Flash->error(__('Current password is incorrect'));
+                }
+            }else{
+                $this->Flash->error(__('Both the new password and password confirmation must be the same.'));
+            }
+        }
+
+        $this->set(compact('user'));
+    }
+
+
+    /**
      * Delete method
      *
      * @param string|null $id User id.
@@ -122,19 +154,26 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('login');
         if($this->request->is('post')){
             $user = $this->Auth->identify();
+
             if ($user) {
-                if($user['status'] == false){
-                    $this->savelog(500, "Blocked user attempted to log in", 0, 4, "", json_encode($user));
-                    $this->Flash->error(__('This account is blocked. Contact your administrator'));
-                }else{
-                    if($user['role_id'] == 1 || $user['role_id'] == 2){
-                        $this->Auth->setUser($user);
-                        $this->savelog(200, "User logged in", 1, 4, "", json_encode($user));
-                        return $this->redirect($this->Auth->redirectUrl());
+                $this->loadModel("Tenants"); $tenant= $this->Tenants->get($user['tenant_id']);
+                if($tenant->status == 1){
+                    if($user['status'] == 0){
+                        $this->savelog(500, "Blocked user attempted to log in", 0, 4, "", json_encode($user));
+                        $this->Flash->error(__('This account is inactive. Contact our team to fix this problem'));
                     }else{
-                        $this->Flash->error(__('You do not have access to this application. Contact your administrator'));
+                        if($user['role_id'] == 1 || $user['role_id'] == 2){
+                            $this->Auth->setUser($user);
+                            $this->savelog(200, "User logged in", 1, 4, "", json_encode($user));
+                            return $this->redirect($this->Auth->redirectUrl());
+                        }else{
+                            $this->Flash->error(__('You do not have access to this application. Contact your administrator'));
+                        }
                     }
+                }else{
+                    $this->Flash->error(__('This agent is inactive. Please contact our administrators for more information.'));
                 }
+                
             }else{
                 $this->savelog(500, "Unknown user attempted to logged in", 0, 4, "", json_encode($this->request->getData()));
                 $this->Flash->error(__('Wrong username or password'));

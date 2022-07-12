@@ -28,22 +28,7 @@ if(!empty($customer->dob)){
         <div class="col-md-9">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Policy Holder : <?= $customer->name ?>
-                    <ul class="pull-right panel-settings panel-button-tab-right">
-                        <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                            <em class="fa fa-plus"></em>
-                        </a>
-                            <ul class="dropdown-menu dropdown-menu-right">
-                                <li>
-                                    <ul class="dropdown-settings">
-                                        <li><a href="<?= ROOT_DIREC ?>/customer/add">
-                                            <em class="fa fa-plus"></em> New Policy Holder
-                                        </a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <?= $customer->name ?>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">
@@ -84,7 +69,7 @@ if(!empty($customer->dob)){
                         <?php if(!empty($customer->dob)) : ?>
                             <tr>
                                 <th>Date of Birth</th>
-                                <td class="text-right"><?= $customer->dob->month."/".$customer->dob->day."/".$customer->dob->year ?></td>
+                                <td class="text-right"><?= date("M d Y", strtotime($customer->dob)) ?></td>
                             </tr>
                             <tr>
                                 <th>Age</th>
@@ -108,37 +93,15 @@ if(!empty($customer->dob)){
                 </div>
                 
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="panel panel-default articles">
-                <div class="panel-heading">
-                    Notes
-                    <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-success" style="float:right;padding:3px 10px 5px"><span class="fa fa-plus"></span></button>
-                </div>
-                <div class="panel-body articles-container" style="height: 384px; overflow-y:scroll">       
-                    <?php foreach($customer->notes as $n) : ?>
-                        <p class="bg-info" style="padding:10px">
-                            <a href="<?= ROOT_DIREC ?>/notes/delete/<?= $n->id ?>" style="float:right;padding:2px 5px;background:red"><span class="fa fa-remove"></span></a>
-                            <label>Created By :</label> <?= $n->user->name ?><br>
-                            <label>Date :</label> <?= date("M d Y H:i", strtotime($n->created)) ?><br><br>
-                            <?= $n->comment ?>
-                        </p>
-                    <?php endforeach; ?>
-                </div>
-                
-            </div>
-        </div>
-    </div>
-    
 
-    <div class="panel panel-default articles">
+            <div class="panel panel-default articles">
         <div class="panel-heading">
-            Policies
+            Policies <a class="btn btn-default"  style="float:right;padding:1px 10px 5px" href="<?= ROOT_DIREC ?>/policies/add/<?= $customer->id ?>"><span class="fa fa-plus"></span></a>
         </div>
         <div class="panel-body articles-container">       
             <div class="row">
                 <div class="col-md-12">
-                    <div style="width:100%;overflow-y:scroll">
+                    <div class="table-responsive">
                     <table class="table table-bordered" style="width:2000px">
                         <thead>
                             <tr>
@@ -151,7 +114,6 @@ if(!empty($customer->dob)){
                                 <th class="text-center">Deductible</th>
                                 <th class="text-center">Mode</th>
                                 <th class="text-center">Effective date</th>
-                                <th class="text-center">Pending Business</th>
                                 <th class="text-center">Certificate</th>
                                 <th></th>
                             </tr>
@@ -169,15 +131,13 @@ if(!empty($customer->dob)){
                                 <td class="text-center"><?= number_format($policy->deductible,2,".",",") ?> USD</td>
                                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
                                 <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
-
-                                <?php if($policy->pending_business == 1) : ?>
-                                    <td class="text-center"><span class="label label-warning">Yes</span></td>
-                                <?php else : ?>
-                                    <td></td>
-                                <?php endif; ?>
                       
                                 <td class="text-center">
-                                    <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
+                                    <?php if(!empty($policy->certificate)) : ?>
+                                        <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
+                                    <?php else : ?>
+                                        -
+                                    <?php endif; ?>
                                 </td>
                                 <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a></td>
                             </tr>
@@ -189,86 +149,6 @@ if(!empty($customer->dob)){
             </div>
         </div>
     </div>
-
-
-    <!-- payments -->
-    <div class="panel panel-default articles">
-        <div class="panel-heading">
-            Payments <?= (!empty($policy_id)) ? " : POLICY ".$policy->policy_number." - ".$policy->customer->name : "" ?>
-            <?php if(!empty($policy_id)) : ?>
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
-                    <em class="fa fa-plus"></em>
-                </a>
-
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <ul class="dropdown-settings">
-                            
-                                <li><a href="<?= ROOT_DIREC ?>/payments/add/<?= $policy->id ?>">
-                                    <em class="fa fa-plus"></em> New Payment
-                                </a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <?php endif; ?>
-    </div>
-    <div class="panel-body articles-container">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th class="text-center">#</th>
-                <th class="text-center">Policy</th>
-                <th class="text-center">Amount</th>
-                <th class="text-center">Date</th>
-                <th class="text-center">Created by</th>
-                <th class="text-center">Rate</th>
-                <th class="text-center">Memo</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Confirmed</th>
-                <th class="text-center">Photo</th>
-                <th class="text-center"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach($customer->payments as $p) : ?>
-                <tr>
-                    <td class="text-center"><?= 4000+$p->id ?></td>
-                    <td class="text-center"><?= $p->policy->policy_number ?></td>
-                    <td class="text-center"><?= number_format($p->amount, 2, ".", ",")." ".$p->rate->name;  ?></td>
-                    <td class="text-center"><?= date('d M Y', strtotime($p->created)); ?></td>
-                    <td class="text-center"><?= $p->user->name ?></td>
-                    <td class="text-center"><?= $p->daily_rate ?></td>
-                    <td class="text-center"><?= $p->memo ?></td>
-                    <?php if($p->status == 1) : ?>
-                        <td class="text-center"><span class="label label-success">YES</span></td>
-                    <?php else : ?>
-                        <td class="text-center"><span class="label label-success">NO</span></td>
-                    <?php endif; ?>
-
-                    <?php if($p->confirmed == 1) : ?>
-                        <td class="text-center"><span class="label label-success">YES</span></td>
-                    <?php else : ?>
-                        <td class="text-center"><span class="label label-danger">NO</span></td>
-                    <?php endif; ?>
-                    <td class="text-center">
-                       <?= $this->Html->link('Download', '/img/payments/'.$p->path_to_photo ,array('download'=> $p->path_to_photo)); ?> 
-                    </td>
-                    <td class="text-center">
-                        <a href="<?= ROOT_DIREC ?>/payments/edit/<?= $p->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a> 
-                        <a target="_blank" href="<?= ROOT_DIREC ?>/payments/receipt/<?= $p->id ?>" style="font-size:1.3em!important;color:green"> <span class="fa fa-xl fa-eye color-yellow"></span></a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-            <!--End .article-->
-        </div>
-    </div>
-    <!-- end payments -->
-
 
     <div class="panel panel-default articles">
         <div class="panel-heading">
@@ -294,6 +174,97 @@ if(!empty($customer->dob)){
             <!--End .article-->
         </div>
     </div>
+        </div>
+        <div class="col-md-3">
+
+            <div class="panel panel-teal">
+            <div class="panel-heading">
+                CLaims <button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#newclaim"><span class="fa fa-plus"></span></button>
+                </div>
+            <div class="panel-body" style="height:365px;overflow-y:scroll;background:white">
+                    <?php foreach($customer->policies as $policy) : ?>
+                        <?php foreach($policy->claims as $claim) : ?>
+                    <?php  
+                        $total = 0; 
+                        foreach($claim->claims_types as $ct){
+                            $total = $total + $ct->amount;
+                        }
+                    ?>
+
+                    <div class="row">
+                            <div class="col-xs-8">
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $customer->name . " - " . $policy->policy_number ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= $claim->title ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= $claim->description ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= number_format($total, 2, ".", ",") ?></p>
+                            </div>
+                            <div class="col-xs-4" class="text-right">
+                                <a class="btn btn-info" target="_blank" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="float:right;margin-top:40px"><span class="fa fa-eye"></span></a>
+                            </div>
+                        </div>
+                        <hr>
+                        <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+            <div class="panel panel-warning articles">
+                <div class="panel-heading">
+                    Notes
+                    <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-default" style="float:right;padding:1px 10px 5px"><span class="fa fa-plus"></span></button>
+                </div>
+                <div class="panel-body articles-container" style="height: 384px; overflow-y:scroll">       
+                    <?php foreach($customer->notes as $n) : ?>
+                        <p class="bg-info" style="padding:10px">
+                            <label>Created By :</label> <?= $n->user->name ?><br>
+                            <label>Date :</label> <?= date("M d Y H:i", strtotime($n->created)) ?><br><br>
+                            <?= $n->comment ?>
+                        </p>
+                    <?php endforeach; ?>
+                </div>
+                
+            </div>
+
+            
+        </div>
+    </div>
+    
+
+    
+
+
+    <div class="modal fade" id="newclaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Claim</h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => '/claims/add')) ?>
+      <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('policy_id', array('class' => 'form-control', "label" => "Policy Number *", "empty" => "-- Choose Policy --", 'options' => $policies)); ?></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Diagnosis *", "placeholder" => "Diagnosis")); ?></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description")); ?></div>
+            </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Add</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div>
+
+
+    
 </div>
 
 

@@ -9,7 +9,7 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li><a href="<?= ROOT_DIREC ?>/groupings">
+        <li><a href="<?= ROOT_DIREC ?>/employees">
             Employees
         </a></li>
         <li>Edit</li>
@@ -21,13 +21,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Edit Employee : <?= $employee->first_name." ".$employee->last_name ?>
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a href="<?= ROOT_DIREC ?>/employees">
-                    <em class="fa fa-arrow-left"></em>
-                </a>
-                    
-                </li>
-            </ul>
+            <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/employees"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($employee) ?>
@@ -48,7 +42,7 @@
                   <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
                 </div>
                 <div class="row">
-                    <div class="col-md-12"><?= $this->Form->button(__('Add'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>
+                    <div class="col-md-12"><?= $this->Form->button(__('Update'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>
                 </div>  
 
 
@@ -89,3 +83,14 @@
         })
     })
 </script>
+
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

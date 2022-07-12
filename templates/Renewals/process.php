@@ -12,10 +12,11 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Please check employees and family members that should be added to this renewal...
-            <button type = "submit" class="btn btn-success" style="float:right">Save</button>
+            Process Renewal
         </div>
     <div class="panel-body articles-container">
+        Please check employees and family members that should be added to this renewal... <br><br>
+        <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>#</th>
@@ -64,10 +65,10 @@
             
             <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
             <!--End .article-->
         </div>
-        
+        <button type = "submit" class="btn btn-success" style="float:right;margin-top:10px">Save</button>
     </div>
 </div><!--End .articles-->
 <?= $this->Form->end() ?>
@@ -89,5 +90,11 @@
     }
     .dt-buttons{
         margin-bottom:-25px;
+    }
+</style>
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      
     }
 </style>

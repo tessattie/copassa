@@ -21,13 +21,13 @@
             <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/customers/add">New</a>
         </div>
     <div class="panel-body articles-container">
+        <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>Name</th>
                     <th class="text-center">Country</th>
-                    <th class="text-center">Home Phone</th>
                     <th class="text-center">Cell Phone</th>
-                    <th class="text-center">Other Phone</th>
+                    <th class="text-center">Email</th>
                     <th class="text-center">DOB</th>
                     <th class="text-center">Age</th>
                     <th class="text-center">Status</th>
@@ -56,15 +56,9 @@
                     <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $customer->id ?>"><?= $customer->name ?></a></td>
 
                     <?php if(!empty($customer->country_id)) : ?>
-                        <td class="text-center"><?= $customer->country->name ?></td>
+                        <td class="text-center"><?= substr($customer->country->name,0,5) ?></td>
                     <?php else : ?>
                         <td class="text-center">N/A</td>
-                    <?php endif; ?>
-                    
-                    <?php if(!empty($customer->home_phone)) : ?>
-                        <td class="text-center">+(<?= $customer->home_area_code ?>)-<?= $customer->home_phone ?></td>
-                    <?php else : ?>
-                        <td class="text-center">-</td>
                     <?php endif; ?>
 
                     
@@ -75,13 +69,9 @@
                         <td class="text-center">-</td>
                     <?php endif; ?>
 
-                    <?php if(!empty($customer->other_phone)) : ?>
-                        <td class="text-center">+(<?= $customer->other_area_code ?>)-<?= $customer->other_phone ?></td>
-                    <?php else : ?>
-                        <td class="text-center">-</td>
-                    <?php endif; ?>
+                    <td class="text-center"><?= $customer->email ?></td>
                     <?php if(!empty($customer->dob)) : ?>
-                        <td class="text-center"><?= $customer->dob->month."/".$customer->dob->day."/".$customer->dob->year ?></td>
+                        <td class="text-center"><?= date("M d Y", strtotime($customer->dob)) ?></td>
                     <?php else : ?>
                         <td class="text-center"></td>
                     <?php endif; ?>
@@ -98,13 +88,15 @@
                     <?php endif; ?>
                     
                     <td class="text-right"><a href="<?= ROOT_DIREC ?>/customers/edit/<?= $customer->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                        <?php if(count($customer->policies) == 0) : ?>
                     <a href="<?= ROOT_DIREC ?>/customers/delete/<?= $customer->id ?>" onclick="return confirm('Are you sure you would like to delete the customer <?= $customer->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                <?php endif; ?>
                     </td>
                 </tr>
             <?php endif; ?>
         <?php endforeach; ?>
         </tbody>
-        </table>
+        </table></div>
             <!--End .article-->
         </div>
         
@@ -113,10 +105,7 @@
 
 <script type="text/javascript">$(document).ready( function () {
     $('.datatable').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'excel', 'pdf', 'print'
-        ]
+
     } );
 } );</script>
 

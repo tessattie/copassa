@@ -77,7 +77,6 @@ class UsersTable extends Table
         ]);
         $this->belongsTo('Tenants', [
             'foreignKey' => 'tenant_id',
-            'joinType' => 'INNER',
         ]);
     }
 

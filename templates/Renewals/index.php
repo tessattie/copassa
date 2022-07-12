@@ -20,6 +20,7 @@
             <button class="btn btn-warning float-right" data-toggle="modal" data-target="#newrenewal" style="float:right">New Renewal</button>
         </div>
     <div class="panel-body articles-container">
+        <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>#</th>
@@ -37,11 +38,14 @@
                     <td class="text-center"><?= $renewal->year  ?></td>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/renewals/view/<?= $renewal->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-eye color-blue"></span></a>
+                        <?php if(empty($renewal->transactions)) : ?>
+                        <a href="<?= ROOT_DIREC ?>/renewals/delete/<?= $renewal->id ?>" onclick="return confirm('Are you sure you would like to delete the renewal #<?= $renewal->renewal_number." for the company ".$renewal->business->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
             <!--End .article-->
         </div>
         
@@ -129,3 +133,11 @@
     //     })
     // })
 </script>
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+    }
+</style>

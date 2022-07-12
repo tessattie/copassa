@@ -66,6 +66,7 @@ foreach($business->employees as $employee){
             <button class="btn btn-info" style="float:right" data-toggle="modal" data-target="#new_group">New Group</button>
         </div>
     <div class="panel-body articles-container">
+        <div class="table-responsive">
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>#</th>
@@ -106,7 +107,7 @@ foreach($business->employees as $employee){
             <tfoot>
                 <tr><th colspan="4">Total</th><th class="text-center"><?= number_format($real_total, 2, ".", ",") ?></th><th></th></tr>
             </tfoot>
-        </table>
+        </table></div>
         </div>
     </div>
     <?php echo $this->element('employees', array("employees" => $business->employees)); ?>
@@ -205,3 +206,13 @@ foreach($business->employees as $employee){
     </div>
   </div>
 </div>
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

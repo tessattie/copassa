@@ -97,10 +97,12 @@ class AppController extends Controller
 
         $this->session = $this->getRequest()->getSession();
         if($this->Auth->user()){
+            
             $year = date('Y');
             $next_year = $year + 1;
             $years = array($year => $year, $next_year => $next_year);
-            $this->loadModel('Countries'); $this->loadModel('Tenants');
+            $this->loadModel('Countries'); $this->loadModel('Tenants'); $this->loadModel('UsersAuthorizations');
+            $this->set("authorizations", $this->UsersAuthorizations->find("all", array("user_id" => $this->Auth->user()['id'])));
             $this->from = $this->session->read("from")." 00:00:00";
             $this->to = $this->session->read("to")." 23:59:59";
             $this->initializeSessionVariables();

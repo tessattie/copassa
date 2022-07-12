@@ -16,7 +16,8 @@ $months = array(
   10 => "October", 
   11 => "November", 
   12 => "December"
-)
+);
+
 ?>
 
 <div class="row" style="margin-bottom:15px">
@@ -28,6 +29,7 @@ $months = array(
             Policies
         </a></li>
         <li class="active">Edit</li>
+        <li><?= $policy->policy_number ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
@@ -35,13 +37,7 @@ $months = array(
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Edit Policy : <?= $policy->policy_number ?>
-            <ul class="pull-right panel-settings panel-button-tab-right">
-                <li class="dropdown"><a href="<?= ROOT_DIREC ?>/customers">
-                    <em class="fa fa-arrow-left"></em>
-                </a>
-                    
-                </li>
-            </ul>
+            <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/policies"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($policy, array('type' => 'file')) ?>
@@ -57,23 +53,17 @@ $months = array(
                     
                     <div class="col-md-3"><?= $this->Form->control('policy_number', array('class' => 'form-control', "label" => "Policy Number *", "placeholder" => "Policy Number")); ?>
                     </div>
+                    <div class="col-md-3"><?= $this->Form->control('passport_number', array('class' => 'form-control', 'placeholder' => 'Passport Number', "label" => "Passport Number")); ?>
+                    </div>
 
                     <div class="col-md-3"><?= $this->Form->control('effective_date', array('class' => 'form-control', "type" => "date", "label" => "Effective Date *")); ?>
-                    </div>
-                    <div class="col-md-3"><?= $this->Form->control('paid_until', array('class' => 'form-control', "type" => "date", "label" => "Paid Until *")); ?>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-
-                    <div class="col-md-3"><?= $this->Form->control('passport_number', array('class' => 'form-control', 'placeholder' => 'Passport Number', "label" => "Passport Number")); ?>
                     </div>
                 </div>
                 <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Coverage</h4>
                 <div class="row">
-                    <div class="col-md-2"><?= $this->Form->control('company_id', array('class' => 'form-control', "label" => "Company*", "empty" => "-- Choose --", "options" => $companies)); ?>
+                    <div class="col-md-3"><?= $this->Form->control('company_id', array('class' => 'form-control', "label" => "Company*", "empty" => "-- Choose --", "options" => $companies)); ?>
                     </div>
-                    <div class="col-md-2"><?= $this->Form->control('option_id', array('class' => 'form-control', "empty" => "-- Choose company to see options --")); ?>
+                    <div class="col-md-3"><?= $this->Form->control('option_id', array('class' => 'form-control', "empty" => "-- Choose company to see options --")); ?>
                     </div>
                     <div class="col-md-2"><?= $this->Form->control('deductible', array('class' => 'form-control', "value" => 0, 'placeholder' => 'deductible', 'value' => $policy->deductible)); ?>
                     </div>
@@ -82,22 +72,13 @@ $months = array(
                     <div class="col-md-2"><?= $this->Form->control('max_coverage', array('class' => 'form-control', "value" => 0, 'placeholder' => 'deductible', 'value' => $policy->max_coverage)); ?>
                     </div>
                 </div>
-                <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Payments</h4>
+                <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Renewals</h4>
                 <div class="row">
                   <div class="col-md-3"><?= $this->Form->control('mode', array('class' => 'form-control', 'options' => $modes, "label" => "Mode", "multiple" => false, 'required' => true, 'style' => "height:46px", 'empty' => "-- Choose --")); ?>
                     </div>
                     <div class="col-md-3"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Premium *", 'required' => true, 'style' => "height:46px", 'placeholder' => "Premium")); ?>
                     </div>
-                    <div class="col-md-3"><?= $this->Form->control('last_premium', array('class' => 'form-control', "label" => "Last Premium", 'required' => false, 'style' => "height:46px", 'placeholder' => "Last Premium")); ?>
-                    </div>
                     <div class="col-md-3"><?= $this->Form->control('fee', array('class' => 'form-control', "label" => "Fee *", 'required' => true, 'style' => "height:46px", 'placeholder' => "Fee")); ?>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-3"><?= $this->Form->control('last_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Last Renewal", 'required' => true, 'style' => "height:46px")); ?>
-                    </div>
-                    <div class="col-md-3"><?= $this->Form->control('next_renewal', array('class' => 'form-control', 'type' => 'date', "label" => "Next Renewal", 'required' => true, 'style' => "height:46px",)); ?>
                     </div>
                 </div>
 
@@ -188,3 +169,13 @@ echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
         })
     })
 </script>
+
+<style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
+
+      
+    }
+</style>

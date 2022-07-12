@@ -18,7 +18,7 @@ class FamiliesController extends AppController
      */
     public function index()
     {
-        $families = $this->Families->find("all", array("conditions" => array("Families.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Employees' => ['Businesses', 'Groupings' => ['Companies']]]);
+        $families = $this->Families->find("all", array("conditions" => array("Families.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Transactions', 'Employees' => ['Businesses', 'Groupings' => ['Companies']]]);
 
         $this->set(compact('families'));
     }
@@ -97,12 +97,12 @@ class FamiliesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $family = $this->Families->get($id);
         if ($this->Families->delete($family)) {
-            $this->Flash->success(__('The family has been deleted.'));
+            $this->Flash->success(__('The family member has been deleted.'));
         } else {
-            $this->Flash->error(__('The family could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The family member could not be deleted. Please, try again.'));
         }
 
         return $this->redirect(['action' => 'index']);

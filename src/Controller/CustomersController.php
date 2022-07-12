@@ -4,6 +4,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Event\EventInterface;
+use PHPExcel; 
+use PHPExcel_IOFactory;
+use PHPExcel_Style_Border;
+use PHPExcel_Worksheet_PageSetup;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Fill;
+use PHPExcel_Cell_DataValidation;
+use PHPExcel_Writer_Excel7;
 
 /**
  * Customers Controller
@@ -27,7 +35,7 @@ class CustomersController extends AppController
     {
         $this->savelog(200, "Accessed policy holder page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
-          $customers = $this->Customers->find("all", array('conditions' => array('Customers.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Users', 'Countries', 'Policies' => 'Companies']);  
+          $customers = $this->Customers->find("all", array('conditions' => array('Customers.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Users', 'Countries', 'Notes', 'Policies' => 'Companies']);  
 
         $this->set(compact('customers', 'filter_country'));
     }
@@ -42,11 +50,12 @@ class CustomersController extends AppController
     public function view($id = null)
     {
         $customer = $this->Customers->get($id, [
-            'contain' => ['Notes' => ['sort' => 'Notes.created DESC', 'Users'], 'Countries', 'Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users']],
+            'contain' => ['Notes' => ['sort' => 'Notes.created DESC', 'Users'], 'Countries', 'Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users', 'Claims' => ['ClaimsTypes']]],
         ]);
         $note = $this->Customers->Notes->newEmptyEntity();
+        $policies = $this->Customers->Policies->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'customer_id' => $id)));
 
-        $this->set(compact('customer', 'note'));
+        $this->set(compact('customer', 'note', 'policies'));
     }
 
     /**
@@ -124,5 +133,64 @@ class CustomersController extends AppController
 
     public function report(){
         
+    }
+
+    public function import(){
+
+    }
+
+    public function generate(){
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel.php');
+        require_once(ROOT . DS . 'vendor' . DS  . 'PHPExcel'  . DS . 'Classes' . DS . 'PHPExcel' . DS . 'IOFactory.php');
+
+        $excel = new PHPExcel();
+        
+        $excel->setActiveSheetIndex(0);
+        $excel->getActiveSheet()->setTitle('Policies');
+
+        // // Area Codes
+        // $excel->createSheet(1);
+        // $excel->setActiveSheetIndex(1);
+        // $excel->getActiveSheet()->setTitle('Area Codes');
+
+        $sheet = $excel->getActiveSheet();
+        $area_codes = $this->Customers->area_codes;
+        $i = 1;
+
+        $area_codes_config = ''; 
+
+        foreach($area_codes as $code){
+            $area_codes_config.= $code.', ';
+        }
+
+        $area_codes_config = trim($area_codes_config, ", ");
+
+        // debug($area_codes_config); die();
+
+        $configs = 'A,B,C,D';
+
+        $sheet->setCellValue('B5', "SELECT")
+            ;
+
+        $cell = $sheet->getCell('B5')->getDataValidation();
+        $cell->setType( PHPExcel_Cell_DataValidation::TYPE_LIST );
+        $cell->setErrorStyle( PHPExcel_Cell_DataValidation::STYLE_INFORMATION );
+        $cell->setAllowBlank(false);
+        $cell->setShowInputMessage(true);
+        $cell->setShowErrorMessage(true);
+        $cell->setShowDropDown(true);
+        $cell->setErrorTitle('Input error');
+        $cell->setError('Value is not in list.');
+        $cell->setPromptTitle('Pick from list');
+        $cell->setPrompt('Please pick a value from the drop-down list.');
+        $cell->setFormula1('"'.$area_codes_config.'"');
+
+        $file = 'import_template.xlsx';
+        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'.$file.'"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+        die();
     }
 }

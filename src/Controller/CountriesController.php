@@ -93,7 +93,7 @@ class CountriesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $country = $this->Countries->get($id);
         if ($this->Countries->delete($country)) {
             $this->Flash->success(__('The country has been deleted.'));
