@@ -27,6 +27,7 @@
                     <th class="text-center">Company</th>
                     <th class="text-center">Corporate Group</th>
                     <th class="text-center">Insurance</th>
+                    <th class="text-center">Type</th>
                     <th class="text-center">Membership / Policy #</th>
                     <th class="text-center">Deductible</th>
                     <th class="text-center">Status</th>
@@ -39,6 +40,7 @@
                     <td class="text-center"><a href="<?= ROOT_DIREC ?>/businesses/view/<?= $employee->grouping->business_id ?>"><?= $employee->business->name ?></a></td>
                     <td class="text-center"><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $employee->grouping_id ?>"><?= $employee->grouping->grouping_number ?></a></td>
                     <td class="text-center"><?= $employee->grouping->company->name ?></td>
+                    <td class="text-center"><?= $company_types[$employee->grouping->company->type] ?></td>
                     <td class="text-center"><?= $employee->membership_number ?></td>
                     <td class="text-center"><?= number_format($employee->deductible, 2, ".", ",") ?></td>
                     <?php if($employee->status == 1) : ?>
@@ -64,7 +66,7 @@
 
 <script type="text/javascript">$(document).ready( function () {
     $('.datatable').DataTable({
-
+        ordering: false
     } );
 } );</script>
 

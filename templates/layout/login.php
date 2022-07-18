@@ -96,7 +96,15 @@ $cakeDescription = 'ARS';
 <noscript><a href="https://www.livechat.com/chat-with/14120061/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
 <!-- End of LiveChat code -->
 
+<script src="https://global.localizecdn.com/localize.js"></script>
+<script>!function(a){if(!a.Localize){a.Localize={};for(var e=["translate","untranslate","phrase","initialize","translatePage","setLanguage","getLanguage","getSourceLanguage","detectLanguage","getAvailableLanguages","untranslatePage","bootstrap","prefetch","on","off","hideWidget","showWidget"],t=0;t<e.length;t++)a.Localize[e[t]]=function(){}}}(window);</script>
 
+<script>
+  Localize.initialize({
+    key: 'BafBUhqcbxEzo',
+    rememberLanguage: true,
+  });
+</script>
 <style type="text/css">
     @media only screen and (max-width: 600px) {
       .login-panel{

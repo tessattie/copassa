@@ -66,7 +66,7 @@
         <div class="divider"></div>
 
         <ul class="nav menu" style="margin-top:0px">
-            <li class="<?= ($this->request->getParam('controller') == 'Policies' && ($this->request->getParam('action') == 'dashboard')) ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/policies/dashboard"><em class="fa fa-dashboard">&nbsp;</em> Dashboard</a></li>
+            <li class="<?= ($this->request->getParam('controller') == 'Policies' && ($this->request->getParam('action') == 'dashboard')) ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/policies/dashboard"><em class="fa fa-dashboard">&nbsp;</em> Reminders</a></li>
 
             <li class="parent <?= ( ($this->request->getParam('controller') == 'Prenewals' || $this->request->getParam('controller') == 'Newborns' || $this->request->getParam('controller') == 'Customers' || $this->request->getParam('controller') == 'Pendings' || $this->request->getParam('controller') == 'Policies') && $this->request->getParam('action') != 'dashboard' && $this->request->getParam('action') != 'report' ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-111">
                 <em class="fa fa-users">&nbsp;</em> Policies <span data-toggle="collapse" href="#sub-item-111" class="icon pull-right"><em class="fa fa-plus"></em></span>
@@ -122,6 +122,8 @@
             <li class="<?= ($this->request->getParam('controller') == 'Companies') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-bank">&nbsp;</em> Insurance CO</a></li>
 
             <li class="<?= ($this->request->getParam('controller') == 'Countries') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/countries"><em class="fa fa-map">&nbsp;</em> Countries</a></li>
+
+            <li class="<?= ($this->request->getParam('controller') == 'Agents') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/agents"><em class="fa fa-user">&nbsp;</em> Agents</a></li>
 
             <li class="parent <?= ($this->request->getParam('controller') == 'Claims' || $this->request->getParam('controller') == 'Types' || $this->request->getParam('controller') == 'ClaimsTypes') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-24">
                 <em class="fa fa-calendar">&nbsp;</em> Claims <span data-toggle="collapse" href="#sub-item-24" class="icon pull-right"><em class="fa fa-plus"></em></span>

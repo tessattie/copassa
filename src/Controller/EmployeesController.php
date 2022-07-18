@@ -28,7 +28,7 @@ class EmployeesController extends AppController
      */
     public function index()
     {
-        $employees = $this->Employees->find("all", array('conditions' => array('Employees.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Groupings' => ['Companies'], 'Transactions']);
+        $employees = $this->Employees->find("all", array("order" => array("Employees.last_name ASC", "Employees.first_name ASC"), 'conditions' => array('Employees.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Groupings' => ['Companies'], 'Transactions']);
 
         $this->set(compact('employees'));
     }

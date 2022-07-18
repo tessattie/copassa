@@ -71,7 +71,7 @@
 
                     <td class="text-center"><?= $customer->email ?></td>
                     <?php if(!empty($customer->dob)) : ?>
-                        <td class="text-center"><?= date("M d Y", strtotime($customer->dob)) ?></td>
+                        <td class="text-center"><?= date("M d Y", strtotime($dob)) ?></td>
                     <?php else : ?>
                         <td class="text-center"></td>
                     <?php endif; ?>
@@ -105,7 +105,7 @@
 
 <script type="text/javascript">$(document).ready( function () {
     $('.datatable').DataTable({
-
+        
     } );
 } );</script>
 

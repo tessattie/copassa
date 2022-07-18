@@ -204,6 +204,7 @@ class CustomersTable extends Table
     '248' => 'Seychelles (+248)',
     '232' => 'Sierra Leone (+232)',
     '65' => 'Singapore (+65)',
+    '721' => 'Sint Marteen (+721)',
     '421' => 'Slovak Republic (+421)',
     '386' => 'Slovenia (+386)',
     '677' => 'Solomon Islands (+677)',
