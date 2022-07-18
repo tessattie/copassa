@@ -19,6 +19,10 @@
                             </li>
                             <li class="divider"></li>
                             <li>
+                                <a href="<?= ROOT_DIREC ?>/help"><span class="fa fa-info">&nbsp;</span> Help</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
                                 <a href="<?= ROOT_DIREC ?>/users/logout"><span class="fa fa-power-off">&nbsp;</span> Log Out</a>
                             </li>
                         </ul>
@@ -46,7 +50,7 @@
                             <?= $this->Form->end() ?>
                         </ul>
                     </li>
-                    
+
                 </ul>
 
 
