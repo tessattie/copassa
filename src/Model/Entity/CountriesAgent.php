@@ -6,12 +6,16 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Country Entity
+ * CountriesAgent Entity
  *
  * @property int $id
- * @property string $name
+ * @property int $country_id
+ * @property int $agent_id
+ *
+ * @property \App\Model\Entity\Country $country
+ * @property \App\Model\Entity\Agent $agent
  */
-class Country extends Entity
+class CountriesAgent extends Entity
 {
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
@@ -23,7 +27,9 @@ class Country extends Entity
      * @var array
      */
     protected $_accessible = [
-        'name' => true,
-        'tenant_id' => true, 
+        'country_id' => true,
+        'agent_id' => true,
+        'country' => true,
+        'agent' => true,
     ];
 }

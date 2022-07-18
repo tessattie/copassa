@@ -18,7 +18,7 @@ class CountriesController extends AppController
      */
     public function index()
     {
-        $countries = $this->Countries->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")))->contain(['Customers']);
+        $countries = $this->Countries->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")))->contain(['Customers', 'CountriesAgents' => ['Agents']]);
 
         $this->set(compact('countries'));
     }
@@ -70,18 +70,31 @@ class CountriesController extends AppController
     public function edit($id = null)
     {
         $country = $this->Countries->get($id, [
-            'contain' => [],
+            'contain' => ['CountriesAgents'],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $country = $this->Countries->patchEntity($country, $this->request->getData());
+            // debug($this->request->getData());die();
             if ($this->Countries->save($country)) {
                 $this->Flash->success(__('The country has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+                $this->loadModel('CountriesAgents');
+                $all =  $this->CountriesAgents->find("all", array("conditions" => array('country_id' => $country->id)));
+                foreach($all as $delete){
+                    $this->CountriesAgents->delete($delete);
+                }
+                foreach($this->request->getData()['agents']['_ids'] as $key => $id){
+                    if($id != 0){
+                        $this->saveCA($country->id, $id);
+                    }
+                    
+                }
+                return $this->redirect(['action' => 'edit', $country->id]);
             }
             $this->Flash->error(__('The country could not be saved. Please, try again.'));
         }
-        $this->set(compact('country'));
+        $this->loadModel("Agents");
+        $agents = $this->Agents->find('all', ['order' => ['name ASC'], 'conditions' => ["Agents.tenant_id" => $this->Auth->user()['tenant_id']]]);
+        $this->set(compact('country', 'agents'));
     }
 
     /**

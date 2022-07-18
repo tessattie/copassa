@@ -4,47 +4,71 @@
  * @var \App\Model\Entity\Agent[]|\Cake\Collection\CollectionInterface $agents
  */
 ?>
-<div class="agents index content">
-    <?= $this->Html->link(__('New Agent'), ['action' => 'add'], ['class' => 'button float-right']) ?>
-    <h3><?= __('Agents') ?></h3>
-    <div class="table-responsive">
-        <table>
-            <thead>
+<div class="row" style="margin-bottom:15px">
+    <ol class="breadcrumb">
+        <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
+            <em class="fa fa-home"></em>
+        </a></li>
+        <li class="active">Agents</li>
+    </ol>
+</div>
+<?= $this->Flash->render() ?>
+<div class="container-fluid"> 
+    <div class="panel panel-default articles">
+        <div class="panel-heading">
+            Agents
+            <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/agents/add">New</a>
+        </div>
+    <div class="panel-body articles-container">
+        <div class="table-responsive">
+            <table class="table table-stripped datatable">
+                <thead> 
+                    <th>Name</th>
+                    <th class="text-center">Countries</th>                  
+                    <th class="text-center"></th>
+                </thead>
+            <tbody> 
+            <?php foreach($agents as $agent) : ?>
+                <?php if($agent->country_id == $filter_country || empty($filter_country)) : ?>
                 <tr>
-                    <th><?= $this->Paginator->sort('id') ?></th>
-                    <th><?= $this->Paginator->sort('name') ?></th>
-                    <th><?= $this->Paginator->sort('phone') ?></th>
-                    <th><?= $this->Paginator->sort('email') ?></th>
-                    <th><?= $this->Paginator->sort('country_id') ?></th>
-                    <th class="actions"><?= __('Actions') ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($agents as $agent): ?>
-                <tr>
-                    <td><?= $this->Number->format($agent->id) ?></td>
-                    <td><?= h($agent->name) ?></td>
-                    <td><?= h($agent->phone) ?></td>
-                    <td><?= h($agent->email) ?></td>
-                    <td><?= $agent->has('country') ? $this->Html->link($agent->country->name, ['controller' => 'Countries', 'action' => 'view', $agent->country->id]) : '' ?></td>
-                    <td class="actions">
-                        <?= $this->Html->link(__('View'), ['action' => 'view', $agent->id]) ?>
-                        <?= $this->Html->link(__('Edit'), ['action' => 'edit', $agent->id]) ?>
-                        <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $agent->id], ['confirm' => __('Are you sure you want to delete # {0}?', $agent->id)]) ?>
+                    <td><?= $agent->name ?></td>
+                    <td class="text-center">
+                        <?php 
+                            foreach($agent->countries_agents as $cs) :
+                        ?>
+                        <span class="label label-default"> <?= $cs->country->name ?></span>
+                    <?php   endforeach  ; ?>
+                    </td>
+                    <td class="text-right">
+                        <a href="<?= ROOT_DIREC ?>/agents/edit/<?= $agent->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                        <a href="<?= ROOT_DIREC ?>/agents/delete/<?= $agent->id ?>" onclick="return confirm('Are you sure you would like to delete the agent <?= $agent->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                     </td>
                 </tr>
-                <?php endforeach; ?>
+            <?php endif; ?>
+            <?php endforeach; ?>
             </tbody>
-        </table>
+        </table></div>
+            <!--End .article-->
+        </div>
+        
     </div>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(__('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')) ?></p>
-    </div>
-</div>
+</div><!--End .articles-->
+
+<script type="text/javascript">$(document).ready( function () {
+    $('.datatable').DataTable({
+    } );
+} );</script>
+
+<style>
+    .dt-button{
+        padding:5px;
+        background:black;
+        border:2px solid black;
+        border-radius:2px;;
+        color:white;
+        margin-bottom:-10px;
+    }
+    .dt-buttons{
+        margin-bottom:-25px;
+    }
+</style>

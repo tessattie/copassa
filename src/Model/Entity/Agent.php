@@ -31,7 +31,6 @@ class Agent extends Entity
         'name' => true,
         'phone' => true,
         'email' => true,
-        'country_id' => true,
-        'country' => true,
+        'tenant_id' => true
     ];
 }

@@ -49,6 +49,10 @@ class CountriesTable extends Table
         $this->hasMany('Customers', [
             'foreignKey' => 'country_id',
         ]);
+
+        $this->hasMany('CountriesAgents', [
+            'foreignKey' => 'country_id',
+        ]);
     }
 
     /**

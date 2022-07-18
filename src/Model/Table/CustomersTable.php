@@ -272,6 +272,10 @@ class CustomersTable extends Table
         $this->belongsTo('Countries', [
             'foreignKey' => 'country_id',
         ]);
+
+        $this->belongsTo('Agents', [
+            'foreignKey' => 'agent_id',
+        ]);
         $this->hasMany('Payments', [
             'foreignKey' => 'customer_id',
         ]);

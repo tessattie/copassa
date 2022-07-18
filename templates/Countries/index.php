@@ -25,6 +25,7 @@
                 <thead> 
                     <th>Name</th>
                     <th class="text-center">Policy Holders</th>
+                    <th class="text-center">Agents</th>
                     <th class="text-center"></th>
                 </thead>
             <tbody> 
@@ -32,6 +33,13 @@
                 <tr>
                     <td><?= $country->name ?></td>
                     <td class="text-center"><span class="label label-info"><?= count($country->customers) ?></span></td>
+                    <td class="text-center">
+                        <?php 
+                            foreach($country->countries_agents as $cs) :
+                        ?>
+                        <span class="label label-default"> <?= $cs->agent->name ?></span>
+                    <?php   endforeach  ; ?>
+                    </td>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/countries/edit/<?= $country->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <?php if(count($country->customers) == 0) : ?>

@@ -121,9 +121,18 @@
 
             <li class="<?= ($this->request->getParam('controller') == 'Companies') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-bank">&nbsp;</em> Insurance CO</a></li>
 
-            <li class="<?= ($this->request->getParam('controller') == 'Countries') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/countries"><em class="fa fa-map">&nbsp;</em> Countries</a></li>
-
-            <li class="<?= ($this->request->getParam('controller') == 'Agents') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/agents"><em class="fa fa-user">&nbsp;</em> Agents</a></li>
+            <li class="parent <?= ($this->request->getParam('controller') == 'Countries' || $this->request->getParam('controller') == 'Agents' ) ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-24">
+                <em class="fa fa-globe">&nbsp;</em> Network <span data-toggle="collapse" href="#sub-item-24" class="icon pull-right"><em class="fa fa-plus"></em></span>
+                </a>
+                <ul class="children collapse" id="sub-item-24">
+                    <li class="<?= ($this->request->getParam('controller') == 'Countries' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/countries">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Countries
+                    </a></li>
+                    <li class="<?= ($this->request->getParam('controller') == 'Agents') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/agents">
+                        <span class="fa fa-arrow-right">&nbsp;</span> Agents
+                    </a></li>
+                </ul>
+            </li>
 
             <li class="parent <?= ($this->request->getParam('controller') == 'Claims' || $this->request->getParam('controller') == 'Types' || $this->request->getParam('controller') == 'ClaimsTypes') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-24">
                 <em class="fa fa-calendar">&nbsp;</em> Claims <span data-toggle="collapse" href="#sub-item-24" class="icon pull-right"><em class="fa fa-plus"></em></span>

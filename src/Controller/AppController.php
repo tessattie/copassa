@@ -171,6 +171,17 @@ class AppController extends Controller
         $this->Logs->save($log); 
     }
 
+    public function saveCA($country_id, $agent_id){
+        $this->loadModel('CountriesAgents');
+
+        $new = $this->CountriesAgents->newEmptyEntity();
+
+        $new->country_id = $country_id; 
+        $new->agent_id = $agent_id;
+         
+        $this->CountriesAgents->save($new); 
+    }
+
 
     protected function checkfile($file, $name, $extensionn){
         $allowed_extensions = array('pdf', "xls", "xlsx", "doc", "docx");

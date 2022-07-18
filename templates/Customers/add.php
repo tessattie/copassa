@@ -26,17 +26,12 @@
     <div class="panel-body articles-container">       
             <?= $this->Form->create($customer) ?>
                 <div class="row">
-                    <div class="col-md-3"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?>
+                    <div class="col-md-4"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?>
                     </div>
-                    <div class="col-md-3"><?= $this->Form->control('email', array('class' => 'form-control', "label" => "E-mail *", "placeholder" => "E-mail")); ?>
+                    <div class="col-md-4"><?= $this->Form->control('email', array('class' => 'form-control', "label" => "E-mail *", "placeholder" => "E-mail")); ?>
                     </div>
-                    <div class="col-md-3"><?= $this->Form->control('dob', array('class' => 'form-control', "type" => "date", "label" => "Date of Birth *")); ?>
-                    </div>
-                    <div class="col-md-3"><?= $this->Form->control('country_id', array('class' => 'form-control', 'options' => $countries, "label" => "Country", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?>
-                    </div>
-                    
-                    
-                    
+                    <div class="col-md-4"><?= $this->Form->control('dob', array('class' => 'form-control', "type" => "date", "label" => "Date of Birth *")); ?>
+                    </div>                  
                 </div>
                 <hr>
                 <div class="row">
@@ -80,6 +75,13 @@
                     <div class="col-md-12">
                         <?= $this->Form->control('address', array('class' => 'form-control', "label" => "Address *", "placeholder" => "Address")); ?>
                     </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3"><?= $this->Form->control('country_id', array('class' => 'form-control', 'empty' => '-- Choose country --', 'options' => $countries, "label" => "Country", "multiple" => false, 'required' => true, 'style' => "height:46px", 'value' => '')); ?>
+                    </div> 
+                    <div class="col-md-3"><?= $this->Form->control('agent_id', array('class' => 'form-control', 'options' => [], "label" => "Agent", "empty" => '-- Choose country to see agents --', 'required' => false, 'style' => "height:46px")); ?>
+                    </div>                    
                 </div>
 
                 <div class="row">

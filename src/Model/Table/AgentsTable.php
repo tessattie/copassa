@@ -43,9 +43,13 @@ class AgentsTable extends Table
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
-        $this->belongsTo('Countries', [
-            'foreignKey' => 'country_id',
-            'joinType' => 'INNER',
+    
+        $this->hasMany('Customers', [
+            'foreignKey' => 'agent_id',
+        ]);
+
+        $this->hasMany('CountriesAgents', [
+            'foreignKey' => 'agent_id',
         ]);
     }
 
@@ -79,17 +83,4 @@ class AgentsTable extends Table
         return $validator;
     }
 
-    /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
-     */
-    public function buildRules(RulesChecker $rules): RulesChecker
-    {
-        $rules->add($rules->existsIn(['country_id'], 'Countries'), ['errorField' => 'country_id']);
-
-        return $rules;
-    }
 }
