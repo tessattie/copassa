@@ -25,14 +25,14 @@
         <hr>
 
         <?php if(!empty($element->photo)) : ?>
-            <div style="text-align:center;padding-bottom:20px" class="div_before_p">
-            <?php echo $this->Html->image('help/'.$element->photo, ['style' => "width:70%"]); ?>
+            <div style="text-align:center;padding-top:20px;padding-bottom:20px" class="div_before_p">
+                <img src="<?= SHOW_UPLOAD_DIR ?>/webroot/img/help/<?= $element->photo ?>" style="width:70%">
             </div>
         <?php endif; ?>
         <?php if(!empty($element->video)) : ?>
-            <div style="text-align:center;padding-bottom:20px" class="div_before_p">
-                <video style="width:70%;border:1px solid #ddd" controls>
-                    <source src = "<?= ROOT_DIREC ?>/webroot/img/help/<?= $element->video ?>" type="video/mp4">
+            <div style="text-align:center;padding-top:20px;padding-bottom:20px" class="div_before_p">
+                <video style="width:70%" controls>
+                    <source src = "<?= SHOW_UPLOAD_DIR ?>/webroot/img/help/<?= $element->video ?>" type="video/mp4">
                 </video>
             </div>
         <?php endif; ?>
