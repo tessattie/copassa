@@ -93,6 +93,7 @@
                             $percentage .="%";
                         }                        
                     ?>
+
                     <tr <?= (!empty($renewal->payment_date) || $renewal->status == 2) ? "style='background:#dff0d8'" : '' ?>
 
                     <?= (empty($renewal->payment_date) && date("Y-m-d", strtotime($renewal->renewal_date)) < date('Y-m-d')) ? "style='background:#fcf8e3'" : '' ?> >

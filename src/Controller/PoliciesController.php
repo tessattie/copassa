@@ -693,7 +693,10 @@ class PoliciesController extends AppController
                         $diff = date_diff(date_create($dob), date_create($today));
                         $age = $diff->format('%y');
                     }
-                    $sheet->SetCellValue('A'.$j, $policy->customer->name);
+                    if(!empty($policy->customer)){
+                        $sheet->SetCellValue('A'.$j, $policy->customer->name);
+                    }
+                    
                     if(!empty($age)){
                         $sheet->SetCellValue('B'.$j, $age);
                     }else{
@@ -715,7 +718,10 @@ class PoliciesController extends AppController
                             $sheet->SetCellValue('D'.$j, '');
                         }
                     }
-                    $sheet->SetCellValue('E'.$j, substr($policy->customer->country->name, 0, 5));
+                    if(!empty($policy->customer)){
+                        $sheet->SetCellValue('E'.$j, substr($policy->customer->country->name, 0, 5));
+                    }
+                    
                     $sheet->SetCellValue('F'.$j, $this->modes[$policy->mode]);
                     if(!empty($renewal->last_renewal)){
                         $sheet->SetCellValue('G'.$j, number_format(($renewal->last_renewal->premium+$renewal->last_renewal->fee)));
@@ -814,9 +820,11 @@ class PoliciesController extends AppController
                 $policy = $renewal->policy;
                 $percentage = ""; 
                 if(!empty($renewal->last_renewal)){
+                    if(!empty($renewal->last_renewal->premium)){
                     $percentage = ($renewal->premium - $renewal->last_renewal->premium)*100/$renewal->last_renewal->premium;
                     $percentage = number_format($percentage, 2, ".",",");
                     $percentage .="%";
+                    }
                 }    
                 $age = "N/A";
                 if(!empty($policy->customer->dob)){
@@ -839,8 +847,12 @@ class PoliciesController extends AppController
                 // }else{
                 //     $fpdf->SetFillColor(255,255,255);
                 // }
-
-                $fpdf->Cell(59,7,utf8_decode($policy->customer->name),'T-L-B',0, 'L',1);
+                if(!empty($policy->customer)){
+                    $fpdf->Cell(59,7,utf8_decode($policy->customer->name),'T-L-B',0, 'L',1);    
+                }else{
+                    $fpdf->Cell(59,7, "",'T-L-B',0, 'L',1);    
+                }       
+                
                 if(!empty($age)){
                     $fpdf->Cell(10,7,$age,'T-L-B',0, 'C',1);
                 }else{
@@ -863,7 +875,13 @@ class PoliciesController extends AppController
                     }
                 }
                 
-                $fpdf->Cell(15,7,substr($policy->customer->country->name, 0, 3),'T-L-B',0, 'C',1);
+                if(!empty($policy->customer)){
+                    $fpdf->Cell(15,7,substr($policy->customer->country->name, 0, 3),'T-L-B',0, 'C',1); 
+                }else{
+                    $fpdf->Cell(15,7,"",'T-L-B',0, 'C',1);    
+                }  
+
+                
                 $fpdf->Cell(10,7,$this->modes[$policy->mode],'T-L-B',0, 'C',1);
                 if(!empty($renewal->last_renewal)){
                     $fpdf->Cell(25,7,number_format(($renewal->last_renewal->premium+$renewal->last_renewal->fee), 2, ".", ",") ."USD",'T-L-B',0, 'C',1);
