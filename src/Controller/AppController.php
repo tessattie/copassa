@@ -160,9 +160,15 @@ class AppController extends Controller
     public function savelog($code, $comment, $status, $type, $old_data, $new_data){
         $this->loadModel('Logs'); 
         $log = $this->Logs->newEmptyEntity(); 
-        $log->user_id = $this->Auth->user()['id']; 
+        if(!empty($this->Auth->user()['id'])){
+            $log->user_id = $this->Auth->user()['id']; 
+        }
+        
         $log->comment = $comment; 
-        $log->tenant_id = $this->Auth->user()['tenant_id']; 
+        if(!empty($this->Auth->user()['tenant_id'])){
+            $log->tenant_id = $this->Auth->user()['tenant_id']; 
+        }
+         
         $log->code = $code; 
         $log->status = $status;
         $log->type = $type; 
