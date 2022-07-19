@@ -69,12 +69,12 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        define('ROOT_DIREC', '/main');
+        define('ROOT_DIREC', '/copassa');
 
-        define("UPLOAD_DIR", '/home/xge55gjh6t1y/public_html/admin');
-        // define("UPLOAD_DIR", 'C:/wamp/www/admin/webroot');
+        // define("UPLOAD_DIR", '/home/xge55gjh6t1y/public_html/admin');
+        define("UPLOAD_DIR", 'C:/wamp/www/admin/webroot');
 
-        define("SHOW_UPLOAD_DIR", '/admin');
+        define("SHOW_UPLOAD_DIR", '/copassa');
 
         date_default_timezone_set("America/New_York");
 

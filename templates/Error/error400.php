@@ -8,7 +8,7 @@
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
 
-$this->layout = 'error';
+$this->layout = 'login';
 
 if (Configure::read('debug')) :
     $this->layout = 'dev_error';
@@ -34,8 +34,8 @@ if (Configure::read('debug')) :
 $this->end();
 endif;
 ?>
-<h2><?= h($message) ?></h2>
-<p class="error">
-    <strong><?= __d('cake', 'Error') ?>: </strong>
-    <?= __d('cake', 'The requested address {0} was not found on this server.', "<strong>'{$url}'</strong>") ?>
+<h2 class="text-center" style="color:white">Page not found</h2>
+<p class="error" style="color:white;font-size:18px;text-align:center">
+    It seems you are trying to access a page that does not exist. Please contact us through Live Chat if you feel this was an error.<br><br>
+    <a href="https://agencyreportsystem.com/main"><button class="btn btn-warning">Go back</button></a>
 </p>

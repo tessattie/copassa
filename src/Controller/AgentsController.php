@@ -80,12 +80,11 @@ class AgentsController extends AppController
                 $all =  $this->CountriesAgents->find("all", array("conditions" => array('agent_id' => $agent->id)));
                 foreach($all as $delete){
                     $this->CountriesAgents->delete($delete);
-                }
+                }dfdfg
                 foreach($this->request->getData()['countries']['_ids'] as $key => $id){
                     if($id != 0){
                         $this->saveCA($id, $agent->id);
                     }
-                    
                 }
                 $this->Flash->success(__('The agent has been saved.'));
 

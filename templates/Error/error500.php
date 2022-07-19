@@ -8,7 +8,7 @@
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
 
-$this->layout = 'error';
+$this->layout = 'login';
 
 if (Configure::read('debug')) :
     $this->layout = 'dev_error';
@@ -38,8 +38,8 @@ if (Configure::read('debug')) :
     $this->end();
 endif;
 ?>
-<h2><?= __d('cake', 'An Internal Error Has Occurred') ?></h2>
-<p class="error">
-    <strong><?= __d('cake', 'Error') ?>: </strong>
-    <?= h($message) ?>
+<h2 class="text-center" style="color:white">Oops! This is unexpected... </h2>
+<p class="error" style="color:white;font-size:18px;text-align:center">
+    An error occured and we're working to fix the problem. Please contact us through Live Chat to give us more information about this error and how it happened.<br><br>
+    <a href="https://agencyreportsystem.com/main"><button class="btn btn-warning">Go back</button></a>
 </p>

@@ -52,8 +52,7 @@ class CountriesController extends AppController
             $country->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Countries->save($country)) {
                 $this->Flash->success(__('The country has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'edit', $country->id]);
             }
             $this->Flash->error(__('The country could not be saved. Please, try again.'));
         }

@@ -53,14 +53,12 @@
                 <div class="row">
                     <div class="col-md-2">
                         <?= $this->Form->control('company_id', array('type' => 'hidden', "value" => $company->id)); ?>
-                        <?= $this->Form->control('name', array('class' => 'form-control', "label" => "Add Option", "placeholder" => "Product Name")); ?>
+                        <?= $this->Form->control('name', array('class' => 'form-control', "label" => "Add Option", "placeholder" => "Product Name *")); ?>
                     </div>
                     <div class="col-md-2">
-                        <?= $this->Form->control('option_name', array('class' => 'form-control', "label" => false, "placeholder" => "Option Name", 'style' => 'margin-top:25px')); ?>
+                        <?= $this->Form->control('option_name', array('class' => 'form-control', "label" => false, "placeholder" => "Option Name *", 'style' => 'margin-top:25px')); ?>
                     </div>
-                    <div class="col-md-1">
-                        <?= $this->Form->control('plan', array('class' => 'form-control', "label" => false, 'style' => 'margin-top:25px', "empty" => "-- Plan --", 'options' => $plans)); ?>
-                    </div>
+                    
                     <div class="col-md-2">
                         <?= $this->Form->control('deductible', array('class' => 'form-control', "label" => false, "placeholder" => "Outside USA Deductible", 'style' => 'margin-top:25px', 'value' => '')); ?>
                     </div>
@@ -69,6 +67,9 @@
                     </div>
                     <div class="col-md-2">
                         <?= $this->Form->control('max_coverage', array('class' => 'form-control', "label" => false, "placeholder" => "Max Coverage", 'style' => 'margin-top:25px')); ?>
+                    </div>
+                    <div class="col-md-1">
+                        <?= $this->Form->control('plan', array('class' => 'form-control', "label" => false, 'style' => 'margin-top:25px', "empty" => "-- Plan --", 'options' => $plans)); ?>
                     </div>
                     <div class="col-md-1">
                         <?= $this->Form->button(__('Add'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right;height:44px;width:100%")) ?>
