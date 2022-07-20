@@ -57,6 +57,7 @@ class Customer extends Entity
         'policies' => true,
         'dob' => true,
         'country_id' => true,
-        'tenant_id' => true
+        'tenant_id' => true,
+        'agent_id' => true
     ];
 }

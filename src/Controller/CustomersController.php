@@ -79,7 +79,7 @@ class CustomersController extends AppController
             $this->savelog(500, "Tempted to create policy holder", 0, 1, "", json_encode($customer));
             $this->Flash->error(__('The policy holder could not be saved. Please, try again.'));
         }
-        $countries = $this->Countries->find("list");
+        $countries = $this->Countries->find("list", array("order" => array("name ASC")));
         $this->set(compact('customer', 'countries'));
     }
 
@@ -107,7 +107,16 @@ class CustomersController extends AppController
             $this->Flash->error(__('The customer could not be saved. Please, try again.'));
         }
         $countries = $this->Countries->find("list");
-        $this->set(compact('customer', 'countries'));
+        $agents = $this->Customers->Agents->find("all", array("order" => array("name ASC"), "conditions" => array("Agents.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['CountriesAgents']);
+            $result = [];
+            foreach($agents as $agent){
+                foreach($agent->countries_agents as $ca){
+                    if($ca->country_id == $customer->country_id){
+                        $result[$agent->id] = $agent->name;
+                    }
+                }
+            }
+        $this->set(compact('customer', 'countries'));$this->set('agents', $result);
     }
 
     /**

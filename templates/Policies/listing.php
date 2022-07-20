@@ -31,6 +31,12 @@
         <hr>
         <div class="row">
             <div class="col-md-12">
+                <?= $this->Form->control('agent_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $agents, "label" => "Agent", "multiple" => false, 'style' => "height:46px", 'value' => $agent_id)); ?>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
                 <?= $this->Form->control('company_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $companies, "label" => "Company", "multiple" => false, 'style' => "height:46px", 'value' => $company_id)); ?>
             </div>
         </div>
@@ -68,9 +74,9 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Policies
-            <a target="_blank" href="<?= ROOT_DIREC ?>/policies/exportlisting/<?= $country_id ?>/<?= $company_id ?>/<?= $type ?>/<?= $mode ?>/<?= $young_policies ?>" style="float:right;" class="btn btn-danger"><span class="fa fa-file-pdf-o"></span></a>
+            <a target="_blank" href="<?= ROOT_DIREC ?>/policies/exportlisting/<?= $country_id ?>/<?= $company_id ?>/<?= $type ?>/<?= $mode ?>/<?= $young_policies ?>/<?= $agent_id ?>" style="float:right;" class="btn btn-danger"><span class="fa fa-file-pdf-o"></span></a>
 
-            <a href="<?= ROOT_DIREC ?>/policies/exportlistingexcel/<?= $country_id ?>/<?= $company_id ?>/<?= $type ?>/<?= $mode ?>/<?= $young_policies ?>" style="float:right;margin-right:10px;background:#26580F;border:1px solid #26580F" class="btn btn-success"><span class="fa fa-file-excel-o"></span></a>
+            <a href="<?= ROOT_DIREC ?>/policies/exportlistingexcel/<?= $country_id ?>/<?= $company_id ?>/<?= $type ?>/<?= $mode ?>/<?= $young_policies ?>/<?= $agent_id ?>" style="float:right;margin-right:10px;background:#26580F;border:1px solid #26580F" class="btn btn-success"><span class="fa fa-file-excel-o"></span></a>
 
         <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="float:right;margin-right:10px"><span class="fa fa-filter"></span></button>
         </div>
@@ -80,19 +86,21 @@
                 <thead> 
                     <th class="text-left">Number</th>
                     <th class="text-center">Holder</th>
-                    <th class="text-center">Country</th>
+                    
                     <th class="text-center">Company</th>
                     <th class="text-center">Premium</th>
 
                     <th class="text-center">Mode</th>
-                    <th class="text-right">Effective Date</th>
+                    <th class="text-center">Effective Date</th>
+                    <th class="text-center">Country</th>
+                    <th class="text-right">Agent</th>
                 </thead>
             <tbody> 
         <?php foreach($policies as $policy) : ?>
             <tr>
                 <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
                 <td class="text-center"><?= $policy->customer->name ?></td>
-                <td class="text-center"><?= substr($policy->customer->country->name, 0, 5) ?></td>
+                
                 <?php if(!empty($policy->company)) : ?>
                     <?php if(!empty($policy->option)) : ?>
                     <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
@@ -110,6 +118,13 @@
                 <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
                 <td class="text-right"><?= date('M d Y', strtotime($policy->effective_date)) ?></td>
+                <td class="text-center"><?= substr($policy->customer->country->name, 0, 5) ?></td>
+                <?php if(!empty($policy->customer->agent)) : ?>
+
+                    <td class="text-center"><?= $policy->customer->agent->name ?></td>
+                <?php else : ?>
+                    <td></td>
+                <?php endif; ?>
             </tr>
         <?php endforeach; ?>
         </tbody>

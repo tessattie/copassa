@@ -128,7 +128,6 @@ echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
                  },
                  dataType : 'json',
                  success : function(data, statut){
-                      console.log(data[0]);
                       for (var i = data.length - 1; i >= 0; i--) {
                           $("#option-id").append("<option value='"+data[i].id+"'>"+data[i].name+" - "+data[i].option_name+ "</option>")
                       }
@@ -158,7 +157,6 @@ echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
                  },
                  dataType : 'json',
                  success : function(data, statut){
-                      console.log(data.deductible);
                       $('#deductible').val(data.deductible);
                       $('#usa-deductible').val(data.usa_deductible);
                       $('#max-coverage').val(data.max_coverage);

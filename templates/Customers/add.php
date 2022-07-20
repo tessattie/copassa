@@ -95,6 +95,43 @@
     </div>
 </div><!--End .articles-->
 
+<?php 
+echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
+
+?>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#country-id").change(function(){
+            $("#agent-id").empty();
+            $("#agent-id").append("<option value=''>-- Choose country to see agents --</option>")
+            var token =  $('input[name="_csrfToken"]').val();
+            var country = $(this).val();
+            $.ajax({
+                 url : ROOT_DIREC+'/agents/list',
+                 type : 'POST',
+                 data : {country_id : country},
+                 headers : {
+                    'X-CSRF-Token': token 
+                 },
+                 dataType : 'json',
+                 success : function(data, statut){
+                    console.log(data)
+                      for (var i = 0; i < data.length; i++) {
+                          $("#agent-id").append("<option value='"+data[i].id+"'>"+data[i].name+ "</option>")
+                      }
+                  },
+                 error : function(resultat, statut, erreur){
+                  console.log(erreur)
+                 }, 
+                 complete : function(resultat, statut){
+                    console.log(resultat)
+                 }
+            });
+        })
+    })
+</script>
+
 <style type="text/css">
     @media only screen and (max-width: 600px) {
       .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{

@@ -40,6 +40,12 @@ if(!empty($customer->dob)){
                             <th><?= __('Country') ?></th>
                             <td class="text-right"><?= h($customer->country->name) ?></td>
                         </tr>
+                        <?php if(!empty($customer->agent)) : ?>
+                        <tr>
+                            <th><?= __('Agent') ?></th>
+                            <td class="text-right"><?= $customer->agent->name ?></td>
+                        </tr>
+                        <?php endif; ?>
                         <tr>
                             <th><?= __('Email') ?></th>
                             <td class="text-right"><?= h($customer->email) ?></td>

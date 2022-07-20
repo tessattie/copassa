@@ -57,6 +57,18 @@ $paiduntil = $yesterday->format('Y-m-d');
                             <th><?= __('Policy Holder') ?></th>
                             <td class="text-right"><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
                         </tr>
+                        <?php if(!empty($policy->customer->country)) : ?>
+                        <tr>
+                            <th><?= __('Country') ?></th>
+                            <td class="text-right"><?= $policy->customer->country->name ?></td>
+                        </tr>
+                        <?php endif; ?>
+                        <?php if(!empty($policy->customer->agent)) : ?>
+                        <tr>
+                            <th><?= __('Agent') ?></th>
+                            <td class="text-right"><?= $policy->customer->agent->name ?></td>
+                        </tr>
+                        <?php endif; ?>
                         <tr>
                             <th><?= __('Passport Number') ?></th>
                             <td class="text-right"><?= $policy->passport_number ?></td>

@@ -41,7 +41,9 @@
                     </td>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/agents/edit/<?= $agent->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                        <?php if(count($agent->customers) == 0) : ?>
                         <a href="<?= ROOT_DIREC ?>/agents/delete/<?= $agent->id ?>" onclick="return confirm('Are you sure you would like to delete the agent <?= $agent->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                    <?php endif; ?>
                     </td>
                 </tr>
             <?php endif; ?>

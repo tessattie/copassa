@@ -18,7 +18,7 @@ class AgentsController extends AppController
      */
     public function index()
     {
-        $agents = $this->Agents->find("all", array("order" => array("Agents.name ASC"), "conditions" => array("Agents.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['CountriesAgents' => ['Countries']]);
+        $agents = $this->Agents->find("all", array("order" => array("Agents.name ASC"), "conditions" => array("Agents.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['CountriesAgents' => ['Countries'], 'Customers']);
 
         $this->set(compact('agents'));
     }
@@ -80,7 +80,7 @@ class AgentsController extends AppController
                 $all =  $this->CountriesAgents->find("all", array("conditions" => array('agent_id' => $agent->id)));
                 foreach($all as $delete){
                     $this->CountriesAgents->delete($delete);
-                }dfdfg
+                }
                 foreach($this->request->getData()['countries']['_ids'] as $key => $id){
                     if($id != 0){
                         $this->saveCA($id, $agent->id);
@@ -115,5 +115,22 @@ class AgentsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function list(){
+        if($this->request->is(['ajax'])){
+            $country_id = $this->request->getData()['country_id'];
+            $agents = $this->Agents->find("all", array("order" => array("name ASC"), "conditions" => array("Agents.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['CountriesAgents']);
+            $result = [];
+            foreach($agents as $agent){
+                foreach($agent->countries_agents as $ca){
+                    if($ca->country_id == $country_id){
+                        array_push($result, $agent);
+                    }
+                }
+            }
+            echo json_encode($result);
+        }
+        die();
     }
 }

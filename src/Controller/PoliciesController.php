@@ -103,7 +103,7 @@ class PoliciesController extends AppController
         }
 
         $policy = $this->Policies->get($id, [
-            'contain' => ['Companies', 'Options', 'Customers', 'Users', 'Payments', 'Dependants', 'Prenewals', 'Claims' => ['ClaimsTypes'], 'PoliciesRiders' => ['Riders']],
+            'contain' => ['Companies', 'Options', 'Customers' => ['Countries', 'Agents'], 'Users', 'Payments', 'Dependants', 'Prenewals', 'Claims' => ['ClaimsTypes'], 'PoliciesRiders' => ['Riders']],
         ]);
         $riders = $this->Riders->find("all");
         $dependant = $this->Policies->Dependants->newEmptyEntity();
@@ -287,10 +287,11 @@ class PoliciesController extends AppController
         $type = 'ZZZZ';
         $country_id = 'ZZZZ';
         $company_id = 'ZZZZ';
+        $agent_id = 'ZZZZ';
         $mode = 'ZZZZ';
         $young_policies = 0;
 
-        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
+        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries', 'Agents'], 'Prenewals', 'Dependants']); 
 
         if($this->request->is(['patch', 'put', 'post'])){
             // country
@@ -298,6 +299,14 @@ class PoliciesController extends AppController
                 $country_id = $this->request->getData()['country_id'];
                 $policies->matching('Customers', function ($q) use ($country_id) {
                     return $q->where(['Customers.country_id' => $country_id]);
+                });
+            }
+
+            // agent
+            if(!empty($this->request->getData()['agent_id'])){
+                $agent_id = $this->request->getData()['agent_id'];
+                $policies->matching('Customers', function ($q) use ($agent_id) {
+                    return $q->where(['Customers.agent_id' => $agent_id]);
                 });
             }
 
@@ -330,18 +339,25 @@ class PoliciesController extends AppController
         
 
         $companies = $this->Policies->Companies->find("list", array("order" => array("name ASC"), "conditions" => array("Companies.tenant_id" => $this->Auth->user()['tenant_id'])));
-
-        $this->set(compact('policies', 'companies', 'type', 'company_id', 'mode', 'country_id', 'young_policies'));
+        $agents = $this->Policies->Customers->Agents->find("list", array("order" => array("name asc"), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'])));
+        $this->set(compact('policies', 'companies', 'type', 'company_id', 'mode', 'country_id', 'young_policies', 'agents', 'agent_id'));
     }
 
-    public function exportlistingexcel($country_id, $company_id, $type, $mode, $young_policies){
+    public function exportlistingexcel($country_id, $company_id, $type, $mode, $young_policies, $agent_id){
         $modes = array(12 => "A", 6 => "SA", 4 => "T", 3 => 'Q', 1 => 'M');
 
-        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
+        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries', 'Agents'], 'Prenewals', 'Dependants']); 
         // country
         if($country_id != 'ZZZZ'){
             $policies->matching('Customers', function ($q) use ($country_id) {
                 return $q->where(['Customers.country_id' => $country_id]);
+            });
+        }
+
+        // agent
+        if($agent_id != 'ZZZZ'){
+            $policies->matching('Customers', function ($q) use ($agent_id) {
+                return $q->where(['Customers.agent_id' => $agent_id]);
             });
         }
 
@@ -387,11 +403,12 @@ class PoliciesController extends AppController
         $excel->getActiveSheet()->mergeCells('A1:G1');
         $sheet->SetCellValue('A2', '#');
         $sheet->SetCellValue('B2', 'Holder');
-        $sheet->SetCellValue('C2', 'Country');
+        $sheet->SetCellValue('C2', 'Effective Date');
         $sheet->SetCellValue('D2', 'Company');
         $sheet->SetCellValue('E2', 'Premium');
         $sheet->SetCellValue('F2', 'Mode');
-        $sheet->SetCellValue('G2', 'Effective Date');
+        $sheet->SetCellValue('G2', 'Country');
+        $sheet->SetCellValue('H2', 'Agent');
 
         $sheet->getColumnDimension('A')->setWidth(25);
         $sheet->getColumnDimension('B')->setWidth(45);
@@ -400,13 +417,14 @@ class PoliciesController extends AppController
         $sheet->getColumnDimension('E')->setWidth(15);
         $sheet->getColumnDimension('F')->setWidth(10);
         $sheet->getColumnDimension('G')->setWidth(20);
+        $sheet->getColumnDimension('H')->setWidth(40);
 
         $i=3;
         foreach($policies as $policy){
             $sheet->SetCellValue('A'.$i, $policy->policy_number);
             if(!empty($policy->customer)){
                 $sheet->SetCellValue('B'.$i, $policy->customer->name);
-            $sheet->SetCellValue('C'.$i, substr($policy->customer->country->name, 0, 5));
+            $sheet->SetCellValue('G'.$i, substr($policy->customer->country->name, 0, 5));
         }else{
             $sheet->SetCellValue('B'.$i, '');
             $sheet->SetCellValue('C'.$i, '');
@@ -429,7 +447,12 @@ class PoliciesController extends AppController
 
             $sheet->SetCellValue('E'.$i, number_format($policy->premium));
             $sheet->SetCellValue('F'.$i, $modes[$policy->mode]);
-            $sheet->SetCellValue('G'.$i, date('M d Y', strtotime($policy->effective_date->i18nFormat('yyyy-MM-dd'))));
+            $sheet->SetCellValue('C'.$i, date('M d Y', strtotime($policy->effective_date->i18nFormat('yyyy-MM-dd'))));
+            if(!empty($policy->customer->agent)){
+                $sheet->SetCellValue('H'.$i, $policy->customer->agent->name);
+            }else{
+                $sheet->SetCellValue('H'.$i, '');
+            }
             $i++;
         }
 
@@ -445,7 +468,7 @@ class PoliciesController extends AppController
             )
         );
 
-        $sheet->getStyle('A1:G'.($i-1))->applyFromArray($styleArray);
+        $sheet->getStyle('A1:H'.($i-1))->applyFromArray($styleArray);
 
         $file = 'policies_report.xlsx';
         $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
@@ -457,15 +480,22 @@ class PoliciesController extends AppController
 
     }
 
-    public function exportlisting($country_id, $company_id, $type, $mode, $young_policies){
+    public function exportlisting($country_id, $company_id, $type, $mode, $young_policies, $agent_id){
 
         $modes = array(12 => "A", 6 => "SA", 4 => "T", 3 => 'Q', 1 => 'M');
 
-        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries'], 'Prenewals', 'Dependants']); 
+        $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries', 'Agents'], 'Prenewals', 'Dependants']); 
         // country
         if($country_id != 'ZZZZ'){
             $policies->matching('Customers', function ($q) use ($country_id) {
                 return $q->where(['Customers.country_id' => $country_id]);
+            });
+        }
+
+        // agent
+        if($agent_id != 'ZZZZ'){
+            $policies->matching('Customers', function ($q) use ($agent_id) {
+                return $q->where(['Customers.agent_id' => $agent_id]);
             });
         }
 
@@ -498,48 +528,54 @@ class PoliciesController extends AppController
         
         $fpdf = new FPDF();
         $fpdf->AddPage("L");
-        $fpdf->SetFont('Arial','B',9);
+        $fpdf->SetFont('Arial','B',7);
         $fpdf->Cell(275,0,"Policies Report",0,0, 'L');
         $fpdf->Ln(5);
         $fpdf->Cell(275,0,"",'B',0, 'R');
         $fpdf->Ln();
 
-        $fpdf->Cell(40,7,"Number",'L-R-B',0, 'C');
+        $fpdf->Cell(30,7,"Number",'L-R-B',0, 'C');
 
-        $fpdf->Cell(80,7,"Holder",'L-R-B',0, 'C');
-        $fpdf->Cell(20,7,"Country",'L-R-B',0, 'C');
-        $fpdf->Cell(75,7,"Company",'L-R-B',0, 'C');
+        $fpdf->Cell(70,7,"Holder",'L-R-B',0, 'C');
+        $fpdf->Cell(15,7,"Country",'L-R-B',0, 'C');
+        $fpdf->Cell(70,7,"Company",'L-R-B',0, 'C');
         $fpdf->Cell(25,7,"Premium",'L-R-B',0, 'C');
         $fpdf->Cell(15,7,"Mode",'L-R-B',0, 'C');
         $fpdf->Cell(20,7,"Effective",'L-R-B',0, 'C');
-        $fpdf->SetFont('Arial','',7);
+        $fpdf->Cell(30,7,"Agent",'L-R-B',0, 'C');
+        $fpdf->SetFont('Arial','',6.5);
         foreach($policies as $policy){
             $fpdf->Ln();
-            $fpdf->Cell(40,6,utf8_decode($policy->policy_number),'L-R-B',0, 'C');
+            $fpdf->Cell(30,6,utf8_decode($policy->policy_number),'L-R-B',0, 'C');
             if(!empty($policy->customer)){
-                $fpdf->Cell(80,6,utf8_decode($policy->customer->name),'L-R-B',0, 'C');
-            $fpdf->Cell(20,6,utf8_decode(substr($policy->customer->country->name, 0, 5)),'L-R-B',0, 'C');
+                $fpdf->Cell(70,6,utf8_decode($policy->customer->name),'L-R-B',0, 'C');
+            $fpdf->Cell(15,6,utf8_decode(substr($policy->customer->country->name, 0, 5)),'L-R-B',0, 'C');
             }else{
-                $fpdf->Cell(80,6,'','L-R-B',0, 'C');
-            $fpdf->Cell(20,6,'','L-R-B',0, 'C');
+                $fpdf->Cell(70,6,'','L-R-B',0, 'C');
+            $fpdf->Cell(15,6,'','L-R-B',0, 'C');
             }
             
             if(!empty($policy->company)){
                 if(!empty($policy->option)){
-                    $fpdf->Cell(75,6,utf8_decode($policy->company->name . " / ".  $policy->option->name),'L-R-B',0, 'C');
+                    $fpdf->Cell(70,6,utf8_decode($policy->company->name . " / ".  $policy->option->name),'L-R-B',0, 'C');
                 }else{
-                    $fpdf->Cell(75,6,utf8_decode($policy->company->name),'L-R-B',0, 'C');
+                    $fpdf->Cell(70,6,utf8_decode($policy->company->name),'L-R-B',0, 'C');
                 }
             }else{
                 if(!empty($policy->option)){
-                    $fpdf->Cell(75,6,utf8_decode($policy->option->name),'L-R-B',0, 'C');
+                    $fpdf->Cell(70,6,utf8_decode($policy->option->name),'L-R-B',0, 'C');
                 }else{
-                    $fpdf->Cell(75,6,"",'L-R-B',0, 'C');
+                    $fpdf->Cell(70,6,"",'L-R-B',0, 'C');
                 }
             }
             $fpdf->Cell(25,6,number_format($policy->premium,2,".",","),'L-R-B',0, 'C');
             $fpdf->Cell(15,6,$modes[$policy->mode] ,'L-R-B',0, 'C');
             $fpdf->Cell(20,6,date('M d Y', strtotime($policy->effective_date->i18nFormat('yyyy-MM-dd'))) ,'L-R-B',0, 'C');
+            if(!empty($policy->customer->agent)){
+                $fpdf->Cell(30,6,utf8_decode(substr($policy->customer->agent->name, 0, 5)),'L-R-B',0, 'C');
+            }else{
+               $fpdf->Cell(30,6,'','L-R-B',0, 'C'); 
+            }
         }
 
 
