@@ -19,7 +19,12 @@
 						</div>
 						
                 		<?= $this->Form->button("Log In", array('class' => "btn btn-success loginForm", 'style' => "background:#ff6600;border:none")) ?>
+
             		<?= $this->Form->end() ?>
+            		<div style="margin-top:20px;text-align:right;margin-bottom:20px">
+            			<a href="<?= ROOT_DIREC ?>/users/reset" style="text-decoration:underline;color:black">Forgot Password</a>
+            		</div>
+            		
             		<?= $this->Flash->render() ?>
 			</div>
 		</div>

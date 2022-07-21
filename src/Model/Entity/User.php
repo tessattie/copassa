@@ -53,7 +53,10 @@ class User extends Entity
         'options' => true,
         'payments' => true,
         'policies' => true,
-        'tenant_id' => true
+        'tenant_id' => true,
+        'token' => true, 
+        'token_expiry' => true, 
+        'email' => true
     ];
 
     /**
@@ -69,4 +72,5 @@ class User extends Entity
         $hasher = new DefaultPasswordHasher();
         return $hasher->hash($password);
     }
+
 }

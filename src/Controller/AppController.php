@@ -69,12 +69,14 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        define('ROOT_DIREC', '/copassa');
+        define('ROOT_DIREC', '/main');
 
         // define("UPLOAD_DIR", '/home/xge55gjh6t1y/public_html/admin');
         define("UPLOAD_DIR", 'C:/wamp/www/admin/webroot');
 
-        define("SHOW_UPLOAD_DIR", '/copassa');
+        define("EMAIL_UPLOAD_DIR", 'C:/wamp/www/main/webroot');
+
+        define("SHOW_UPLOAD_DIR", '/admin');
 
         date_default_timezone_set("America/New_York");
 
@@ -101,6 +103,8 @@ class AppController extends Controller
     public function beforeFilter(EventInterface $event){
 
         $this->session = $this->getRequest()->getSession();
+        
+        
         if($this->Auth->user()){
             
             $year = date('Y');

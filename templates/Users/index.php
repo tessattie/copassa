@@ -25,6 +25,7 @@
                 <thead> 
                     <th>Name</th>
                     <th class="text-center">Username</th>
+                    <th class="text-center">Email</th>
                     <th class="text-center">Access</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Created</th>
@@ -35,6 +36,7 @@
                 <tr>
                     <td><?= $user->name ?></td>
                     <td class="text-center"><?= $user->username ?></td>
+                    <td class="text-center"><?= $user->email ?></td>
                     <td class="text-center"><?= $user->role->name ?></td>
                     <?php if($user->status == 1) : ?>
                         <td class="text-center">  <span class="label label-success"> <?= $status[$user->status] ?></span></td>
