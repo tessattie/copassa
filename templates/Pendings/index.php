@@ -11,7 +11,9 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Pending New Business
+            <?php if($user_connected['role_id'] != 2 || $auths[28]) : ?>
             <button class="btn btn-success" style="float:right" data-target="#newmaternity" data-toggle="modal">Add</button>
+        <?php endif; ?>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">
@@ -26,7 +28,9 @@
                     <th class="text-center">Created By</th>
                     <th class="text-center">Last Contact Date</th>
                     <th class="text-center">Status</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[28]) : ?>
                     <th></th>
+                <?php endif; ?>
                 </thead>
             <tbody> 
         <?php foreach($pendings as $pending) : ?>
@@ -47,10 +51,12 @@
                 <?php else : ?>
                     <td class="text-center"><span class="label label-info">Confirmed</span></td> 
                 <?php endif; ?>
+                <?php if($user_connected['role_id'] != 2 || $auths[28]) : ?>
                 <td class="text-right">
                   <a href="<?= ROOT_DIREC ?>/pendings/edit/<?= $pending->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                   <a href="<?= ROOT_DIREC ?>/pendings/delete/<?= $pending->id ?>" onclick="return confirm('Are you sure you would like to delete the pending new business for <?= $pending->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                 </td>
+            <?php endif; ?>
             </tr>
           <?php endif; ?>
         <?php endforeach; ?>
@@ -85,6 +91,7 @@
     }
 </style>
 
+<?php if($user_connected['role_id'] != 2 || $auths[28]) : ?>
 <div class="modal fade" id="newmaternity" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -123,6 +130,7 @@
     </div>
   </div>
 </div>
+<?php endif; ?>
 
 <?php 
 echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'

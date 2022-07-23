@@ -29,7 +29,7 @@
                     <div class="col-md-12"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Nom")); ?></div> 
                 </div>
                 <div class="row">
-                    <div class="col-md-12"><?= $this->Form->button(__('ADD'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>
+                    <div class="col-md-12"><?= $this->Form->button(__('Add'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>
                 </div>  
 
 

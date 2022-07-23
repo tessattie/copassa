@@ -32,10 +32,15 @@
                     <div class="row">
                         <div class="col-md-12"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?></div>
                     </div>
+                    <?php if($user_connected['role_id'] == 2  && !$auths[62]) : ?>
+                    <div class="row" style="margin-top:20px">
+                        <div class="col-md-12"><?= $this->Form->button(__('Update'), array('class'=>'btn btn-success', "style"=>"float:right")) ?></div>
+                    </div> 
+                <?php endif; ?>
                 </div>
                 
             </div>
-
+            <?php if($user_connected['role_id'] != 2  || $auths[62]) : ?>
             <div class="panel panel-default articles">
                 <div class="panel-heading">
                     Agents
@@ -71,6 +76,7 @@
                 </div>
                 
             </div>
+        <?php endif; ?>
             <?= $this->Form->end() ?>
         </div><!--End .articles-->
     </div>

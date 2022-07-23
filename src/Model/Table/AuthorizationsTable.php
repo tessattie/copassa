@@ -43,10 +43,8 @@ class AuthorizationsTable extends Table
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
-        $this->belongsToMany('Users', [
+        $this->hasMany('UsersAuthorizations', [
             'foreignKey' => 'authorization_id',
-            'targetForeignKey' => 'user_id',
-            'joinTable' => 'users_authorizations',
         ]);
     }
 

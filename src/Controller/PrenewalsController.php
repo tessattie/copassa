@@ -11,6 +11,39 @@ namespace App\Controller;
  */
 class PrenewalsController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[33] || $this->authorizations[35])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[35]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[35]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'view' && ($this->authorizations[33] || $this->authorizations[35])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[35]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -18,6 +51,8 @@ class PrenewalsController extends AppController
      */
     public function index($policy_id = false)
     {
+        $from = $this->session->read("from"); 
+        $to = $this->session->read("to");   
         $filter_country = $this->session->read("filter_country");
         if(!empty($filter_country)){
             $policies = $this->Prenewals->Policies->find("all", array("conditions" => array("Policies.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Customers', 'Companies'])->matching('Customers', function ($q) use ($filter_country) {
@@ -31,11 +66,11 @@ class PrenewalsController extends AppController
         if(!empty($policy_id)){
             $policy = $this->Prenewals->Policies->get($policy_id, ['contain' => ['Customers']]);
             $this->savelog(200, "Accessed renewals for policy #".$policy->policy_number, 1, 3, "", "");
-            $renewals = $this->Prenewals->find("all", array('order' => array('Prenewals.renewal_date desc'), "conditions" => array('Prenewals.tenant_id' => $this->Auth->user()['tenant_id'], 'Prenewals.policy_id' => $policy_id)))->contain(['Policies' => ['Customers']]);
+            $renewals = $this->Prenewals->find("all", array('order' => array('Prenewals.renewal_date desc'), "conditions" => array('Prenewals.tenant_id' => $this->Auth->user()['tenant_id'], 'renewal_date >=' => $from, 'renewal_date <=' => $to,  'Prenewals.policy_id' => $policy_id)))->contain(['Policies' => ['Customers']]);
         }else{
             $this->savelog(200, "Accessed renewals page", 1, 3, "", "");
             $policy = '';
-            $renewals = $this->Prenewals->find("all", array('order' => array('Prenewals.renewal_date desc'), "conditions" => array('Prenewals.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Customers']]);
+            $renewals = $this->Prenewals->find("all", array('order' => array('Prenewals.renewal_date desc'), "conditions" => array('Prenewals.tenant_id' => $this->Auth->user()['tenant_id'], 'renewal_date >=' => $from, 'renewal_date <=' => $to)))->contain(['Policies' => ['Customers']]);
         }
 
         $this->set(compact('policies', 'policy_id', 'policy', 'renewals'));

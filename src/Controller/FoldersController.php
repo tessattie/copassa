@@ -12,6 +12,23 @@ use App\Controller\AppController;
  */
 class FoldersController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+            if( ($this->authorizations[43] || $this->authorizations[44]) && $this->request->getParam('action') == 'show'){
+                return true;
+            }else{
+                if($this->authorizations[44]){
+                    return true;
+                }else{
+                    return false;
+                }
+                
+            }
+        }else{
+            return true;
+        }
+    }
     /**
      * Index method
      *
@@ -20,17 +37,17 @@ class FoldersController extends AppController
     public function index()
     {
         $folders = $this->Folders->find('treeList', []);
-
         $this->set(compact('folders'));
     }
 
     public function show($id = 1){
-        
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $filee = $this->Folders->Files->newEmptyEntity();
         $folderr = $this->Folders->newEmptyEntity();
         if ($this->request->is(['patch', 'post', 'put'])) {
-            // debug($this->request->getData()); 
-            // die();
+            if($this->authorizations[44]){
                 if($this->request->getData()['type'] == 1){
                     if(!empty($_FILES['location']['tmp_name'])){
                        $filee = $this->Folders->Files->patchEntity($filee, $this->request->getData());
@@ -58,6 +75,12 @@ class FoldersController extends AppController
                     $folderr->tenant_id = $this->Auth->user()['tenant_id'];
                     $this->Folders->save($folderr);
                 }
+            }else{
+                return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+            }
+            // debug($this->request->getData()); 
+            // die();
+                
             
         }
         if($this->Auth->user()['role_id'] == 1){

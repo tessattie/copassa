@@ -78,6 +78,10 @@ class UsersTable extends Table
         $this->belongsTo('Tenants', [
             'foreignKey' => 'tenant_id',
         ]);
+
+        $this->hasMany('UsersAuthorizations', [
+            'foreignKey' => 'user_id',
+        ]);
     }
 
     /**

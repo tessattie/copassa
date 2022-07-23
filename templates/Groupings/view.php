@@ -54,10 +54,12 @@ foreach($grouping->employees as $employee){
                     <th><?= __('Last Modified') ?></th>
                     <td class="text-right"><?= date('F d Y',strtotime($grouping->modified)) ?></td>
                 </tr>
+                <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                 <tr>
                     <th><?= __('Total') ?></th>
                     <td class="text-right"><span class="label label-info"><?= number_format($total, 2, ".", ",") ?></span></td>
                 </tr>
+            <?php endif; ?>
             </table>
             </div>
             

@@ -12,6 +12,7 @@
 <div class="container-fluid">  
 
 <div class="row">
+    <?php if($user_connected['role_id'] != 2 || ($auths[30] || $auths[31])) : ?>
     <div class="col-md-4">
         <div class="panel panel-info">
             <div class="panel-heading">
@@ -27,7 +28,9 @@
                                 <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:11px"></span> <strong>Due Date :</strong> <?= date("M d Y", strtotime($newborn->due_date)) ?></p>
                             </div>
                             <div class="col-xs-4" class="text-right">
+                                <?php if($user_connected['role_id'] != 2 || ($auths[31])) : ?>
                                 <button class="btn btn-success" data-toggle="modal" data-target="#confirm_maternity_<?= $newborn->id ?>" style="float:right;margin-top:40px"><span class="fa fa-check"></span></button>
+                            <?php endif; ?>
                             </div>
                         </div>
                         <hr>
@@ -35,6 +38,7 @@
             </div>
         </div>
     </div> 
+<?php endif; ?>
     <div class="col-md-4">
         <div class="panel panel-warning">
             <div class="panel-heading">
@@ -54,6 +58,7 @@
             </div>
         </div>
     </div> 
+    <?php if($user_connected['role_id'] != 2 || ($auths[52] || $auths[53] || $auths[55])) : ?>
     <div class="col-md-4">
         <div class="panel panel-teal">
             <div class="panel-heading">
@@ -75,10 +80,11 @@
             </div>
         </div>
     </div> 
+<?php endif; ?>
     
 </div>
 
-
+ <?php if($user_connected['role_id'] != 2 || ($auths[23] || $auths[24])) : ?>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default articles" >
@@ -134,9 +140,9 @@
     </div> 
  
 </div> 
+<?php endif; ?>
 
-
-
+ <?php if($user_connected['role_id'] != 2 || ($auths[27] || $auths[28])) : ?>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default articles" >
@@ -151,7 +157,9 @@
                     <th class="text-center">Country</th>
                     <th class="text-center">Dependants</th>
                     <th class="text-center">Last Contact Date</th>
+                     <?php if($user_connected['role_id'] != 2 || ($auths[28])) : ?>
                     <th class="text-right">Action(s)</th>
+                <?php endif; ?>
                 </thead>
             <tbody> 
         <?php foreach($pendings as $pending) : ?>
@@ -166,7 +174,9 @@
                 <?php else : ?>
                     <td></td>
                 <?php endif; ?>
+                 <?php if($user_connected['role_id'] != 2 || ($auths[28])) : ?>
                 <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_pending_<?= $pending->id ?>"><span class="fa fa-check"></span></button></td>
+            <?php endif; ?>
             </tr>
           <?php endif; ?>
         <?php endforeach; ?>
@@ -178,7 +188,9 @@
     </div> 
  
 </div> 
+<?php endif; ?>
 
+ <?php if($user_connected['role_id'] != 2 || ($auths[40] || $auths[42] || $auths[36] || $auths[38])) : ?>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default articles">
@@ -215,7 +227,7 @@
  
 </div> 
 
-
+<?php endif; ?>
 
 </div><!--End .articles-->
 

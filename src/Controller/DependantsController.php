@@ -11,6 +11,29 @@ namespace App\Controller;
  */
 class DependantsController extends AppController
 {
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[24]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[24]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[24]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
     /**
      * Add method
      *
@@ -18,6 +41,9 @@ class DependantsController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $dependant = $this->Dependants->newEmptyEntity();
         if ($this->request->is('post')) {
             $dependant = $this->Dependants->patchEntity($dependant, $this->request->getData());
@@ -41,6 +67,9 @@ class DependantsController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $dependant = $this->Dependants->get($id, [
             'contain' => [],
         ]);
@@ -65,6 +94,9 @@ class DependantsController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $dependant = $this->Dependants->get($id);
         $policy_id = $dependant->policy_id;

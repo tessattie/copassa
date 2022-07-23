@@ -11,6 +11,35 @@ namespace App\Controller;
  */
 class TypesController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[56] || $this->authorizations[57])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[57]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[57]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[57]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -18,26 +47,14 @@ class TypesController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $types = $this->Types->find("all", array("order" => array("name ASC")))->contain(["ClaimsTypes"]);
 
         $this->set(compact('types'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Type id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $type = $this->Types->get($id, [
-            'contain' => ['Tenants', 'Claims'],
-        ]);
-
-        $this->set(compact('type'));
-    }
 
     /**
      * Add method
@@ -46,6 +63,9 @@ class TypesController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $type = $this->Types->newEmptyEntity();
         if ($this->request->is('post')) {
             $types = $this->Types->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'is_deductible' => 1))); 
@@ -76,6 +96,9 @@ class TypesController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $type = $this->Types->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $type = $this->Types->patchEntity($type, $this->request->getData());
@@ -98,6 +121,9 @@ class TypesController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $type = $this->Types->get($id);
         if ($this->Types->delete($type)) {

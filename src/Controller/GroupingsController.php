@@ -11,6 +11,44 @@ namespace App\Controller;
  */
 class GroupingsController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[37] || $this->authorizations[38] || $this->authorizations[40])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'addemployee' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[38]){
+                return true;
+            }
+
+
+            if($this->request->getParam('action') == 'view' && ($this->authorizations[37] || $this->authorizations[38] || $this->authorizations[40])){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -18,6 +56,9 @@ class GroupingsController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $groupings = $this->Groupings->find("all", array("conditions" => array("Groupings.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Employees' => ['Families'], 'Businesses', 'Companies']);
 
         $this->set(compact('groupings'));
@@ -32,6 +73,9 @@ class GroupingsController extends AppController
      */
     public function view($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $grouping = $this->Groupings->get($id, [
             'contain' => ['Businesses', 'Companies', 'Employees' => ['Families', 'Groupings' => ['Companies']]],
         ]);
@@ -46,6 +90,9 @@ class GroupingsController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $grouping = $this->Groupings->newEmptyEntity();
         if ($this->request->is('post')) {
             $grouping = $this->Groupings->patchEntity($grouping, $this->request->getData());
@@ -69,6 +116,9 @@ class GroupingsController extends AppController
      */
     public function addemployee()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employee = $this->Groupings->Employees->newEmptyEntity();
         if ($this->request->is('post')) {
             $employee = $this->Groupings->Employees->patchEntity($employee, $this->request->getData());
@@ -103,6 +153,9 @@ class GroupingsController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $grouping = $this->Groupings->get($id, [
             'contain' => [],
         ]);
@@ -129,6 +182,9 @@ class GroupingsController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $grouping = $this->Groupings->get($id);
         if ($this->Groupings->delete($grouping)) {

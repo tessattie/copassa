@@ -11,6 +11,35 @@ namespace App\Controller;
  */
 class AgentsController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[59] || $this->authorizations[60]  || $this->authorizations[62])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[60]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[60]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[60]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -18,25 +47,12 @@ class AgentsController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $agents = $this->Agents->find("all", array("order" => array("Agents.name ASC"), "conditions" => array("Agents.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['CountriesAgents' => ['Countries'], 'Customers']);
 
         $this->set(compact('agents'));
-    }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Agent id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $agent = $this->Agents->get($id, [
-            'contain' => ['Countries'],
-        ]);
-
-        $this->set(compact('agent'));
     }
 
     /**
@@ -46,6 +62,9 @@ class AgentsController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $agent = $this->Agents->newEmptyEntity();
         if ($this->request->is('post')) {
             $agent = $this->Agents->patchEntity($agent, $this->request->getData());
@@ -69,6 +88,9 @@ class AgentsController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $agent = $this->Agents->get($id, [
             'contain' => ['CountriesAgents'],
         ]);
@@ -81,11 +103,14 @@ class AgentsController extends AppController
                 foreach($all as $delete){
                     $this->CountriesAgents->delete($delete);
                 }
-                foreach($this->request->getData()['countries']['_ids'] as $key => $id){
-                    if($id != 0){
-                        $this->saveCA($id, $agent->id);
+                if(!empty($this->request->getData()['countries'])){
+                    foreach($this->request->getData()['countries']['_ids'] as $key => $id){
+                        if($id != 0){
+                            $this->saveCA($id, $agent->id);
+                        }
                     }
                 }
+                
                 $this->Flash->success(__('The agent has been saved.'));
 
                 return $this->redirect(['action' => 'edit', $agent->id]);
@@ -106,6 +131,9 @@ class AgentsController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $agent = $this->Agents->get($id);
         if ($this->Agents->delete($agent)) {

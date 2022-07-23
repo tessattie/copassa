@@ -17,7 +17,9 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Family Members
+            <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
             <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/families/add">New</a>
+        <?php endif; ?>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">
@@ -30,9 +32,13 @@
                     <th class="text-center">Insurance</th>
                     <th class="text-center">Relationship</th>
                     <th class="text-center">DOB</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                     <th class="text-center">Premium</th>
+                <?php endif; ?>
                     <th class="text-center">Status</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
                     <th class="text-left"></th>
+                <?php endif; ?>
                 </thead>
             <tbody> 
             <?php foreach($families as $family) : ?>
@@ -44,19 +50,22 @@
                     <td class="text-center"><?= $family->employee->grouping->company->name ?></td>
                     <td class="text-center"><?= $relationships[$family->relationship] ?></td>
                     <td class="text-center"><?= date("F d Y", strtotime($family->dob)) ?></td>
-                    
+                    <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                     <td class="text-center"><?= number_format($family->premium,2,".",",") ?></td>
+                <?php endif; ?>
                     <?php if($family->status == 1) : ?>
                         <td class="text-center"><span class="label label-success">Active</span></td>
                     <?php else : ?>
                         <td class="text-center"><span class="label label-danger">Inactive</span></td>
                     <?php endif; ?>
+                    <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/families/edit/<?= $family->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <?php if(empty($family->transactions)) : ?>
                         <a href="<?= ROOT_DIREC ?>/families/delete/<?= $family->id ?>" onclick="return confirm('Are you sure you would like to delete the family member <?= $family->first_name." ".$family->last_name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                         <?php endif; ?>
                     </td>
+                <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
             </tbody>

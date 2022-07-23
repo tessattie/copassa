@@ -11,7 +11,9 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Maternity Reminders
+            <?php if($user_connected['role_id'] != 2 || $auths[31]) : ?>
             <button class="btn btn-success" style="float:right" data-target="#newmaternity" data-toggle="modal">Add</button>
+        <?php endif; ?>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">
@@ -23,7 +25,9 @@
                     <th class="text-center">Company</th>
                     <th class="text-center">Due Date</th>
                     <th class="text-center">Created By</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[31]) : ?>
                     <th></th>
+                <?php endif; ?>
                 </thead>
             <tbody> 
         <?php foreach($newborns as $newborn) : ?>
@@ -34,13 +38,14 @@
                 <td class="text-center"><?= $newborn->policy->customer->country->name ?></td>
                 <td class="text-center"><?= $newborn->policy->company->name . " / ".  $newborn->policy->option->name ?></td>
                 <td class="text-center"><?= date("M d Y", strtotime($newborn->due_date)) ?></td>
-                <td class="text-center"><?= $newborn->user->name ?></td>                
+                <td class="text-center"><?= $newborn->user->name ?></td>   
+                <?php if($user_connected['role_id'] != 2 || $auths[31]) : ?>             
                 <td class="text-right">
                     <a href="<?= ROOT_DIREC ?>/newborns/delete/<?= $newborn->id ?>" class="btn btn-danger" style="float:right;margin-left:5px" onclick="return confirm('Are you sure you would like to delete this reminder?')">Delete</a>
                 <button class="btn btn-warning" style="float:right" data-target="#confirm_maternity_<?= $newborn->id ?>" data-toggle="modal">Confirm</button>
 
                 </td>
-
+            <?php endif; ?>
             </tr>
           <?php endif; ?>
         <?php endforeach; ?>
@@ -74,7 +79,7 @@
         vertical-align:middle!important;
     }
 </style>
-
+<?php if($user_connected['role_id'] != 2 || $auths[31]) : ?>
 <div class="modal fade" id="newmaternity" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -138,7 +143,7 @@
   </div>
 </div>
 <?php endforeach; ?>
-
+<?php endif; ?>
 <?php 
 echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
 ?>

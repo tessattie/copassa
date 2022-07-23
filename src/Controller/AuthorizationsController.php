@@ -11,6 +11,16 @@ namespace App\Controller;
  */
 class AuthorizationsController extends AppController
 {
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+            return false;
+        }else{
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Index method
      *
@@ -20,7 +30,7 @@ class AuthorizationsController extends AppController
     {
         $authorizations = $this->Authorizations->find("all", array("order" => array("type ASC")));
         $user_authorizations = [];
-        $users = $this->Authorizations->Users->find("all", array("order" => array("name ASC"), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'role_id' => 2 )));
+        $users = $this->Authorizations->UsersAuthorizations->Users->find("all", array("order" => array("name ASC"), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'role_id' => 2 )));
         if($id){
             $this->loadModel("UsersAuthorizations");
             $user_authorizations = $this->UsersAuthorizations->find("all", array("conditions" => array("user_id" => $id)));
@@ -41,7 +51,6 @@ class AuthorizationsController extends AppController
                     $this->UsersAuthorizations->save($new_ua);
                 }
             }else{
-
                if($ua->count() > 0){
                 foreach($ua as $usra){
                     $this->UsersAuthorizations->delete($usra);

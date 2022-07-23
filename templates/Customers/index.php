@@ -18,7 +18,9 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Policy Holders
+            <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
             <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/customers/add">New</a>
+            <?php endif; ?>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">
@@ -31,7 +33,9 @@
                     <th class="text-center">DOB</th>
                     <th class="text-center">Age</th>
                     <th class="text-center">Status</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                     <th class="text-center"></th>
+                    <?php endif; ?>
                 </thead>
             <tbody> 
         <?php foreach($customers as $customer) : ?>
@@ -86,12 +90,13 @@
                     <?php else : ?>
                         <td class="text-center"><span class="label label-danger"><?= $status[$customer->status] ?></span></td>
                     <?php endif; ?>
-                    
+                    <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                     <td class="text-right"><a href="<?= ROOT_DIREC ?>/customers/edit/<?= $customer->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <?php if(count($customer->policies) == 0) : ?>
                     <a href="<?= ROOT_DIREC ?>/customers/delete/<?= $customer->id ?>" onclick="return confirm('Are you sure you would like to delete the customer <?= $customer->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                 <?php endif; ?>
                     </td>
+                <?php endif; ?>
                 </tr>
             <?php endif; ?>
         <?php endforeach; ?>

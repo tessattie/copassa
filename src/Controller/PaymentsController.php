@@ -22,6 +22,30 @@ use PHPExcel_Writer_Excel7;
 class PaymentsController extends AppController
 {
 
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'report' && ($this->authorizations[5] || $this->authorizations[4])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'exportexcel' && $this->authorizations[5]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'export' && $this->authorizations[5]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -380,6 +404,9 @@ class PaymentsController extends AppController
     }
 
     public function report(){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->savelog(200, "Accessed payments page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
         $from = $this->session->read("from"); 
@@ -390,6 +417,9 @@ class PaymentsController extends AppController
     }
 
     public function exportexcel(){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $from = $this->session->read("from"); 
         $to = $this->session->read("to");
 
@@ -465,6 +495,9 @@ class PaymentsController extends AppController
     }
 
     public function export(){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->savelog(200, "Payment Exports Done", 1, 3, "", "");
         require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
 

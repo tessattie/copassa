@@ -21,6 +21,56 @@ use PHPExcel_Writer_Excel7;
  */
 class EmployeesController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'report' && ($this->authorizations[8] || $this->authorizations[9])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'export' && $this->authorizations[9]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'exportexcel' && $this->authorizations[9]){
+                return true;
+            }
+
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[38] || $this->authorizations[37] || $this->authorizations[42])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'view' && ($this->authorizations[38] || $this->authorizations[37] || $this->authorizations[42])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'addfamily' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[42]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -28,12 +78,18 @@ class EmployeesController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employees = $this->Employees->find("all", array("order" => array("Employees.last_name ASC", "Employees.first_name ASC"), 'conditions' => array('Employees.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Groupings' => ['Companies'], 'Transactions']);
 
         $this->set(compact('employees'));
     }
 
     public function report($group_id = false){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employees = array();
         $business_id = "ZZZZ";
         $grouping_id = "ZZZZ";
@@ -57,6 +113,9 @@ class EmployeesController extends AppController
     }
 
     public function exportexcel($business_id = 'ZZZZ', $grouping_id = 'ZZZZ'){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
         $employees->where(['Employees.tenant_id' => $this->Auth->user()['tenant_id']]);
         $business = false;
@@ -199,6 +258,9 @@ class EmployeesController extends AppController
     }
 
     public function export($business_id = 'ZZZZ', $grouping_id = 'ZZZZ'){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
         $employees->where(['Employees.tenant_id' => $this->Auth->user()['tenant_id']]);
         $business = false;
@@ -309,6 +371,9 @@ class EmployeesController extends AppController
      */
     public function view($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employee = $this->Employees->get($id, [
             'contain' => ['Businesses', 'Groupings', 'Families'],
         ]);
@@ -323,6 +388,9 @@ class EmployeesController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employee = $this->Employees->newEmptyEntity();
         if ($this->request->is('post')) {
             $employee = $this->Employees->patchEntity($employee, $this->request->getData());
@@ -358,6 +426,9 @@ class EmployeesController extends AppController
      */
     public function addfamily()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $family = $this->Employees->Families->newEmptyEntity();
         if ($this->request->is('post')) {
             $family = $this->Employees->Families->patchEntity($family, $this->request->getData());
@@ -379,6 +450,9 @@ class EmployeesController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employee = $this->Employees->get($id, [
             'contain' => [],
         ]);
@@ -405,6 +479,9 @@ class EmployeesController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $employee = $this->Employees->get($id);
         $families = $this->Employees->Families->find("all", array("conditions" => array('employee_id' => $employee->id)));

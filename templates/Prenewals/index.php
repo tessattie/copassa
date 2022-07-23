@@ -42,6 +42,7 @@
         <div class="panel panel-default articles">
         <div class="panel-heading">
             Renewals <?= (!empty($policy_id)) ? " :  ".$policy->policy_number : "" ?>
+            <a class="btn btn-default float-right" href="<?= ROOT_DIREC ?>/prenewals" style="float:right"><span class="fa fa-refresh"></span></a>
         </div>
     <div class="panel-body articles-container" style="height:550px;overflow-y:scroll">
         <?php if(!empty($policy_id)) : ?>
@@ -59,7 +60,9 @@
                 <th class="text-center">Status</th>
                 <th class="text-center">Policy Status</th>
                 <th class="text-center">Paid on</th>
+                <?php if($user_connected['role_id'] != 2 || $auths[35]) : ?>
                 <th class="text-right"></th>
+            <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -88,9 +91,11 @@
                         <?php else : ?>
                         <td></td>
                     <?php endif; ?>
+                    <?php if($user_connected['role_id'] != 2 || $auths[35]) : ?>
                         <td class="text-right">
                             <a href="<?= ROOT_DIREC ?>/prenewals/edit/<?= $renewal->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a> 
                         </td>
+                    <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>

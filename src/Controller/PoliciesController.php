@@ -21,6 +21,71 @@ use PHPExcel_Writer_Excel7;
  */
 class PoliciesController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'listing' && ($this->authorizations[2] || $this->authorizations[3])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[23] || $this->authorizations[24])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'dashboard' && $this->authorizations[1]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'view' && ($this->authorizations[23] || $this->authorizations[24])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'exportlistingexcel' && $this->authorizations[3]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'exportlisting' && $this->authorizations[3]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'report' && ($this->authorizations[6] || $this->authorizations[7])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'export' && $this->authorizations[7]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'exportexcel' && $this->authorizations[7]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[24]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'adddependant' && $this->authorizations[24]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[24]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[24]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -28,6 +93,9 @@ class PoliciesController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->savelog(200, "Accessed policies page", 1, 3, "", "");
         $filter_country = $this->session->read("filter_country");
         if(!empty($filter_country)){
@@ -58,6 +126,9 @@ class PoliciesController extends AppController
     }
 
     public function dashboard(){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->loadModel("Newborns");$this->loadModel("Pendings");$this->loadModel("Transactions");$this->loadModel("Claims");
 
         $new_business_date = date("Y-m-d", strtotime("-1 year")); 
@@ -96,6 +167,9 @@ class PoliciesController extends AppController
      */
     public function view($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->loadModel('Riders');
         
         if($this->request->is(['patch', 'put', 'post'])){
@@ -118,6 +192,9 @@ class PoliciesController extends AppController
      */
     public function add($customer_id = false)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $policy = $this->Policies->newEmptyEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
@@ -152,6 +229,9 @@ class PoliciesController extends AppController
     }
 
     public function adddependant(){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if($this->request->is(['patch', 'put', 'post'])){
             $this->loadModel("Newborns");
             // update newborn status
@@ -185,6 +265,9 @@ class PoliciesController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $policy = $this->Policies->get($id, [
             'contain' => [],
         ]);
@@ -237,6 +320,9 @@ class PoliciesController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $policy = $this->Policies->get($id);
         if ($this->Policies->delete($policy)) {
@@ -250,6 +336,9 @@ class PoliciesController extends AppController
 
     public function report(){
         // Set Dates
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $from = $this->session->read("from"); 
         $to = $this->session->read("to");
         $type_filter="ZZZZ";
@@ -282,6 +371,9 @@ class PoliciesController extends AppController
     }
 
     public function listing(){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->savelog(200, "Accessed policies page", 1, 3, "", "");
 
         $type = 'ZZZZ';
@@ -344,6 +436,9 @@ class PoliciesController extends AppController
     }
 
     public function exportlistingexcel($country_id, $company_id, $type, $mode, $young_policies, $agent_id){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $modes = array(12 => "A", 6 => "SA", 4 => "T", 3 => 'Q', 1 => 'M');
 
         $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries', 'Agents'], 'Prenewals', 'Dependants']); 
@@ -481,7 +576,9 @@ class PoliciesController extends AppController
     }
 
     public function exportlisting($country_id, $company_id, $type, $mode, $young_policies, $agent_id){
-
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $modes = array(12 => "A", 6 => "SA", 4 => "T", 3 => 'Q', 1 => 'M');
 
         $policies = $this->Policies->find("all", array("conditions" => array("pending_business" => 2, 'Policies.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Customers' => ['Countries', 'Agents'], 'Prenewals', 'Dependants']); 
@@ -633,6 +730,9 @@ class PoliciesController extends AppController
     }
 
     public function exportexcel($type, $company_id){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $from = $this->session->read("from"); 
         $to = $this->session->read("to"); 
 
@@ -800,6 +900,9 @@ class PoliciesController extends AppController
     }
 
     public function export($type, $company_id){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $from = $this->session->read("from"); 
         $to = $this->session->read("to"); 
 

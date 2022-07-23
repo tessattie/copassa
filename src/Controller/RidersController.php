@@ -11,6 +11,23 @@ namespace App\Controller;
  */
 class RidersController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[50] || $this->authorizations[49])){
+                return true;
+            }
+
+            if(($this->request->getParam('action') == 'add' || $this->request->getParam('action') == 'edit' || $this->request->getParam('action') == 'delete') && ($this->authorizations[50])){
+                return true;
+            }
+        }else{
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Index method
      *
@@ -18,26 +35,13 @@ class RidersController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['action' => 'authorization']);
+        }
         $riders = $this->Riders->find("all", array("conditions" => array("Riders.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Users']);
-
         $this->set(compact('riders'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Rider id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $rider = $this->Riders->get($id, [
-            'contain' => ['Users'],
-        ]);
-
-        $this->set(compact('rider'));
-    }
 
     /**
      * Add method
@@ -46,6 +50,9 @@ class RidersController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $rider = $this->Riders->newEmptyEntity();
         if ($this->request->is('post')) {
             $rider = $this->Riders->patchEntity($rider, $this->request->getData());
@@ -71,6 +78,9 @@ class RidersController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $rider = $this->Riders->get($id, [
             'contain' => [],
         ]);
@@ -96,6 +106,9 @@ class RidersController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $rider = $this->Riders->get($id);
         if ($this->Riders->delete($rider)) {

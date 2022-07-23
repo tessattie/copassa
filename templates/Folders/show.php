@@ -116,6 +116,7 @@
                                 <?php   foreach ($breadcrumbs as $b) : ?>
                                     <li class="breadcrumb-item"><a href="<?= ROOT_DIREC ?>/folders/show/<?= $b->id ?>"><?= $b->name ?></a></li>
                                 <?php   endforeach ; ?>
+                                <?php if($auths[44]) : ?>
                                 <button class="btn btn-primary"  data-toggle="modal" data-target="#newFile" style="height: 30px;
     width: 44px;
     float: right;
@@ -128,6 +129,7 @@
     right: 75px;
     height: 30px;
     margin-top: -5px;"><i class='fa fa-folder'></i></button>  
+<?php endif; ?>
                                 </ol>
 
                             </nav>
@@ -152,7 +154,9 @@
                                 <p class="card-text"><small class="text-muted">Last updated <?= $folder->modified ?></small></p>
 
                             </div></a>
+                            <?php if($auths[44]) : ?>
                             <div><a href="<?= ROOT_DIREC ?>/folders/delete/<?= $folder->id ?>"><span class="fa fa-remove" style="color:white;background:red;padding:3px 5px 3px 5px;border-radius:3px;"></span></a></div>
+                        <?php endif; ?>
                                                                 
 
                         </div>
@@ -173,9 +177,11 @@
                                 <p class="card-text"><small class="text-muted">Last updated <?= $file->modified ?></small></p>
                                 
                             </div></a>
+                            <?php if($auths[44]) : ?>
                             <p class="float-right mb-0" style="margin-right:16px">
                                 <div><a href="<?= ROOT_DIREC ?>/files/delete/<?= $file->id ?>/<?= $active_folder->id ?>"><span class="fa fa-remove" style="color:white;background:red;padding:3px 5px 3px 5px;border-radius:3px;"></span></a></div>
                                 </p>
+                            <?php endif; ?>
                         </div>
                     </div></div>
                 <?php endif; ?>

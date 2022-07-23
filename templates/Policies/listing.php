@@ -74,10 +74,11 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Policies
+            <?php if($user_connected['role_id'] != 2 || $auths[3]) : ?>
             <a target="_blank" href="<?= ROOT_DIREC ?>/policies/exportlisting/<?= $country_id ?>/<?= $company_id ?>/<?= $type ?>/<?= $mode ?>/<?= $young_policies ?>/<?= $agent_id ?>" style="float:right;" class="btn btn-danger"><span class="fa fa-file-pdf-o"></span></a>
 
             <a href="<?= ROOT_DIREC ?>/policies/exportlistingexcel/<?= $country_id ?>/<?= $company_id ?>/<?= $type ?>/<?= $mode ?>/<?= $young_policies ?>/<?= $agent_id ?>" style="float:right;margin-right:10px;background:#26580F;border:1px solid #26580F" class="btn btn-success"><span class="fa fa-file-excel-o"></span></a>
-
+        <?php endif; ?>
         <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="float:right;margin-right:10px"><span class="fa fa-filter"></span></button>
         </div>
     <div class="panel-body articles-container">
@@ -96,38 +97,38 @@
                     <th class="text-right">Agent</th>
                 </thead>
             <tbody> 
-        <?php foreach($policies as $policy) : ?>
-            <tr>
-                <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
-                <td class="text-center"><?= $policy->customer->name ?></td>
-                
-                <?php if(!empty($policy->company)) : ?>
-                    <?php if(!empty($policy->option)) : ?>
-                    <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
-                    <?php else : ?>
-                        <td class="text-center"><?= $policy->company->name ?></td>
-                    <?php endif; ?>
-                <?php else : ?>
-                    <?php if(!empty($policy->option)) : ?>
-                    <td class="text-center"><?= $policy->option->name ?></td>
-                    <?php else : ?>
-                        <td class="text-center"></td>
-                    <?php endif; ?>
-                <?php endif; ?>
-                
-                <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
-                <td class="text-center"><?= $modes[$policy->mode] ?></td>
-                <td class="text-right"><?= date('M d Y', strtotime($policy->effective_date)) ?></td>
-                <td class="text-center"><?= substr($policy->customer->country->name, 0, 5) ?></td>
-                <?php if(!empty($policy->customer->agent)) : ?>
+                <?php foreach($policies as $policy) : ?>
+                    <tr>
+                        <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
+                        <td class="text-center"><?= $policy->customer->name ?></td>
+                        
+                        <?php if(!empty($policy->company)) : ?>
+                            <?php if(!empty($policy->option)) : ?>
+                            <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
+                            <?php else : ?>
+                                <td class="text-center"><?= $policy->company->name ?></td>
+                            <?php endif; ?>
+                        <?php else : ?>
+                            <?php if(!empty($policy->option)) : ?>
+                            <td class="text-center"><?= $policy->option->name ?></td>
+                            <?php else : ?>
+                                <td class="text-center"></td>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        
+                        <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
+                        <td class="text-center"><?= $modes[$policy->mode] ?></td>
+                        <td class="text-right"><?= date('M d Y', strtotime($policy->effective_date)) ?></td>
+                        <td class="text-center"><?= substr($policy->customer->country->name, 0, 5) ?></td>
+                        <?php if(!empty($policy->customer->agent)) : ?>
 
-                    <td class="text-center"><?= $policy->customer->agent->name ?></td>
-                <?php else : ?>
-                    <td></td>
-                <?php endif; ?>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
+                            <td class="text-center"><?= $policy->customer->agent->name ?></td>
+                        <?php else : ?>
+                            <td></td>
+                        <?php endif; ?>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
         </table>
             </div><!--End .article-->
         </div>

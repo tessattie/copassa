@@ -11,6 +11,36 @@ namespace App\Controller;
  */
 class CountriesController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[16] || $this->authorizations[17]  || $this->authorizations[62])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[17]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[17]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[17]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
+
     /**
      * Index method
      *
@@ -18,26 +48,14 @@ class CountriesController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $countries = $this->Countries->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")))->contain(['Customers', 'CountriesAgents' => ['Agents']]);
 
         $this->set(compact('countries'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Country id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $country = $this->Countries->get($id, [
-            'contain' => [],
-        ]);
-
-        $this->set(compact('country'));
-    }
 
     /**
      * Add method
@@ -46,6 +64,9 @@ class CountriesController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $country = $this->Countries->newEmptyEntity();
         if ($this->request->is('post')) {
             $country = $this->Countries->patchEntity($country, $this->request->getData());
@@ -68,6 +89,9 @@ class CountriesController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $country = $this->Countries->get($id, [
             'contain' => ['CountriesAgents'],
         ]);
@@ -76,7 +100,8 @@ class CountriesController extends AppController
             // debug($this->request->getData());die();
             if ($this->Countries->save($country)) {
                 $this->Flash->success(__('The country has been saved.'));
-                $this->loadModel('CountriesAgents');
+                if(!empty($this->request->getData()['agents'])){
+                    $this->loadModel('CountriesAgents');
                 $all =  $this->CountriesAgents->find("all", array("conditions" => array('country_id' => $country->id)));
                 foreach($all as $delete){
                     $this->CountriesAgents->delete($delete);
@@ -87,6 +112,8 @@ class CountriesController extends AppController
                     }
                     
                 }
+                }
+                
                 return $this->redirect(['action' => 'edit', $country->id]);
             }
             $this->Flash->error(__('The country could not be saved. Please, try again.'));
@@ -105,6 +132,9 @@ class CountriesController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $country = $this->Countries->get($id);
         if ($this->Countries->delete($country)) {

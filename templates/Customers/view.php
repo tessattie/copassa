@@ -29,6 +29,9 @@ if(!empty($customer->dob)){
             <div class="panel panel-default articles">
                 <div class="panel-heading">
                     <?= $customer->name ?>
+                    <?php if($user_connected['role_id'] != 2  || $auths[24]) : ?>
+            <a class="btn btn-default"  style="float:right;padding:1px 10px 5px" href="<?= ROOT_DIREC ?>/customers/edit/<?= $customer->id ?>"><span class="fa fa-pencil"></span></a>
+        <?php endif; ?>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">
@@ -102,7 +105,10 @@ if(!empty($customer->dob)){
 
             <div class="panel panel-default articles">
         <div class="panel-heading">
-            Policies <a class="btn btn-default"  style="float:right;padding:1px 10px 5px" href="<?= ROOT_DIREC ?>/policies/add/<?= $customer->id ?>"><span class="fa fa-plus"></span></a>
+            Policies 
+            <?php if($user_connected['role_id'] != 2  || $auths[24]) : ?>
+            <a class="btn btn-default"  style="float:right;padding:1px 10px 5px" href="<?= ROOT_DIREC ?>/policies/add/<?= $customer->id ?>"><span class="fa fa-plus"></span></a>
+        <?php endif; ?>
         </div>
         <div class="panel-body articles-container">       
             <div class="row">
@@ -121,7 +127,9 @@ if(!empty($customer->dob)){
                                 <th class="text-center">Mode</th>
                                 <th class="text-center">Effective date</th>
                                 <th class="text-center">Certificate</th>
+                                <?php if($user_connected['role_id'] != 2  || $auths[24]) : ?>
                                 <th></th>
+                            <?php endif; ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,7 +153,9 @@ if(!empty($customer->dob)){
                                         -
                                     <?php endif; ?>
                                 </td>
+                                <?php if($user_connected['role_id'] != 2  || $auths[24]) : ?>
                                 <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a></td>
+                            <?php endif; ?>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -182,10 +192,13 @@ if(!empty($customer->dob)){
     </div>
         </div>
         <div class="col-md-3">
-
+            <?php if($user_connected['role_id'] != 2  || $auths[52]  || $auths[53]  || $auths[55]) : ?>
             <div class="panel panel-teal">
             <div class="panel-heading">
-                CLaims <button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#newclaim"><span class="fa fa-plus"></span></button>
+
+                CLaims 
+                <?php if($user_connected['role_id'] != 2  || $auths[53]) : ?>
+                <button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#newclaim"><span class="fa fa-plus"></span></button> <?php endif; ?>
                 </div>
             <div class="panel-body" style="height:365px;overflow-y:scroll;background:white">
                     <?php foreach($customer->policies as $policy) : ?>
@@ -213,6 +226,7 @@ if(!empty($customer->dob)){
                 <?php endforeach; ?>
             </div>
         </div>
+    <?php endif; ?>
 
             <div class="panel panel-warning articles">
                 <div class="panel-heading">

@@ -26,6 +26,39 @@ class CustomersController extends AppController
         parent::beforeFilter($event);
         $this->set('area_codes', $this->Customers->area_codes);
     }
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[23] || $this->authorizations[24])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'view' && ($this->authorizations[23] || $this->authorizations[24])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[24]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[24]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[24]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *

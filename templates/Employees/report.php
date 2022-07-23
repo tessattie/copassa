@@ -44,10 +44,11 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Corporate Groups
+            <?php if($user_connected['role_id'] != 2 || $auths[9]) : ?>
             <a target="_blank" href="<?= ROOT_DIREC ?>/employees/export/<?= $business_id ?>/<?= $grouping_id ?>" style="float:right;" class="btn btn-danger"><span class="fa fa-file-pdf-o"></span></a>
 
             <a href="<?= ROOT_DIREC ?>/employees/exportexcel/<?= $business_id ?>/<?= $grouping_id ?>" style="float:right;margin-right:10px;background:#26580F;border:1px solid #26580F" class="btn btn-success"><span class="fa fa-file-excel-o"></span></a>
-
+            <?php endif; ?>
             <button type="button" data-toggle="modal" data-target="#filters" class="btn btn-info" style="float:right;margin-right:10px"><span class="fa fa-filter"></span></button>
         </div>
     <div class="panel-body articles-container">

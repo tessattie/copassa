@@ -33,7 +33,9 @@ $paiduntil = $yesterday->format('Y-m-d');
             <div class="panel panel-default articles">
                 <div class="panel-heading">
                     Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?>
+                    <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                     <a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a>
+                <?php endif; ?>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">
@@ -113,7 +115,11 @@ $paiduntil = $yesterday->format('Y-m-d');
                             <?php if(!empty($policy->certificate)) : ?>
                                 <td class="text-right"><?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?></td>
                             <?php else : ?>
-                                <td class="text-right"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>">Upload</a></td>
+                                <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
+                                    <td class="text-right"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>">Upload</a></td>
+                                <?php else : ?>
+                                    <td></td>
+                                <?php endif; ?>
                             <?php endif; ?>
                             
                         </tr>
@@ -131,7 +137,9 @@ $paiduntil = $yesterday->format('Y-m-d');
                     <?php else : ?>
                         Dependants
                     <?php endif; ?>
+                    <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                     <button class="btn btn-default" data-toggle="modal" data-target="#exampleModal" style="padding:2px 10px 5px;float:right"><span class="fa fa-plus"></span></button>
+                        <?php endif; ?>
                 </div>
 
                 <div class="panel-body articles-container">
@@ -145,7 +153,9 @@ $paiduntil = $yesterday->format('Y-m-d');
                                 <th class="text-center">Age</th>
                                 <th class="text-center">Sexe</th>
                                 <th class="text-center">Exclusions</th>
+                                <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                                 <th class="text-center"></th>
+                            <?php endif; ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -172,10 +182,12 @@ $paiduntil = $yesterday->format('Y-m-d');
                                     
                                     <td class="text-center"><?= $sexe[$dep->sexe]; ?></td>
                                     <td class="text-center"><?= $dep->limitations ?></td>
+                                    <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                                     <td class="text-center">
                                         <a href="<?= ROOT_DIREC ?>/dependants/edit/<?= $dep->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                                         <a href="<?= ROOT_DIREC ?>/dependants/delete/<?= $dep->id ?>" onclick="return confirm('Are you sure you would like to delete the dependant <?= $dep->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                                     </td>
+                                <?php endif; ?>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -247,28 +259,40 @@ $paiduntil = $yesterday->format('Y-m-d');
         <div class="col-md-3">
 
             
-
+            <?php if($user_connected['role_id'] != 2  || $auths[49]  || $auths[50]) : ?>
             <div class="panel panel-default articles">
                 <div class="panel-heading">
                     Riders
                 </div>
                 <div class="panel-body articles-container">
+                    <?php if($user_connected['role_id'] != 2  || $auths[50]) : ?>
                     <?= $this->Form->create() ?>
                     <input type="hidden" name="policy_id" value="<?= $policy->id ?>">
+                <?php endif; ?>
                     <table class="table table-striped">
                         <tbody>
                             <?php foreach($riders as $rider) : ?>
                                 <tr>
-                                    <td><?= $rider->name ?></td>
+                                    <?php if(in_array($rider->id, $policy_riders)) : ?>
+                                        <td><strong><?= $rider->name ?></strong></td>
+                                        
+                                    <?php else : ?>
+                                        <td><?= $rider->name ?></td>
+                                    <?php endif; ?>
+                                    <?php if($user_connected['role_id'] != 2  || $auths[50]) : ?>
                                     <td><input type="checkbox" value = "<?= $rider->id ?>" name="has_rider[]" <?= (in_array($rider->id, $policy_riders)) ? "checked" : "" ?>></td>
+                                <?php endif; ?>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    <?php if($user_connected['role_id'] != 2  || $auths[50]) : ?>
                     <button type="submit" class="btn btn-success" style="float:right">UPDATE RIDERS</button>
                     <?= $this->Form->end() ?>
+                <?php endif; ?>
                 </div>
             </div>
+            <?php endif; ?>
 
 
 
@@ -280,10 +304,10 @@ $paiduntil = $yesterday->format('Y-m-d');
                     <p><?= $policy->exclusions ?></p>
                 </div>
             </div>
-
+            <?php if($user_connected['role_id'] != 2  || $auths[52]  || $auths[53]  || $auths[55]) : ?>
             <div class="panel panel-teal">
             <div class="panel-heading">
-                CLaims <button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#newclaim"><span class="fa fa-plus"></span></button>
+                CLaims <?php if($user_connected['role_id'] != 2  || $auths[53]) : ?><button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#newclaim"><span class="fa fa-plus"></span></button><?php endif; ?>
                 </div>
             <div class="panel-body" style="max-height:365px;overflow-y:scroll;background:white">
                         <?php foreach($policy->claims as $claim) : ?>
@@ -296,7 +320,7 @@ $paiduntil = $yesterday->format('Y-m-d');
 
                     <div class="row">
                             <div class="col-xs-8">
-                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $customer->name . " - " . $policy->policy_number ?></p>
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $policy->customer->name . " - " . $policy->policy_number ?></p>
                         <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= $claim->title ?></p>
                         <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= $claim->description ?></p>
                         <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= number_format($total, 2, ".", ",") ?></p>
@@ -309,6 +333,7 @@ $paiduntil = $yesterday->format('Y-m-d');
                         <?php endforeach; ?>
             </div>
         </div>
+    <?php endif; ?>
         </div>
     </div>
 

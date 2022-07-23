@@ -17,7 +17,9 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Claims
+            <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
             <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/claims/add">New</a>
+            <?php endif; ?>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">
@@ -30,7 +32,9 @@
                     <th class="text-center">Total</th>
                     <th class="text-center">Created</th>
                     <th class="text-center">Status</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[53] || $auths[52] || $auths[55]) : ?>
                     <th class="text-right"></th>
+                    <?php endif; ?>
                 </thead>
             <tbody> 
         <?php foreach($claims as $claim) : ?>
@@ -55,9 +59,13 @@
 
                 
                 <td class="text-right">
+                    <?php if($user_connected['role_id'] != 2 || $auths[53] || $auths[52] || $auths[55]) : ?>
                     <a href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-eye color-blue"></span></a>
-                    <?php if(empty($claim->claims_types)): ?>
-                    <a href="<?= ROOT_DIREC ?>/claims/delete/<?= $claim->id ?>" onclick="return confirm('Are you sure you would like to delete this claim')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                    <?php endif; ?>
+                    <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
+                        <?php if(empty($claim->claims_types)): ?>
+                        <a href="<?= ROOT_DIREC ?>/claims/delete/<?= $claim->id ?>" onclick="return confirm('Are you sure you would like to delete this claim')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </td>
             </tr>

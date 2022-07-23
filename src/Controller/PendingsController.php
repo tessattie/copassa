@@ -11,6 +11,39 @@ namespace App\Controller;
  */
 class PendingsController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[27] || $this->authorizations[28])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[28]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[28]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'update' && $this->authorizations[28]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[28]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -18,6 +51,9 @@ class PendingsController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $pendings = $this->Pendings->find("all", array("conditions" => array('Pendings.tenant_id' => $this->Auth->user()['tenant_id'])))->contain(['Companies', 'Options', 'Countries', 'Users']);
 
         $companies = $this->Pendings->Companies->find('list', ['conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']], 'order' => ['name ASC']]);
@@ -27,28 +63,15 @@ class PendingsController extends AppController
     }
 
     /**
-     * View method
-     *
-     * @param string|null $id Pending id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $pending = $this->Pendings->get($id, [
-            'contain' => ['Companies', 'Options', 'Countries', 'Users'],
-        ]);
-
-        $this->set(compact('pending'));
-    }
-
-    /**
      * Add method
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $pending = $this->Pendings->newEmptyEntity();
         if ($this->request->is('post')) {
             $pending = $this->Pendings->patchEntity($pending, $this->request->getData());
@@ -70,6 +93,9 @@ class PendingsController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $pending = $this->Pendings->get($id, [
             'contain' => [],
         ]);
@@ -99,6 +125,9 @@ class PendingsController extends AppController
      */
     public function update($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->request->is(['patch', 'post', 'put'])) {
             $pending = $this->Pendings->get($this->request->getData()['pending_id'], [
                 'contain' => [],
@@ -125,6 +154,9 @@ class PendingsController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $pending = $this->Pendings->get($id);
         if ($this->Pendings->delete($pending)) {

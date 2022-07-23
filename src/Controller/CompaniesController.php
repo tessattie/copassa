@@ -18,6 +18,35 @@ class CompaniesController extends AppController
         parent::beforeFilter($event);
     }
 
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[10] || $this->authorizations[12])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[12]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[12]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[12]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -86,15 +115,6 @@ class CompaniesController extends AppController
         }
         $countries = $this->Companies->Countries->find("list");
         $this->set(compact('company', 'option', 'countries'));
-    }
-
-    public function view($id = null)
-    {
-        $company = $this->Companies->get($id, [
-            'contain' => ['Policies' => ['Customers', "Options", "Users"]],
-        ]);
-
-        $this->set(compact('company'));
     }
 
     /**

@@ -11,6 +11,39 @@ namespace App\Controller;
  */
 class NewbornsController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[30] || $this->authorizations[31])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[31]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[31]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'adddependant' && $this->authorizations[31]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[31]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -18,26 +51,13 @@ class NewbornsController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $filter_country = $this->session->read("filter_country");
         $newborns = $this->Newborns->find('all', array("conditions" => array("Newborns.status" => 1, 'Newborns.tenant_id' => $this->Auth->user()['tenant_id']), "order" => array('Newborns.created ASC')))->contain(['Policies' => ['Customers' => ['Countries'], 'Companies', 'Options'], 'Users']);
         $customers = $this->Newborns->Policies->Customers->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array('name ASC') ));
         $this->set(compact('newborns', 'customers', 'filter_country'));
-    }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Newborn id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $newborn = $this->Newborns->get($id, [
-            'contain' => ['Policies', 'Users'],
-        ]);
-
-        $this->set(compact('newborn'));
     }
 
     /**
@@ -47,6 +67,9 @@ class NewbornsController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->request->is('post')) {
             // debug($this->request->getData()); die();
             $newborn = $this->Newborns->newEmptyEntity();
@@ -69,6 +92,9 @@ class NewbornsController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $newborn = $this->Newborns->get($id, [
             'contain' => [],
         ]);
@@ -95,6 +121,9 @@ class NewbornsController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $newborn = $this->Newborns->get($id);
         $this->Newborns->delete($newborn);
@@ -104,6 +133,9 @@ class NewbornsController extends AppController
 
 
     public function adddependant(){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if($this->request->is(['patch', 'put', 'post'])){
 
             // update newborn status

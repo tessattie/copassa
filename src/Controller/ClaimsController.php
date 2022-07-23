@@ -12,6 +12,51 @@ use FPDF;
  */
 class ClaimsController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[52] || $this->authorizations[53] || $this->authorizations[55])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[53]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[53]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[53]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'addct' && $this->authorizations[53]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'deductible' && $this->authorizations[53]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'view' && $this->authorizations[52]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'export' && $this->authorizations[55]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -19,6 +64,9 @@ class ClaimsController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $claims = $this->Claims->find("all", array("order" => array("Claims.created DESC"), 'conditions' => array("Claims.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Customers'], 'ClaimsTypes']);
         $this->set(compact('claims'));
     }
@@ -32,6 +80,9 @@ class ClaimsController extends AppController
      */
     public function view($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $claim = $this->Claims->get($id, [
             'contain' => ['Policies' => ['Customers', 'Companies', 'Options'], 'Users', 'ClaimsTypes' => ['Types', 'Users', 'sort' => ['ClaimsTypes.created ASC']]],
         ]);
@@ -48,6 +99,9 @@ class ClaimsController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $claim = $this->Claims->newEmptyEntity();
         if ($this->request->is('post')) {
             $claim = $this->Claims->patchEntity($claim, $this->request->getData());
@@ -68,6 +122,9 @@ class ClaimsController extends AppController
 
 
     public function export($claim_id){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
 
         $claim = $this->Claims->get($claim_id, [
@@ -203,6 +260,9 @@ class ClaimsController extends AppController
      */
     public function addct()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $claimsType = $this->Claims->ClaimsTypes->newEmptyEntity();
         if ($this->request->is(['post', 'patch', 'put'])) {
             $data = $this->request->getData();
@@ -247,6 +307,9 @@ class ClaimsController extends AppController
 
 
     public function deductible($claim_id, $ct){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->loadModel("Types");
         $types = $this->Types->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'is_deductible' => 1) ));
         $claim = $this->Claims->get($claim_id, ['contain' => ['Policies']]);
@@ -286,6 +349,9 @@ class ClaimsController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $claim = $this->Claims->get($id, ['contain' => ['Policies']]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $claim = $this->Claims->patchEntity($claim, $this->request->getData());
@@ -311,6 +377,9 @@ class ClaimsController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $claim = $this->Claims->get($id);
         if ($this->Claims->delete($claim)) {

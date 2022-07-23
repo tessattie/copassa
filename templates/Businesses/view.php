@@ -49,10 +49,12 @@ foreach($business->employees as $employee){
                         <th><?= __('Last Modified') ?></th>
                         <td class="text-right"><?= date("F d Y", strtotime($business->modified)) ?></td>
                     </tr>
+                    <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                     <tr>
                         <th><?= __('Total Premium') ?></th>
                         <td class="text-right"><span class="label label-info"><?= number_format($total, 2, ".", ",") ?></span></td>
                     </tr>
+                <?php endif; ?>
                 </table>
             </div>
         </div>
@@ -63,7 +65,9 @@ foreach($business->employees as $employee){
             <div class="panel panel-default articles">
         <div class="panel-heading">
             Groups
+            <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
             <button class="btn btn-info" style="float:right" data-toggle="modal" data-target="#new_group">New Group</button>
+        <?php endif; ?>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">
@@ -73,8 +77,12 @@ foreach($business->employees as $employee){
                     <th class="text-center">Insurance</th>
                     <th class="text-center">Country</th>
                     <th class="text-center">Created Date</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                     <th class="text-center">Premium</th>
+                <?php endif; ?>
+                    <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
                     <th class="text-left"></th>
+                <?php endif; ?>
                 </thead>
             <tbody> 
             <?php $real_total = 0; foreach($business->groupings as $group) : ?>
@@ -96,17 +104,23 @@ foreach($business->employees as $employee){
                     <td class="text-center"><?= $group->company->name ?></td>
                     <td class="text-center"><?= $group->company->country->name ?></td>
                     <td class="text-center"><?= date('F d Y', strtotime($group->effective_date)) ?></td>
+                    <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                     <td class="text-center"><?= number_format($total, 2, ".", ",") ?></td>
+                <?php endif; ?>
+                    <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/groupings/edit/<?= $group->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <a href="<?= ROOT_DIREC ?>/groupings/delete/<?= $group->id ?>" onclick="return confirm('Are you sure you would like to delete the group <?= $group->grouping_number ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                     </td>
+                <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
             </tbody>
+            <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
             <tfoot>
-                <tr><th colspan="4">Total</th><th class="text-center"><?= number_format($real_total, 2, ".", ",") ?></th><th></th></tr>
+                <tr><th colspan="4">Total</th><th class="text-center"><?= number_format($real_total, 2, ".", ",") ?></th><?php if($user_connected['role_id'] != 2 || $auths[38]) : ?><th></th><?php endif; ?></tr>
             </tfoot>
+        <?php endif; ?>
         </table></div>
         </div>
     </div>

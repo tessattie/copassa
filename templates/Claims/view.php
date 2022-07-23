@@ -29,7 +29,14 @@ if(!empty($claim->policy->customer->dob)){
         <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Claim : <?= $claim->title ?> <a href="<?= ROOT_DIREC ?>/claims/edit/<?= $claim->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a><a target="_blank" href="<?= ROOT_DIREC ?>/claims/export/<?= $claim->id ?>" style="float:right;margin-right:5px"><button class="btn btn-default">Export</button></a>
+                    Claim : <?= $claim->title ?> 
+                    <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
+                        <a href="<?= ROOT_DIREC ?>/claims/edit/<?= $claim->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a>
+                    <?php endif; ?>
+
+                    <?php if($user_connected['role_id'] != 2 || $auths[55]) : ?>
+                    <a target="_blank" href="<?= ROOT_DIREC ?>/claims/export/<?= $claim->id ?>" style="float:right;margin-right:5px"><button class="btn btn-default">Export</button></a>
+                <?php endif; ?>
                 </div>
             <div class="panel-body articles-container">
                    <table class="table table-striped">
@@ -113,10 +120,11 @@ if(!empty($claim->policy->customer->dob)){
         <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    
+                    <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
                     <button class="btn btn-info" style="float:right" data-toggle="modal" data-target="#new_ct">Add</button>
                     <a href="<?= ROOT_DIREC ?>/claims/deductible/<?= $claim->id ?>/1" class="btn btn-primary" style="float:right;margin-right:5px" data-toggle="modal">Full Deductible</a>
                     <a href="<?= ROOT_DIREC ?>/claims/deductible/<?= $claim->id ?>/0" class="btn btn-success" style="float:right;margin-right:5px" data-toggle="modal">0 Deductible</a>
+                    <?php endif; ?>
                 </div>
                 <div class="panel-body articles-container">
                   <div class="table-responsive">
@@ -130,7 +138,9 @@ if(!empty($claim->policy->customer->dob)){
                     <th class="text-center">Processed</th>
                     <th class="text-center">Added By</th>
                     <th class="text-center">Type</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
                     <th></th>
+                    <?php endif; ?>
                 </thead>
                 <tbody>
                     <?php $total=0; foreach($claim->claims_types as $ct) : ?>
@@ -162,8 +172,10 @@ if(!empty($claim->policy->customer->dob)){
                             <?php endif; ?>
                             <td class="text-center"><?= $ct->user->name ?></td>
                             <td class="text-center"><?= $ct->type->name ?></td>
+                            <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
                             <td class="text-right"><a href="<?= ROOT_DIREC ?>/claimstypes/edit/<?= $ct->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                                 <a href="<?= ROOT_DIREC ?>/claimstypes/delete/<?= $ct->id ?>" onclick="return confirm('Are you sure you would like to delete this detail')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a></td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -172,7 +184,11 @@ if(!empty($claim->policy->customer->dob)){
                         <th>Total</th>
                         <th></th>
                         <th class="text-center"><?= number_format($total, 2, ".", ",") ?></th>
-                        <th colspan="7"></th>
+                        <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
+                        <th colspan="6"></th>
+                    <?php else : ?>
+                        <th colspan="5"></th>
+                    <?php endif; ?>
                     </tr>
                 </tfoot>   
         </table>

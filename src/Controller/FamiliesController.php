@@ -11,6 +11,40 @@ namespace App\Controller;
  */
 class FamiliesController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[37] || $this->authorizations[38] || $this->authorizations[40])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[38]){
+                return true;
+            }
+
+
+            if($this->request->getParam('action') == 'view' && ($this->authorizations[37] || $this->authorizations[38] || $this->authorizations[40])){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -18,6 +52,9 @@ class FamiliesController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $families = $this->Families->find("all", array("conditions" => array("Families.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Transactions', 'Employees' => ['Businesses', 'Groupings' => ['Companies']]]);
 
         $this->set(compact('families'));
@@ -32,6 +69,9 @@ class FamiliesController extends AppController
      */
     public function view($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $family = $this->Families->get($id, [
             'contain' => ['Employees'],
         ]);
@@ -46,6 +86,9 @@ class FamiliesController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $family = $this->Families->newEmptyEntity();
         if ($this->request->is('post')) {
             $family = $this->Families->patchEntity($family, $this->request->getData());
@@ -70,6 +113,9 @@ class FamiliesController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $family = $this->Families->get($id, [
             'contain' => ['Employees'],
         ]);
@@ -97,6 +143,9 @@ class FamiliesController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $family = $this->Families->get($id);
         if ($this->Families->delete($family)) {

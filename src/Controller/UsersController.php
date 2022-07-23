@@ -22,6 +22,18 @@ class UsersController extends AppController
           );
     }
 
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+            if($this->request->getParam('action') == 'reset' || $this->request->getParam('action') == 'resetpassword' || $this->request->getParam('action') == 'logout' || $this->request->getParam('action') == 'login' || $this->request->getParam('action') == 'view'){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
+
     /**
      * Index method
      *
@@ -29,6 +41,9 @@ class UsersController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['action' => 'authorization']);
+        }
         $this->savelog(200, "Accessed users page", 1, 3, "", "");
         if($this->Auth->user()['role_id'] == 1){
             $users = $this->Users->find("all", array("conditions" => array("Users.tenant_id" => $this->Auth->user()['tenant_id'], 'role_id <>' => 3)))->contain(['Roles']);
@@ -46,6 +61,9 @@ class UsersController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['action' => 'authorization']);
+        }
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
@@ -85,6 +103,9 @@ class UsersController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['action' => 'authorization']);
+        }
         $user = $this->Users->get($id, [
             'contain' => [],
         ]);
@@ -115,9 +136,12 @@ class UsersController extends AppController
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view()
     {
-        $user = $this->Users->get($id, ['contain' => ['Tenants']
+        if(!$this->authorize()){
+            return $this->redirect(['action' => 'authorization']);
+        }
+        $user = $this->Users->get($this->Auth->user()['id'], ['contain' => ['Tenants']
         ]);
 
         if ($this->request->is(['patch', 'post', 'put'])){
@@ -148,6 +172,9 @@ class UsersController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
         if ($this->Users->delete($user)) {
@@ -277,7 +304,7 @@ class UsersController extends AppController
     }
 
 
-    public function report(){
+    public function authorization(){
         
     }
 }

@@ -17,7 +17,9 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Policies
+            <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
             <a class="btn btn-warning" style="float:right" href="<?= ROOT_DIREC ?>/policies/add">New</a>
+        <?php endif; ?>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">
@@ -30,7 +32,9 @@
                     <th class="text-center">Premium</th>
 
                     <th class="text-center">Mode</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                     <th></th>
+                <?php endif; ?>
                 </thead>
             <tbody> 
         <?php foreach($policies as $policy) : ?>
@@ -54,13 +58,14 @@
                 
                 <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
                 <td class="text-center"><?= $modes[$policy->mode] ?></td>
-            
+                <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                 <td class="text-right">
                     <a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                     <?php if(empty($policy->dependants) && empty($policy->prenewals)) : ?>
                     <a href="<?= ROOT_DIREC ?>/policies/delete/<?= $policy->id ?>" onclick="return confirm('Are you sure you would like to delete the policy <?= $policy->policy_number ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                 <?php endif; ?>
                 </td>
+            <?php endif; ?>
 
             </tr>
         <?php endforeach; ?>

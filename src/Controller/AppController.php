@@ -50,6 +50,8 @@ class AppController extends Controller
 
     public $genders = array(1 => "Male", 2 => "Female", 3 => "Other");
 
+    protected $authorizations = [];
+
     protected $session;
 
     protected $from;
@@ -69,14 +71,14 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        define('ROOT_DIREC', '/main');
+        define('ROOT_DIREC', '/copassa');
 
         // define("UPLOAD_DIR", '/home/xge55gjh6t1y/public_html/admin');
-        define("UPLOAD_DIR", 'C:/wamp/www/admin/webroot');
+        define("UPLOAD_DIR", 'C:/wamp/www/ars_admin/webroot');
 
-        define("EMAIL_UPLOAD_DIR", 'C:/wamp/www/main/webroot');
+        define("EMAIL_UPLOAD_DIR", 'C:/wamp/www/copassa/webroot');
 
-        define("SHOW_UPLOAD_DIR", '/admin');
+        define("SHOW_UPLOAD_DIR", '/ars_admin');
 
         date_default_timezone_set("America/New_York");
 
@@ -93,6 +95,8 @@ class AppController extends Controller
                 'action' => 'login']
         ]);
 
+        $this->Auth->authError = '';
+
         /*
          * Enable the following component for recommended CakePHP form protection settings.
          * see https://book.cakephp.org/4/en/controllers/components/form-protection.html
@@ -100,18 +104,41 @@ class AppController extends Controller
         //$this->loadComponent('FormProtection');
     }
 
+    private function getAuthorizations(){
+        $user_id = $this->Auth->user()['id'];
+        $result = [];
+        $this->loadModel("Authorizations");
+        $authorizations = $this->Authorizations->find("all");
+        $user_authorizations = $this->Authorizations->find("all")->contain(['UsersAuthorizations'])->matching('UsersAuthorizations', function(\Cake\ORM\Query $q){
+            return $q->where(['UsersAuthorizations.user_id' => $this->Auth->user()['id']]);
+        });
+
+        foreach($authorizations as $auth){
+            $result[$auth->id] = false;
+            foreach($user_authorizations as $ua){
+                if($ua->id == $auth->id){
+                    $result[$auth->id] = true;
+                }
+            }
+        }
+        $this->authorizations = $result;
+        return $result;
+    }
+
     public function beforeFilter(EventInterface $event){
 
         $this->session = $this->getRequest()->getSession();
         
-        
+        if (!$this->Auth->user()) {
+            $this->Auth->setConfig('authError', false);
+            return null;
+        }
         if($this->Auth->user()){
-            
             $year = date('Y');
             $next_year = $year + 1;
             $years = array($year => $year, $next_year => $next_year);
-            $this->loadModel('Countries'); $this->loadModel('Tenants'); $this->loadModel('UsersAuthorizations');
-            $this->set("authorizations", $this->UsersAuthorizations->find("all", array("user_id" => $this->Auth->user()['id'])));
+            $this->loadModel('Countries'); $this->loadModel('Tenants');
+            $this->set("auths", $this->getAuthorizations());
             $this->from = $this->session->read("from")." 00:00:00";
             $this->to = $this->session->read("to")." 23:59:59";
             $this->initializeSessionVariables();
@@ -132,7 +159,6 @@ class AppController extends Controller
             $this->set('plans', $this->plans);
             // debug($this->Auth->user()); die();
             $this->set('tenant', $this->Tenants->get($this->Auth->user()['tenant_id']));
-            $this->set('filter_countries', $this->Countries->find("list", array("order" => array("name asc"), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']))));
         }
     }
 

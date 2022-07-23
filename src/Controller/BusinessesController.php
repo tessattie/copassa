@@ -11,6 +11,47 @@ namespace App\Controller;
  */
 class BusinessesController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[37] || $this->authorizations[38] || $this->authorizations[40])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'addgroup' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'addemployee' && $this->authorizations[38]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'view' && ($this->authorizations[37] || $this->authorizations[38] || $this->authorizations[40])){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
