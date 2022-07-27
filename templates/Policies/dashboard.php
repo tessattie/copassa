@@ -50,7 +50,7 @@
                             <div class="col-xs-12">
                                 <p style="color:black"><span class="fa fa-user" style="margin-right:13px"></span> <?= $birthday->name ?></p>
                                 <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:10px"></span> <?= date('M d Y', strtotime($birthday->dob)) ?></p>
-                                <p style="color:black;margin-top:10px"><span class="fa fa-phone" style="margin-right:13px"></span> <?= $birthday->home_phone ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-phone" style="margin-right:13px"></span> <?= $birthday->cell_area_code."-".$birthday->cell_phone ?></p>
                             </div>
                         </div>
                         <hr>
@@ -83,64 +83,6 @@
 <?php endif; ?>
     
 </div>
-
- <?php if($user_connected['role_id'] != 2 || ($auths[23] || $auths[24])) : ?>
-<div class="row">
-    <div class="col-md-12">
-        <div class="panel panel-default articles" >
-            <div class="panel-heading">
-                New Policies
-            </div>
-            <div class="panel-body articles-container" style="max-height:500px;overflow-y:scroll">       
-    <table class="table table-striped datatable">
-                <thead> 
-                    <th class="text-left">Number</th>
-                    <th class="text-center">Holder</th>
-                    <th class="text-center">Country</th>
-                    <th class="text-center">Company</th>
-                    <th class="text-center">Premium</th>
-
-                    <th class="text-center">Mode</th>
-                    <th class="text-right">Effective Date</th>
-                </thead>
-            <tbody> 
-        <?php foreach($newBusiness as $policy) : ?>
-            <tr>
-                <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
-                <td class="text-center"><?= $policy->customer->name ?></td>
-                <td class="text-center"><?= substr($policy->customer->country->name, 0, 5) ?></td>
-                <?php if(!empty($policy->company)) : ?>
-                    <?php if(!empty($policy->option)) : ?>
-                    <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
-                    <?php else : ?>
-                        <td class="text-center"><?= $policy->company->name ?></td>
-                    <?php endif; ?>
-                <?php else : ?>
-                    <?php if(!empty($policy->option)) : ?>
-                    <td class="text-center"><?= $policy->option->name ?></td>
-                    <?php else : ?>
-                        <td class="text-center"></td>
-                    <?php endif; ?>
-                <?php endif; ?>
-                
-                <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
-                <td class="text-center"><?= $modes[$policy->mode] ?></td>
-            
-                <td class="text-right">
-                    <?= date("M d Y", strtotime($policy->effective_date)) ?>
-                </td>
-
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-        </table>
-            </div>
-            
-        </div>
-    </div> 
- 
-</div> 
-<?php endif; ?>
 
  <?php if($user_connected['role_id'] != 2 || ($auths[27] || $auths[28])) : ?>
 <div class="row">
@@ -190,12 +132,70 @@
 </div> 
 <?php endif; ?>
 
+ <?php if($user_connected['role_id'] != 2 || ($auths[24] || $auths[23])) : ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default articles">
+            <div class="panel-heading">
+                Notes
+                <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-default" style="float:right;padding:1px 10px 5px"><span class="fa fa-plus"></span></button>
+            </div>
+            <div class="panel-body articles-container" style="max-height:300px;overflow-y:scroll">
+                <div class="row">
+                    <?php foreach($notes as $note) : ?>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card" style="border:1px solid #ddd;border-radius:5px;padding:10px;height:200px;margin-bottom:30px">
+                              <div class="card-body">
+                                <h5 class="card-title"><?= $note->customer->name ?></h5>
+                                <h6 class="card-subtitle mb-2 text-muted"><?= $note->created ?></h6>
+                                <h6 class="card-subtitle mb-2 text-muted">Created By : <?= $note->user->name ?></h6>
+                                <p class="card-text"><?= $note->comment ?></p>
+                                <a target="_blank" href="<?= ROOT_DIREC ?>/customers/view/<?= $note->customer_id ?>" class="btn btn-warning" style="position:absolute;bottom:45px;right:35px">Read More</a>
+                              </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div> 
+            </div>
+        </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <?= $this->Form->create(null, array("url" => "/notes/add")) ?>
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">New Note</h3>
+      </div>
+      <div class="modal-body">
+        <?= $this->Form->control('customer_id', array('type' => 'hidden', "value" => $customer->id)); ?>
+        <div class="row">
+            <div class="col-md-12"><?= $this->Form->control('customer_id', array('class' => 'form-control', "label" => "Policy Holder *", "empty" => "-- Choose --", "options" => $customers, 'required' => true)); ?>
+                        </div></div>
+                        <hr>
+                        <div class="row">
+            <div class="col-md-12">
+                <?= $this->Form->control('comment', array('class' => 'form-control', "label" => false, "placeholder" => "Write a note here...")); ?>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CLOSE</button>
+        <button type="submit" class="btn btn-success">ADD</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div>
+
  <?php if($user_connected['role_id'] != 2 || ($auths[40] || $auths[42] || $auths[36] || $auths[38])) : ?>
 <div class="row">
     <div class="col-md-12">
         <div class="panel panel-default articles">
             <div class="panel-heading">
-                CGR - Awaiting Transactions
+               Pending Miscellaneous Payments
             </div>
             <div class="panel-body articles-container" style="max-height:300px;overflow-y:scroll">       
 <table class="table table-striped datatable">
@@ -205,7 +205,7 @@
                     <th class="text-center">Group</th>
                     <th class="text-center">Employee</th>
                     <th class="text-center">Family Member</th>
-                    <th class="text-center">Created</th>
+                    <th class="text-center">Date</th>
                     <th class="text-right">Action(s)</th>
                 </thead>
             <tbody> 
@@ -216,7 +216,7 @@
                     <td class="text-center"><?= $transaction->employee->first_name." ".$transaction->employee->last_name ?></td>
                     <td class="text-center"><?= $transaction->family->first_name." ".$transaction->family->last_name ?></td>
                     <td class="text-center"><?= date("M d Y", strtotime($transaction->created)) ?></td>
-                    <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>"><span class="fa fa-check"></span></button></td>
+                    <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>"><span class="fa fa-check"></span></button></td><tr>
                 <?php endforeach; ?>
         </tbody>
         </table>

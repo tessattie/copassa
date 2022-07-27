@@ -129,7 +129,10 @@ class PoliciesController extends AppController
         if(!$this->authorize()){
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
-        $this->loadModel("Newborns");$this->loadModel("Pendings");$this->loadModel("Transactions");$this->loadModel("Claims");
+        $this->loadModel("Newborns");$this->loadModel("Pendings");$this->loadModel("Transactions");$this->loadModel("Claims");$this->loadModel("Notes");
+
+        $from = $this->session->read("from")." 00:00:00"; 
+        $to = $this->session->read("to")." 23:59:59";
 
         $new_business_date = date("Y-m-d", strtotime("-1 year")); 
 
@@ -145,6 +148,10 @@ class PoliciesController extends AppController
 
         $all_birthdays = $this->Policies->Customers->find("all", array("conditions" => array("Customers.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies']);
 
+        $notes = $this->Notes->find("all", array("order" => array("Notes.created DESC"), "conditions" => array("Notes.tenant_id" => $this->Auth->user()['tenant_id'], "Notes.created >=" => $from, 'Notes.created <=' => $to)))->contain(['Customers', 'Users']);
+
+        $customers = $this->Policies->Customers->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
+
         $birthdays = array();
         
         foreach($all_birthdays as $bd){
@@ -155,7 +162,7 @@ class PoliciesController extends AppController
             }
             
         }
-        $this->set(compact('newborns', 'birthdays', 'pendings', 'transactions', 'newBusiness', 'claims'));
+        $this->set(compact('newborns', 'birthdays', 'pendings', 'transactions', 'newBusiness', 'claims', 'notes', 'customers'));
     }
 
     /**

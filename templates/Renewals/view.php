@@ -332,7 +332,8 @@ $summary_cancelations = 0;
         </div>
         <hr>
         <div class="row">
-            <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "label" => "Operation", 'options' => array(1=>"Pending", 2 => "Confirmed") , "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
+            <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "label" => "Status", 'options' => array(1=>"Pending", 2 => "Confirmed") , "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
+            <div class="col-md-4"><?= $this->Form->control('created', array('class' => 'form-control', "type" => "date", "label" => "Date", 'placeholder' => "Date", 'value' => $transaction->created)); ?></div> 
         </div>
         <hr>
         <div class="row">
@@ -354,7 +355,7 @@ $summary_cancelations = 0;
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Confirm Transaction for <?= $transaction->employee->first_name." ".$transaction->employee->last_name ?></h5>
+        <h5 class="modal-title" id="exampleModalLabel">Confirm Transaction</h5>
       </div>
       <?= $this->Form->create(null, array("url" => "/renewals/confirmtransaction")) ?>
       <?= $this->Form->input('transaction_id', array('type' => 'hidden', "value" => $transaction->id)); ?>
@@ -410,7 +411,7 @@ $summary_cancelations = 0;
                   
                   <div class="col-md-4"><?= $this->Form->control('status', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $status, "label" => "Status", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
                   <div class="col-md-4"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Full Premium *", "placeholder" => "Full Premium")); ?></div>
-                  <div class="col-md-4"><?= $this->Form->control('debit', array('class' => 'form-control', "label" => "Charged Premium *", "placeholder" => "Charged Premium for this renewal")); ?></div>
+                  <div class="col-md-4"><?= $this->Form->control('debit', array('class' => 'form-control', "label" => "Prorated Premium *", "placeholder" => "Prorated Premium for this renewal")); ?></div>
                 </div>
       </div>
       <div class="modal-footer">
@@ -455,7 +456,7 @@ $summary_cancelations = 0;
                 <hr>
                 <div class="row">
                     <div class="col-md-6"><?= $this->Form->control('premium', array('class' => 'form-control', "label" => "Full Premium *", "placeholder" => "Premium")); ?></div>
-                    <div class="col-md-6"><?= $this->Form->control('debit', array('class' => 'form-control', "label" => "Charged Premium *", "placeholder" => "Charged Premium for this renewal")); ?></div>
+                    <div class="col-md-6"><?= $this->Form->control('debit', array('class' => 'form-control', "label" => "Prorated Premium *", "placeholder" => "Prorated Premium for this renewal")); ?></div>
                 </div>
       </div>
       <div class="modal-footer">
