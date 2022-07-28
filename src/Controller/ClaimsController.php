@@ -67,7 +67,7 @@ class ClaimsController extends AppController
         if(!$this->authorize()){
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
-        $claims = $this->Claims->find("all", array("order" => array("Claims.created DESC"), 'conditions' => array("Claims.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Customers'], 'ClaimsTypes']);
+        $claims = $this->Claims->find("all", array("order" => array("Claims.created DESC"), 'conditions' => array("Claims.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Customers'], 'Dependants', 'ClaimsTypes']);
         $this->set(compact('claims'));
     }
 
