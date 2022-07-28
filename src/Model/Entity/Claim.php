@@ -47,5 +47,6 @@ class Claim extends Entity
         'user' => true,
         'tenant' => true,
         'types' => true,
+        'dependant_id' => true
     ];
 }

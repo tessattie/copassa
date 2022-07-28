@@ -44,15 +44,21 @@ if(!empty($claim->policy->customer->dob)){
                         <th><?= __('Policy Holder') ?></th>
                             <td class="text-right"><?= $claim->policy->customer->name ?></td>
                         </tr>
+                        <?php  if(!empty($claim->dependant_id)) : ?>
+                            <th><?= __('Dependant') ?></th>
+                            <td class="text-right"><?= $claim->dependant->name ?></td>
+                        </tr>
+                        <?php   endif; ?>
                         <tr>
 
                             <th><?= __('Policy Number') ?></th>
                             <td class="text-right"><?= $claim->policy->policy_number ?></td>
                         </tr>
                         <?php if(!empty($claim->policy->customer->dob)) : ?>
+                            <?php $dob = $claim->policy->customer->dob->year."-".$claim->policy->customer->dob->month."-".$claim->policy->customer->dob->day; ?>
                             <tr>
                                 <th>Date of Birth</th>
-                                <td class="text-right"><?= date("M d Y", strtotime($claim->policy->customer->dob)) ?></td>
+                                <td class="text-right"><?= date("M d Y", strtotime($dob)) ?></td>
                             </tr>
                             <tr>
                                 <th>Age</th>
@@ -173,8 +179,8 @@ if(!empty($claim->policy->customer->dob)){
                             <td class="text-center"><?= $ct->user->name ?></td>
                             <td class="text-center"><?= $ct->type->name ?></td>
                             <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
-                            <td class="text-right"><a href="<?= ROOT_DIREC ?>/claimstypes/edit/<?= $ct->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
-                                <a href="<?= ROOT_DIREC ?>/claimstypes/delete/<?= $ct->id ?>" onclick="return confirm('Are you sure you would like to delete this detail')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a></td>
+                            <td class="text-right"><a href="<?= ROOT_DIREC ?>/ClaimsTypes/edit/<?= $ct->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                                <a href="<?= ROOT_DIREC ?>/ClaimsTypes/delete/<?= $ct->id ?>" onclick="return confirm('Are you sure you would like to delete this detail')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a></td>
                             <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>

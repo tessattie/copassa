@@ -25,17 +25,12 @@
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($claim) ?>
-                <div class="row">
-                    <div class="col-md-4"><?= $this->Form->control('customer_id', array('class' => 'form-control', "label" => "Policy Holder *", "empty" => "-- Choose --", 'options' => $customers, 'value' => $claim->policy->customer_id)); ?></div>
-                    <div class="col-md-4"><?= $this->Form->control('policy_id', array('class' => 'form-control', "label" => "Policy Number *", "empty" => "-- Choose Policy Holder to see Policies --", 'options' => $policies)); ?></div>
-                    <div class="col-md-4">
-                    <?= $this->Form->control('status', array('class' => 'form-control', "label" => "Status *", "empty" => "-- Choose --", "options" => array(1=> "Open", 2 => "Closed"))); ?>
-            </div> 
-                </div>
-                <hr>
+
                   <div class="row">
-                <div class="col-md-6"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Diagnosis *", "placeholder" => "Diagnosis")); ?></div>
-                   <div class="col-md-6"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description / Diagnosis")); ?></div> 
+                <div class="col-md-4"><?= $this->Form->control('title', array('class' => 'form-control', "label" => "Diagnosis *", "placeholder" => "Diagnosis")); ?></div>
+                   <div class="col-md-4"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description / Diagnosis")); ?></div> 
+                   <div class="col-md-4">
+                    <?= $this->Form->control('status', array('class' => 'form-control', "label" => "Status *", "empty" => "-- Choose --", "options" => array(1=> "Open", 2 => "Closed"))); ?>
                 </div>  
                 <div class="row">
                     <div class="col-md-12"><?= $this->Form->button(__('Update'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>

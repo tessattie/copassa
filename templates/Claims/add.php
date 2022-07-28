@@ -29,6 +29,7 @@
                 <div class="row">
                     <div class="col-md-4"><?= $this->Form->control('customer_id', array('class' => 'form-control', "label" => "Policy Holder *", "empty" => "-- Choose --", 'options' => $customers)); ?></div>
                     <div class="col-md-4"><?= $this->Form->control('policy_id', array('class' => 'form-control', "label" => "Policy Number *", "empty" => "-- Choose Policy Holder to see Policies --", 'options' => $policies)); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('dependant_id', array('class' => 'form-control', "label" => "Dependant", "empty" => "-- Choose Policy Number to see Dependants --")); ?></div>
                 </div>
                 <hr>
                   <div class="row">
@@ -56,6 +57,8 @@ echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
         $("#customer-id").change(function(){
             $("#policy-id").empty();
             $("#policy-id").append("<option value=''>-- Choose Policy Holder to see Policies --</option>")
+            $("#dependant-id").empty();
+            $("#dependant-id").append("<option value=''>-- Choose Policy Number to see Dependants --</option>")
             var token =  $('input[name="_csrfToken"]').val();
             var customer_id = $(this).val();
             $.ajax({
@@ -69,6 +72,33 @@ echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
                  success : function(data, statut){
                       for (var i = data.length - 1; i >= 0; i--) {
                           $("#policy-id").append("<option value='"+data[i].id+"'>" + data[i].policy_number+"</option>")
+                      }
+                 },
+                 error : function(resultat, statut, erreur){
+                  console.log(erreur)
+                 }, 
+                 complete : function(resultat, statut){
+                    console.log(resultat)
+                 }
+            });
+        })
+
+        $("#policy-id").change(function(){
+            $("#dependant-id").empty();
+            $("#dependant-id").append("<option value=''>-- Choose Policy Number to see Dependants --</option>")
+            var token =  $('input[name="_csrfToken"]').val();
+            var policy_id = $(this).val();
+            $.ajax({
+                 url : ROOT_DIREC+'/dependants/list',
+                 type : 'POST',
+                 data : {policy_id : policy_id},
+                 headers : {
+                    'X-CSRF-Token': token 
+                 },
+                 dataType : 'json',
+                 success : function(data, statut){
+                      for (var i = data.length - 1; i >= 0; i--) {
+                          $("#dependant-id").append("<option value='"+data[i].id+"'>" + data[i].name+"</option>")
                       }
                  },
                  error : function(resultat, statut, erreur){

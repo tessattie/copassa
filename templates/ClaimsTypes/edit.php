@@ -49,7 +49,7 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-md-6"><?= $this->Form->control('amount', array('class' => 'form-control', "label" => "Amount *", "placeholder" => "Amount", 'value' => 0)); ?></div>
+                <div class="col-md-6"><?= $this->Form->control('amount', array('class' => 'form-control', "label" => "Amount *", "placeholder" => "Amount")); ?></div>
             </div>
             <hr>
             <div class="row">
