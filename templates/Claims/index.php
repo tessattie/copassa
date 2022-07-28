@@ -27,6 +27,7 @@
                 <thead> 
                     <th>Policy</th>
                     <th class="text-center">Policy Holder</th>
+                    <th class="text-center">Dependant</th>
                     <th class="text-center">Diagnosis</th>
                     <th class="text-center">Description</th>
                     <th class="text-center">Total</th>
@@ -47,6 +48,11 @@
             <tr>
                 <td><?= $claim->policy->policy_number ?></td>
                 <td class="text-center"><?= $claim->policy->customer->name ?></td>
+                <?php if(!empty($claim->dependant_id)) : ?>
+                    <td class="text-center"><?= $claim->dependant->name ?></td>
+                <?php else : ?>
+                    <td class="text-center"></td>
+                <?php endif; ?>
                 <td class="text-center"><?= $claim->title ?></td>
                 <td class="text-center"><?= $claim->description ?></td>
                 <td class="text-center"><?= number_format($total, 2, ".", ",") ?></td>
