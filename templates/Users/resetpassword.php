@@ -5,7 +5,7 @@
 			<?php echo $this->Html->image("logo.png", [
                     'style' => "width:200px",
                     "alt" => "AR Logo",
-                    'url' => ['controller' => 'Policies', 'action' => 'dashboard']
+                    'url' => 'https://agencyreportsystem.com'
                 ]); ?>
 			<div class="panel-heading">Reset your Password</div>
 			<div class="panel-body">
