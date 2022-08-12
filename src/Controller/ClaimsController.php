@@ -67,7 +67,7 @@ class ClaimsController extends AppController
         if(!$this->authorize()){
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
-        $claims = $this->Claims->find("all", array("order" => array("Claims.created DESC"), 'conditions' => array("Claims.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Customers'], 'ClaimsTypes']);
+        $claims = $this->Claims->find("all", array("order" => array("Claims.created DESC"), 'conditions' => array("Claims.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Policies' => ['Customers'], 'Dependants', 'ClaimsTypes']);
         $this->set(compact('claims'));
     }
 
@@ -84,7 +84,7 @@ class ClaimsController extends AppController
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
         $claim = $this->Claims->get($id, [
-            'contain' => ['Policies' => ['Customers', 'Companies', 'Options'], 'Users', 'ClaimsTypes' => ['Types', 'Users', 'sort' => ['ClaimsTypes.created ASC']]],
+            'contain' => ['Policies' => ['Customers', 'Companies', 'Options'], 'Dependants', 'Users', 'ClaimsTypes' => ['Types', 'Users', 'sort' => ['ClaimsTypes.created ASC']]],
         ]);
 
         $claims_types = $this->Claims->ClaimsTypes->Types->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
@@ -128,7 +128,7 @@ class ClaimsController extends AppController
         require_once(ROOT . DS . 'vendor' . DS  . 'fpdf'  . DS . 'fpdf.php');
 
         $claim = $this->Claims->get($claim_id, [
-            'contain' => ['Policies' => ['Customers', 'Companies', 'Options'], 'Users', 'ClaimsTypes' => ['Types', 'Users', 'sort' => ['ClaimsTypes.created ASC']]],
+            'contain' => ['Policies' => ['Customers', 'Companies', 'Options'], 'Dependants', 'Users', 'ClaimsTypes' => ['Types', 'Users', 'sort' => ['ClaimsTypes.created ASC']]],
         ]);
 
         $age = "N/A";
@@ -148,10 +148,21 @@ class ClaimsController extends AppController
         $fpdf->Cell(275,0,"",'B',0, 'R');
         $fpdf->SetFont('Arial','',10);
         $fpdf->Ln(1);
-        $fpdf->SetFillColor(255,255,255);
+        if(!empty($claim->dependant_id)){
+            $fpdf->SetFillColor(243,243,243);
+        }else{
+            $fpdf->SetFillColor(255,255,255);
+        }
+        
         $fpdf->Cell(75,7,"Policy Holder",0,0, 'L',1);
         $fpdf->Cell(200,7,$claim->policy->customer->name,0,0, 'R',1);
         $fpdf->Ln();
+        if(!empty($claim->dependant_id)){
+            $fpdf->SetFillColor(255,255,255);
+            $fpdf->Cell(75,7,"Dependant",0,0, 'L',1);
+            $fpdf->Cell(200,7,$claim->dependant->name,0,0, 'R',1);
+            $fpdf->Ln();
+        }
         $fpdf->SetFillColor(243,243,243);
         $fpdf->Cell(75,7,"Policy Number",0,0, 'L',1);
         $fpdf->Cell(200,7,$claim->policy->policy_number,0,0, 'R',1);
@@ -191,6 +202,11 @@ class ClaimsController extends AppController
         }else{
             $fpdf->Cell(200,7,"Closed",0,0, 'R',1);
         }
+
+        $fpdf->Ln();
+        $fpdf->SetFillColor(255,255,255);
+        $fpdf->Cell(75,7,"Effective Date",0,0, 'L',1);
+        $fpdf->Cell(200,7,date("M d Y", strtotime($claim->policy->effective_date->i18nFormat('yyyy-MM-dd'))),0,0, 'R',1);
         
         $fpdf->Ln(15);
 
@@ -202,12 +218,12 @@ class ClaimsController extends AppController
         $fpdf->Cell(275,7,$claim->description,'L-R-B',0, 'C',1);
         $fpdf->SetFont('Arial','B',8);
         $fpdf->Ln();
-        $fpdf->Cell(110,7,'Description','T-L-R-B',0, 'L',1);
-        $fpdf->Cell(40,7,'Type','T-L-R-B',0, 'C',1);
-        $fpdf->Cell(30,7,'Received','T-L-R-B',0, 'C',1);
-        $fpdf->Cell(30,7,'Serviced','T-L-R-B',0, 'C',1);
-        $fpdf->Cell(30,7,'Processed','T-L-R-B',0, 'C',1);
-        $fpdf->Cell(35,7,'Amount','T-L-R-B',0, 'C',1);
+        $fpdf->Cell(155,7,'Provider / Service / Contact Info','T-L-R-B',0, 'L',1);
+        $fpdf->Cell(30,7,'Type','T-L-R-B',0, 'C',1);
+        $fpdf->Cell(20,7,'Received','T-L-R-B',0, 'C',1);
+        $fpdf->Cell(20,7,'Serviced','T-L-R-B',0, 'C',1);
+        $fpdf->Cell(20,7,'Processed','T-L-R-B',0, 'C',1);
+        $fpdf->Cell(30,7,'Amount','T-L-R-B',0, 'C',1);
         $fpdf->SetFont('Arial','',8);
         $total = 0;
         foreach($claim->claims_types as $ct){
@@ -216,36 +232,36 @@ class ClaimsController extends AppController
             $fpdf->SetFillColor($r,$g,$b);        
             $total = $total + $ct->amount;
             $fpdf->Ln();
-            $fpdf->Cell(110,7,$ct->title." - ".$ct->description,'T-L-R-B',0, 'L',1);
-            $fpdf->Cell(40,7,$ct->type->name,'T-L-R-B',0, 'C',1);
+            $fpdf->Cell(155,7,$ct->title." - ".$ct->description,'T-L-R-B',0, 'L',1);
+            $fpdf->Cell(30,7,$ct->type->name,'T-L-R-B',0, 'C',1);
             if(!empty($ct->received_date)) {
-                $fpdf->Cell(30,7,date('M d Y', strtotime($ct->received_date->i18nFormat('yyyy-MM-dd'))),'T-L-R-B',0, 'C',1);
+                $fpdf->Cell(20,7,date('M d Y', strtotime($ct->received_date->i18nFormat('yyyy-MM-dd'))),'T-L-R-B',0, 'C',1);
             }else{
-                $fpdf->Cell(30,7,'','T-L-R-B',0, 'C',1);
+                $fpdf->Cell(20,7,'','T-L-R-B',0, 'C',1);
             }
 
             if(!empty($ct->service_date)) {
-                $fpdf->Cell(30,7,date('M d Y', strtotime($ct->service_date->i18nFormat('yyyy-MM-dd'))),'T-L-R-B',0, 'C',1);
+                $fpdf->Cell(20,7,date('M d Y', strtotime($ct->service_date->i18nFormat('yyyy-MM-dd'))),'T-L-R-B',0, 'C',1);
             }else{
-                $fpdf->Cell(30,7,'','T-L-R-B',0, 'C',1);
+                $fpdf->Cell(20,7,'','T-L-R-B',0, 'C',1);
             }
 
             if(!empty($ct->processed_date)) {
-                $fpdf->Cell(30,7,date('M d Y', strtotime($ct->processed_date->i18nFormat('yyyy-MM-dd'))),'T-L-R-B',0, 'C',1);
+                $fpdf->Cell(20,7,date('M d Y', strtotime($ct->processed_date->i18nFormat('yyyy-MM-dd'))),'T-L-R-B',0, 'C',1);
             }else{
-               $fpdf->Cell(30,7,'','T-L-R-B',0, 'C',1); 
+               $fpdf->Cell(20,7,'','T-L-R-B',0, 'C',1); 
             }
             
             
-            $fpdf->Cell(35,7,number_format($ct->amount, 2, ".", ",") ,'T-L-R-B',0, 'C',1); 
+            $fpdf->Cell(30,7,number_format($ct->amount, 2, ".", ",") ,'T-L-R-B',0, 'C',1); 
         }
 
         $fpdf->Ln();
         $fpdf->SetFont('Arial','B',10);
         $fpdf->SetFillColor(255,255,255);
-        $fpdf->Cell(240,7,'Total','T-L-R-B',0, 'L',1);
+        $fpdf->Cell(245,7,'Total','T-L-R-B',0, 'L',1);
 
-        $fpdf->Cell(35,7,number_format($total, 2, ".", ","),'T-L-R-B',0, 'C',1);
+        $fpdf->Cell(30,7,number_format($total, 2, ".", ","),'T-L-R-B',0, 'C',1);
 
 
         $fpdf->Output('I');

@@ -54,14 +54,22 @@ class ClaimsTable extends Table
             'foreignKey' => 'policy_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->belongsTo('Dependants', [
+            'foreignKey' => 'dependant_id',
+            'joinType' => 'LEFT',
+        ]);
+
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
+
         $this->belongsTo('Tenants', [
             'foreignKey' => 'tenant_id',
             'joinType' => 'INNER',
         ]);
+        
         $this->hasMany('ClaimsTypes', [
             'foreignKey' => 'claim_id',
         ]);

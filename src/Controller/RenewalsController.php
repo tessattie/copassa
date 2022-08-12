@@ -286,6 +286,7 @@ class RenewalsController extends AppController
             }
             
             $transaction->type = $this->request->getData()['type'];
+            $transaction->created = $this->request->getData()['created']." ".date("H:i:s");
             $transaction->status = $this->request->getData()['status'];
             $transaction->renewal_id = $renewal->id;
             $transaction->memo = $this->request->getData()['memo'];

@@ -25,7 +25,7 @@ class NotesController extends AppController
             $note->user_id = $this->Auth->user()['id']; 
             $note->tenant_id = $this->Auth->user()['tenant_id'];
             if ($this->Notes->save($note)) {
-                return $this->redirect(['controller' => 'customers', 'action' => 'view', $note->customer_id]);
+                return $this->redirect($this->referer());
             }
             $this->Flash->error(__('The note could not be saved. Please, try again.'));
         }

@@ -108,4 +108,13 @@ class DependantsController extends AppController
 
         return $this->redirect(['controller' => 'policies', 'action' => 'view', $policy_id]);
     }
+
+
+    public function list(){
+        if($this->request->is(['ajax'])){
+            $dependants = $this->Dependants->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], "policy_id" => $this->request->getData()['policy_id'])));
+            echo json_encode($dependants->toArray()); 
+        }
+        die();
+    }
 }
