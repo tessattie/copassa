@@ -34,11 +34,11 @@
                     <th class="text-center">DOB</th>
                     <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                     <th class="text-center">Premium</th>
-                <?php endif; ?>
-                    <th class="text-center">Status</th>
-                    <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
-                    <th class="text-left"></th>
-                <?php endif; ?>
+                    <?php endif; ?>
+                        <th class="text-center">Status</th>
+                        <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
+                        <th class="text-left"></th>
+                    <?php endif; ?>
                 </thead>
             <tbody> 
             <?php foreach($families as $family) : ?>
@@ -49,10 +49,10 @@
                     <td class="text-center"><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $family->employee->grouping_id ?>"><?= $family->employee->grouping->grouping_number ?></a></td>
                     <td class="text-center"><?= $family->employee->grouping->company->name ?></td>
                     <td class="text-center"><?= $relationships[$family->relationship] ?></td>
-                    <td class="text-center"><?= date("F d Y", strtotime($family->dob)) ?></td>
+                    <td class="text-center"><?= date("F d Y", strtotime($family->dob->i18nFormat('yyyy-MM-dd'))) ?></td>
                     <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
-                    <td class="text-center"><?= number_format($family->premium,2,".",",") ?></td>
-                <?php endif; ?>
+                        <td class="text-center"><?= number_format($family->premium,2,".",",") ?></td>
+                    <?php endif; ?>
                     <?php if($family->status == 1) : ?>
                         <td class="text-center"><span class="label label-success">Active</span></td>
                     <?php else : ?>
@@ -70,7 +70,6 @@
             <?php endforeach; ?>
             </tbody>
         </table></div>
-            <!--End .article-->
         </div>
         
     </div>

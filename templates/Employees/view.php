@@ -99,7 +99,7 @@
                     <td><?= $family->first_name." ".$family->last_name ?></td>
                     <td class="text-center"><?= $relationships[$family->relationship] ?></td>
                     <td class="text-center"><?= $genders[$family->gender] ?></td>
-                    <td class="text-center"><?= date("F d Y", strtotime($family->dob)) ?></td>
+                    <td class="text-center"><?= date("F d Y", strtotime($family->dob->i18nFormat('yyyy-MM-dd'))) ?></td>
                     <td class="text-center"><?= $family->country ?></td>
                     <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                     <td class="text-center"><?= number_format($family->premium,2,".",",") ?></td>

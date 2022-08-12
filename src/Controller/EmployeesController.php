@@ -408,7 +408,7 @@ class EmployeesController extends AppController
                     $family->employee_id = $ident['id']; 
                     $family->gender = $this->request->getData()['gender']; 
                     $family->country = $this->request->getData()['country'];
-                    $family->status = 1 ;
+                    $family->status = $employee->status;
                     $this->Families->save($family);
 
                 return $this->redirect(['action' => 'view', $employee->id]);

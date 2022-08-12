@@ -162,7 +162,7 @@ $paiduntil = $yesterday->format('Y-m-d');
                             <?php foreach($policy->dependants as $dep) : ?>
                             <?php 
                             if(!empty($dep->dob)){
-                               $dob = $dep->dob;
+                               $dob = $dep->dob->month."/".$dep->dob->day."/".$dep->dob->year;
                                 $today = date("Y-m-d");
                                 $diff = date_diff(date_create($dob), date_create($today));
                                 $age = $diff->format('%y'); 

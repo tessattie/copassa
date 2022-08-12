@@ -56,7 +56,9 @@
         
     </div>
 </div><!--End .articles-->
-
+<?php 
+echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
+?>
 <script type="text/javascript">
 $(document).ready(function(){
 
@@ -66,7 +68,7 @@ $(document).ready(function(){
             var token =  $('input[name="_csrfToken"]').val();
             var business = $(this).val();
             $.ajax({
-                 url : '/groupings/list',
+                 url : ROOT_DIREC+'/groupings/list',
                  type : 'POST',
                  data : {business_id : business},
                  headers : {
@@ -93,7 +95,7 @@ $(document).ready(function(){
             var token =  $('input[name="_csrfToken"]').val();
             var group = $(this).val();
             $.ajax({
-                 url : '/employees/list',
+                 url : ROOT_DIREC+'/employees/list',
                  type : 'POST',
                  data : {group_id : group},
                  headers : {
