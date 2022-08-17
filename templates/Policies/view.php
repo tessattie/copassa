@@ -165,7 +165,12 @@ $paiduntil = $yesterday->format('Y-m-d');
                                $dob = $dep->dob->month."/".$dep->dob->day."/".$dep->dob->year;
                                 $today = date("Y-m-d");
                                 $diff = date_diff(date_create($dob), date_create($today));
-                                $age = $diff->format('%y'); 
+                                $age = $diff->format('%y');
+
+                                $dob = date("M d Y", strtotime($dob));
+                            }else{
+                                $dob = ''; 
+                                $age = '';
                             }
                                 
                             ?>
@@ -173,7 +178,7 @@ $paiduntil = $yesterday->format('Y-m-d');
                                     <td class="text-center"><?= $dep->name ?></td>
                                     <td class="text-center"><?= $relations[$dep->relation] ?></td>
                                     <?php if(!empty($dep->dob)) : ?>
-                                        <td class="text-center"><?= $dep->dob->month."/".$dep->dob->day."/".$dep->dob->year ?></td>
+                                        <td class="text-center"><?= $dob ?></td>
                                     <td class="text-center"><?= $age ?></td>
                                     <?php else : ?>
                                         <td></td>

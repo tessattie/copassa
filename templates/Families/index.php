@@ -42,6 +42,12 @@
                 </thead>
             <tbody> 
             <?php foreach($families as $family) : ?>
+                <?php if(!empty($family->dob)){
+                    $dob = $family->dob->year."-".$family->dob->month."-".$family->dob->day;
+                    $dob = date("M d Y", strtotime($dob));
+                }else{
+                    $dob = '';
+                } ?>
                 <tr>
                     <td><?= $family->first_name." ".$family->last_name ?></td>
                     <td class="text-center"><a href="<?= ROOT_DIREC ?>/employees/view/<?= $family->employee_id ?>"><?= $family->employee->first_name . " " .$family->employee->last_name ?></a></td>
@@ -49,7 +55,7 @@
                     <td class="text-center"><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $family->employee->grouping_id ?>"><?= $family->employee->grouping->grouping_number ?></a></td>
                     <td class="text-center"><?= $family->employee->grouping->company->name ?></td>
                     <td class="text-center"><?= $relationships[$family->relationship] ?></td>
-                    <td class="text-center"><?= date("F d Y", strtotime($family->dob->i18nFormat('yyyy-MM-dd'))) ?></td>
+                    <td class="text-center"><?= $dob ?></td>
                     <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                         <td class="text-center"><?= number_format($family->premium,2,".",",") ?></td>
                     <?php endif; ?>
