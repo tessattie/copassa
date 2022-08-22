@@ -192,6 +192,7 @@ if(!empty($customer->dob)){
     </div>
         </div>
         <div class="col-md-3">
+            <?php if($plan_type > 1) : ?>
             <?php if($user_connected['role_id'] != 2  || $auths[52]  || $auths[53]  || $auths[55]) : ?>
             <div class="panel panel-teal">
             <div class="panel-heading">
@@ -227,6 +228,7 @@ if(!empty($customer->dob)){
             </div>
         </div>
     <?php endif; ?>
+<?php endif; ?>
 
             <div class="panel panel-warning articles">
                 <div class="panel-heading">

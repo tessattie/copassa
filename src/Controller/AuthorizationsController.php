@@ -28,9 +28,35 @@ class AuthorizationsController extends AppController
      */
     public function index($id = false)
     {
-        $authorizations = $this->Authorizations->find("all", array("order" => array("type ASC")));
+        
         $user_authorizations = [];
+
+        $authorizations = [];
+
         $users = $this->Authorizations->UsersAuthorizations->Users->find("all", array("order" => array("name ASC"), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'role_id' => 2 )));
+
+
+        if($id){
+            $this->loadModel("UsersAuthorizations");
+            if($this->plan == 1){
+                $authorizations = $this->Authorizations->find("all", array("order" => array("type ASC"), "conditions" => array("id !=8 AND id != 9", 'OR' => array("type = 1", "type = 2", "type = 3", "type = 4", "type = 5", "type = 6", "type = 7"))));
+            }
+
+            if($this->plan == 2){
+                $authorizations = $this->Authorizations->find("all", array("order" => array("type ASC"), "conditions" => array('OR' => array("type = 1", "type = 2", "type = 3", "type = 4", "type = 5", "type = 6", "type = 7", "type = 13"))));
+            }
+
+            if($this->plan == 3){
+                $authorizations = $this->Authorizations->find("all", array("order" => array("type ASC"), "conditions" => array('OR' => array("type = 1", "type = 2", "type = 3", "type = 4", "type = 5", "type = 6", "type = 7", "type = 13", "type = 10"))));
+            }
+
+            if($this->plan == 4){
+                $authorizations = $this->Authorizations->find("all", array("order" => array("type ASC")));
+            } 
+        }
+
+        
+        
         if($id){
             $this->loadModel("UsersAuthorizations");
             $user_authorizations = $this->UsersAuthorizations->find("all", array("conditions" => array("user_id" => $id)));

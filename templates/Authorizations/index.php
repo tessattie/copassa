@@ -50,7 +50,7 @@ $types = array(1 => "Reminders", 2 => "Reports", 3 => "Insurance Companies", 4 =
                     <?php $type = $authorization->type; ?>
                 <?php endif; ?>
                 <tr>
-                    <td><?= $authorization->name ?> - <?= $authorization->id ?></td>
+                    <td><?= $authorization->name ?></td>
                     <td class="text-center">
                         <?php $condition = false; if(!empty($user_authorizations)) : ?>
                             <?php  

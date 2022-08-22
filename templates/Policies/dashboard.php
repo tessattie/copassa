@@ -10,8 +10,57 @@
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid">  
-
+<?php if($plan_type == 1) : ?>
 <div class="row">
+    <?php if($user_connected['role_id'] != 2 || ($auths[30] || $auths[31])) : ?>
+    <div class="col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Maternity Reminders
+                </div>
+            <div class="panel-body" style="height:300px;overflow-y:scroll">
+                    <?php foreach($newborns as $newborn) : ?>
+                        <div class="row">
+                            <div class="col-xs-8">
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $newborn->policy->customer->name ?></p>
+                                <p style="color:black"><span class="fa fa-hashtag" style="margin-right:8px"></span> <?= "Policy : " . $newborn->policy->policy_number ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-bank" style="margin-right:8px"></span> <?= $newborn->policy->company->name . " / ".  $newborn->policy->option->name ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:11px"></span> <strong>Due Date :</strong> <?= date("M d Y", strtotime($newborn->due_date)) ?></p>
+                            </div>
+                            <div class="col-xs-4" class="text-right">
+                                <?php if($user_connected['role_id'] != 2 || ($auths[31])) : ?>
+                                <button class="btn btn-success" data-toggle="modal" data-target="#confirm_maternity_<?= $newborn->id ?>" style="float:right;margin-top:40px"><span class="fa fa-check"></span></button>
+                            <?php endif; ?>
+                            </div>
+                        </div>
+                        <hr>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div> 
+<?php endif; ?>
+    <div class="col-md-6">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                Birthdays
+                </div>
+            <div class="panel-body" style="height:300px;overflow-y:scroll">
+                    <?php foreach($birthdays as $birthday) : ?>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:13px"></span> <?= $birthday->name ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:10px"></span> <?= date('M d Y', strtotime($birthday->dob)) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-phone" style="margin-right:13px"></span> <?= $birthday->cell_area_code."-".$birthday->cell_phone ?></p>
+                            </div>
+                        </div>
+                        <hr>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div> 
+</div>
+<?php else : ?>
+    <div class="row">
     <?php if($user_connected['role_id'] != 2 || ($auths[30] || $auths[31])) : ?>
     <div class="col-md-4">
         <div class="panel panel-info">
@@ -83,6 +132,10 @@
 <?php endif; ?>
     
 </div>
+<?php endif; ?>
+
+
+
 
  <?php if($user_connected['role_id'] != 2 || ($auths[27] || $auths[28])) : ?>
 <div class="row">
@@ -131,6 +184,7 @@
  
 </div> 
 <?php endif; ?>
+
 
  <?php if($user_connected['role_id'] != 2 || ($auths[24] || $auths[23])) : ?>
     <div class="row">
@@ -189,7 +243,7 @@
     </div>
   </div>
 </div>
-
+<?php if($plan_type == 4) : ?>
  <?php if($user_connected['role_id'] != 2 || ($auths[40] || $auths[42] || $auths[36] || $auths[38])) : ?>
 <div class="row">
     <div class="col-md-12">
@@ -209,14 +263,14 @@
                     <th class="text-right">Action(s)</th>
                 </thead>
             <tbody> 
-                <?php foreach($transactions as $transaction) : ?>
+                <?php foreach($transactions as $transaction) : ?><tr>
                     <td><a target="_blank" href="<?= ROOT_DIREC ?>/renewals/view/<?= $transaction->renewal_id ?>"><?= $transaction->renewal->renewal_number ?></a></td>
                     <td class="text-center"><?= $transaction->renewal->business->name ?></td>
                     <td class="text-center"><?= $transaction->grouping->grouping_number ?></td>
                     <td class="text-center"><?= $transaction->employee->first_name." ".$transaction->employee->last_name ?></td>
                     <td class="text-center"><?= $transaction->family->first_name." ".$transaction->family->last_name ?></td>
                     <td class="text-center"><?= date("M d Y", strtotime($transaction->created)) ?></td>
-                    <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>"><span class="fa fa-check"></span></button></td><tr>
+                    <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>"><span class="fa fa-check"></span></button></td></tr>
                 <?php endforeach; ?>
         </tbody>
         </table>
@@ -260,7 +314,7 @@
   </div>
 </div>
 <?php endforeach; ?>
-
+<?php endif; ?>
 
 <?php if($pendings->count() > 0) : ?>
 <?php foreach($pendings as $pending) : ?>

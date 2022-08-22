@@ -108,6 +108,8 @@
             </li>
         <?php endif; ?>
 
+            <?php if($plan_type == 4):  ?>
+
             <?php if(($user_connected['role_id'] != 2 || ($auths[38] || $auths[36] || $auths[37])) || ($user_connected['role_id'] != 2 || ($auths[40] || $auths[42])) ) : ?>
             <li class="parent <?= ( ($this->request->getParam('controller') == 'Renewals' || $this->request->getParam('controller') == 'Businesses' || $this->request->getParam('controller') == 'Groupings' || $this->request->getParam('controller') == 'Employees' || $this->request->getParam('controller') == 'Families') && $this->request->getParam('action') != 'report') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-1111">
                 <em class="fa fa-building">&nbsp;</em> Corporate <span data-toggle="collapse" href="#sub-item-1111" class="icon pull-right"><em class="fa fa-plus"></em></span>
@@ -147,6 +149,8 @@
             </li>
             <?php endif; ?>
 
+            <?php endif; ?>
+
             <?php if($user_connected['role_id'] != 2 || ($auths[10] || $auths[12])) : ?>
                 <li class="<?= ($this->request->getParam('controller') == 'Companies') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-bank">&nbsp;</em> Insurance CO</a></li>
             <?php endif; ?>
@@ -170,6 +174,8 @@
             </li>
             <?php endif; ?>
 
+            <?php if($plan_type > 1) : ?>
+
             <?php if( ($user_connected['role_id'] != 2 || ($auths[52] || $auths[53])) || ($user_connected['role_id'] != 2 || ($auths[57] || $auths[56]))  ) : ?>
             <li class="parent <?= ($this->request->getParam('controller') == 'Claims' || $this->request->getParam('controller') == 'Types' || $this->request->getParam('controller') == 'ClaimsTypes') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-244">
                 <em class="fa fa-calendar">&nbsp;</em> Claims <span data-toggle="collapse" href="#sub-item-244" class="icon pull-right"><em class="fa fa-plus"></em></span>
@@ -188,6 +194,7 @@
                 </ul>
             </li>
             <?php endif; ?>
+        <?php endif; ?>
 
             <?php if( ($user_connected['role_id'] != 2 || ($auths[2] || $auths[3])) || ($user_connected['role_id'] != 2 || ($auths[4] || $auths[5])) || ($user_connected['role_id'] != 2 || ($auths[6] || $auths[7])) || ($user_connected['role_id'] != 2 || ($auths[8] || $auths[9])) ) : ?>
             <li class="parent <?= ($this->request->getParam('action') == 'report' || $this->request->getParam('action') == 'alerts') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-4">
@@ -213,19 +220,22 @@
                         </a></li>
                     <?php endif; ?>
 
+                    <?php if($plan_type == 4) : ?>
                     <?php if($user_connected['role_id'] != 2 || ($auths[8] || $auths[9])) : ?>
                         <li><a class="" href="<?= ROOT_DIREC ?>/employees/report">
                             <span class="fa fa-arrow-right">&nbsp;</span> Coorporate Groups
                         </a></li>
                     <?php endif; ?>
+                    <?php endif; ?>
 
                 </ul>
             </li>
         <?php endif; ?>
-            
+            <?php if($plan_type > 2) : ?>
             <?php if($user_connected['role_id'] != 2 || ($auths[43] || $auths[44])) : ?>
                 <li class="<?= ($this->request->getParam('controller') == 'Folders') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/folders/show"><em class="fa fa-folder">&nbsp;</em> Resources</a></li>
             <?php endif; ?>
+        <?php endif; ?>
 
             <?php if($user_connected['role_id'] != 2 || ($auths[49] || $auths[50])) : ?>
                 <li class="parent <?= ($this->request->getParam('controller') == 'Riders' ||$this->request->getParam('controller') == 'Authorizations' || $this->request->getParam('controller') == 'Users' || $this->request->getParam('controller') == 'Roles' || $this->request->getParam('controller') == 'Cards') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-2">

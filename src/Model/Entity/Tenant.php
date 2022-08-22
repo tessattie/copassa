@@ -41,6 +41,8 @@ class Tenant extends Entity
         'created' => true,
         'modified' => true,
         'user_id' => true,
+        'plan' => true, 
+        'subscription' => true,
         'status' => true,
         'user' => true,
     ];

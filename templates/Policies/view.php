@@ -309,6 +309,7 @@ $paiduntil = $yesterday->format('Y-m-d');
                     <p><?= $policy->exclusions ?></p>
                 </div>
             </div>
+            <?php if($plan_type > 1) : ?>
             <?php if($user_connected['role_id'] != 2  || $auths[52]  || $auths[53]  || $auths[55]) : ?>
             <div class="panel panel-teal">
             <div class="panel-heading">
@@ -339,6 +340,7 @@ $paiduntil = $yesterday->format('Y-m-d');
             </div>
         </div>
     <?php endif; ?>
+<?php endif; ?>
         </div>
     </div>
 

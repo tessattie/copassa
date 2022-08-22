@@ -50,7 +50,11 @@ class AppController extends Controller
 
     public $genders = array(1 => "Male", 2 => "Female", 3 => "Other");
 
+    public $subscription_plans = array(1 => "Starter", 2 => "Essentials", 3  => "Plus", 4 => "Enterprise");
+
     protected $authorizations = [];
+
+    protected $plan;
 
     protected $session;
 
@@ -125,6 +129,11 @@ class AppController extends Controller
         return $result;
     }
 
+    private function getPlan($tenant_id){
+        $this->loadModel('Tenants');
+        $this->plan = $this->Tenants->get($tenant_id)->plan;
+    }
+
     public function beforeFilter(EventInterface $event){
 
         $this->session = $this->getRequest()->getSession();
@@ -134,6 +143,9 @@ class AppController extends Controller
             return null;
         }
         if($this->Auth->user()){
+            $this->getPlan($this->Auth->user()['tenant_id']);
+            $this->set('plan_type', $this->plan);
+            $this->set('subscription_plans', $this->subscription_plans);
             $year = date('Y');
             $next_year = $year + 1;
             $years = array($year => $year, $next_year => $next_year);
