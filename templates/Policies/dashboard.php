@@ -22,10 +22,10 @@
                     <?php foreach($newborns as $newborn) : ?>
                         <div class="row">
                             <div class="col-xs-8">
-                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $newborn->policy->customer->name ?></p>
-                                <p style="color:black"><span class="fa fa-hashtag" style="margin-right:8px"></span> <?= "Policy : " . $newborn->policy->policy_number ?></p>
-                                <p style="color:black;margin-top:10px"><span class="fa fa-bank" style="margin-right:8px"></span> <?= $newborn->policy->company->name . " / ".  $newborn->policy->option->name ?></p>
-                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:11px"></span> <strong>Due Date :</strong> <?= date("M d Y", strtotime($newborn->due_date)) ?></p>
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= h($newborn->policy->customer->name) ?></p>
+                                <p style="color:black"><span class="fa fa-hashtag" style="margin-right:8px"></span> <?= h("Policy : " . $newborn->policy->policy_number) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-bank" style="margin-right:8px"></span> <?= h($newborn->policy->company->name . " / ".  $newborn->policy->option->name) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:11px"></span> <strong>Due Date :</strong> <?= h(date("M d Y", strtotime($newborn->due_date))) ?></p>
                             </div>
                             <div class="col-xs-4" class="text-right">
                                 <?php if($user_connected['role_id'] != 2 || ($auths[31])) : ?>
@@ -48,9 +48,9 @@
                     <?php foreach($birthdays as $birthday) : ?>
                         <div class="row">
                             <div class="col-xs-12">
-                                <p style="color:black"><span class="fa fa-user" style="margin-right:13px"></span> <?= $birthday->name ?></p>
-                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:10px"></span> <?= date('M d Y', strtotime($birthday->dob)) ?></p>
-                                <p style="color:black;margin-top:10px"><span class="fa fa-phone" style="margin-right:13px"></span> <?= $birthday->cell_area_code."-".$birthday->cell_phone ?></p>
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:13px"></span> <?= h($birthday->name) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:10px"></span> <?= h(date('M d Y', strtotime($birthday->dob))) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-phone" style="margin-right:13px"></span> <?= h($birthday->cell_area_code."-".$birthday->cell_phone) ?></p>
                             </div>
                         </div>
                         <hr>
@@ -71,10 +71,10 @@
                     <?php foreach($newborns as $newborn) : ?>
                         <div class="row">
                             <div class="col-xs-8">
-                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $newborn->policy->customer->name ?></p>
-                                <p style="color:black"><span class="fa fa-hashtag" style="margin-right:8px"></span> <?= "Policy : " . $newborn->policy->policy_number ?></p>
-                                <p style="color:black;margin-top:10px"><span class="fa fa-bank" style="margin-right:8px"></span> <?= $newborn->policy->company->name . " / ".  $newborn->policy->option->name ?></p>
-                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:11px"></span> <strong>Due Date :</strong> <?= date("M d Y", strtotime($newborn->due_date)) ?></p>
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= h($newborn->policy->customer->name) ?></p>
+                                <p style="color:black"><span class="fa fa-hashtag" style="margin-right:8px"></span> <?= h("Policy : " . $newborn->policy->policy_number) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-bank" style="margin-right:8px"></span> <?= h($newborn->policy->company->name . " / ".  $newborn->policy->option->name) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:11px"></span> <strong>Due Date :</strong> <?= h(date("M d Y", strtotime($newborn->due_date))) ?></p>
                             </div>
                             <div class="col-xs-4" class="text-right">
                                 <?php if($user_connected['role_id'] != 2 || ($auths[31])) : ?>
@@ -97,9 +97,9 @@
                     <?php foreach($birthdays as $birthday) : ?>
                         <div class="row">
                             <div class="col-xs-12">
-                                <p style="color:black"><span class="fa fa-user" style="margin-right:13px"></span> <?= $birthday->name ?></p>
-                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:10px"></span> <?= date('M d Y', strtotime($birthday->dob)) ?></p>
-                                <p style="color:black;margin-top:10px"><span class="fa fa-phone" style="margin-right:13px"></span> <?= $birthday->cell_area_code."-".$birthday->cell_phone ?></p>
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:13px"></span> <?= h($birthday->name) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-calendar" style="margin-right:10px"></span> <?= h(date('M d Y', strtotime($birthday->dob))) ?></p>
+                                <p style="color:black;margin-top:10px"><span class="fa fa-phone" style="margin-right:13px"></span> <?= h($birthday->cell_area_code."-".$birthday->cell_phone) ?></p>
                             </div>
                         </div>
                         <hr>
@@ -117,7 +117,7 @@
                     <?php foreach($claims as $claim) : ?>
                     <div class="row">
                             <div class="col-xs-8">
-                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $claim->policy->customer->name . " - " . $claim->policy->policy_number ?></p>
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= h($claim->policy->customer->name . " - " . $claim->policy->policy_number) ?></p>
                             </div>
                             <div class="col-xs-4" class="text-right">
                                 <a class="btn btn-info" target="_blank" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="float:right"><span class="fa fa-eye"></span></a>
@@ -160,12 +160,12 @@
         <?php foreach($pendings as $pending) : ?>
           <?php if($pending->country_id == $filter_country || empty($filter_country)) : ?>
             <tr>
-                <td class="text-left"><?= $pending->name ?></td>
-                <td class="text-center"><?= $pending->company->name. " / ".$pending->option->name ?></td>
-                <td class="text-center"><?= $pending->country->name ?></td>
-                <td class="text-center"><?= $pending->dependants ?></td>
+                <td class="text-left"><?= h($pending->name) ?></td>
+                <td class="text-center"><?= h($pending->company->name. " / ".$pending->option->name) ?></td>
+                <td class="text-center"><?= h($pending->country->name) ?></td>
+                <td class="text-center"><?= h($pending->dependants) ?></td>
                 <?php if(!empty($pending->last_contact_date)) : ?>
-                <td class="text-center"><?= date("M d Y", strtotime($pending->last_contact_date)) ?></td> 
+                <td class="text-center"><?= h(date("M d Y", strtotime($pending->last_contact_date))) ?></td> 
                 <?php else : ?>
                     <td></td>
                 <?php endif; ?>
@@ -200,10 +200,10 @@
                         <div class="col-md-3 col-sm-6">
                             <div class="card" style="border:1px solid #ddd;border-radius:5px;padding:10px;height:200px;margin-bottom:30px">
                               <div class="card-body">
-                                <h5 class="card-title"><?= $note->customer->name ?></h5>
-                                <h6 class="card-subtitle mb-2 text-muted"><?= $note->created ?></h6>
-                                <h6 class="card-subtitle mb-2 text-muted">Created By : <?= $note->user->name ?></h6>
-                                <p class="card-text"><?= $note->comment ?></p>
+                                <h5 class="card-title"><?= h($note->customer->name) ?></h5>
+                                <h6 class="card-subtitle mb-2 text-muted"><?= h($note->created) ?></h6>
+                                <h6 class="card-subtitle mb-2 text-muted">Created By : <?= h($note->user->name) ?></h6>
+                                <p class="card-text"><?= h($note->comment) ?></p>
                                 <a target="_blank" href="<?= ROOT_DIREC ?>/customers/view/<?= $note->customer_id ?>" class="btn btn-warning" style="position:absolute;bottom:45px;right:35px">Read More</a>
                               </div>
                             </div>
@@ -264,12 +264,12 @@
                 </thead>
             <tbody> 
                 <?php foreach($transactions as $transaction) : ?><tr>
-                    <td><a target="_blank" href="<?= ROOT_DIREC ?>/renewals/view/<?= $transaction->renewal_id ?>"><?= $transaction->renewal->renewal_number ?></a></td>
-                    <td class="text-center"><?= $transaction->renewal->business->name ?></td>
-                    <td class="text-center"><?= $transaction->grouping->grouping_number ?></td>
-                    <td class="text-center"><?= $transaction->employee->first_name." ".$transaction->employee->last_name ?></td>
-                    <td class="text-center"><?= $transaction->family->first_name." ".$transaction->family->last_name ?></td>
-                    <td class="text-center"><?= date("M d Y", strtotime($transaction->created)) ?></td>
+                    <td><a target="_blank" href="<?= ROOT_DIREC ?>/renewals/view/<?= $transaction->renewal_id ?>"><?= h($transaction->renewal->renewal_number) ?></a></td>
+                    <td class="text-center"><?= h($transaction->renewal->business->name) ?></td>
+                    <td class="text-center"><?= h($transaction->grouping->grouping_number) ?></td>
+                    <td class="text-center"><?= h($transaction->employee->first_name." ".$transaction->employee->last_name) ?></td>
+                    <td class="text-center"><?= h($transaction->family->first_name." ".$transaction->family->last_name) ?></td>
+                    <td class="text-center"><?= h(date("M d Y", strtotime($transaction->created))) ?></td>
                     <td class="text-right"><button class="btn btn-success" data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>"><span class="fa fa-check"></span></button></td></tr>
                 <?php endforeach; ?>
         </tbody>
@@ -291,7 +291,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Confirm Transaction for <?= $transaction->employee->first_name." ".$transaction->employee->last_name ?></h5>
+        <h5 class="modal-title" id="exampleModalLabel">Confirm Transaction for <?= h($transaction->employee->first_name." ".$transaction->employee->last_name) ?></h5>
       </div>
       <?= $this->Form->create(null, array("url" => "/renewals/confirmtransaction")) ?>
       <?= $this->Form->input('transaction_id', array('type' => 'hidden', "value" => $transaction->id)); ?>
@@ -322,7 +322,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Update PNB for <?= $pending->name ?></h5>
+        <h5 class="modal-title" id="exampleModalLabel">Update PNB for <?= h($pending->name) ?></h5>
       </div>
       <?= $this->Form->create(null, array("url" => "/pendings/update")) ?>
       <?= $this->Form->input('pending_id', array('type' => 'hidden', "value" => $pending->id)); ?>
@@ -354,7 +354,7 @@
         <?= $this->Form->create(null, array("url" => "/policies/adddependant")) ?>
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">
-            Add Dependant for <?= $newborn->policy->customer->name ?>
+            Add Dependant for <?= h($newborn->policy->customer->name) ?>
         </h5>
       </div>
       <div class="modal-body">

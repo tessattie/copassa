@@ -60,6 +60,10 @@ class OptionsController extends AppController
         $option = $this->Options->get($id, [
             'contain' => ['Companies'],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $option->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $old_data = json_encode($option);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $option = $this->Options->patchEntity($option, $this->request->getData());
@@ -87,6 +91,11 @@ class OptionsController extends AppController
     {
         $this->request->allowMethod(['post', 'delete', 'get']);
         $option = $this->Options->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $option->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $company_id = $option->company_id;
         if ($this->Options->delete($option)) {
             $this->Flash->success(__('The option has been deleted.'));

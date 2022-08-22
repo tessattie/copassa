@@ -52,18 +52,18 @@
                 $real_total = $real_total + $total;
                 ?>
                 <tr>
-                    <td><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $group->id ?>"><?= $group->grouping_number ?></a></td>
-                    <td class="text-center"><a href="<?= ROOT_DIREC ?>/businesses/view/<?= $group->business_id ?>"><?= $group->business->name ?></a></td>
-                    <td class="text-center"><?= $group->company->name ?></td>
-                    <td class="text-center"><?= date('F d Y', strtotime($group->effective_date)) ?></td>
+                    <td><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $group->id ?>"><?= h($group->grouping_number) ?></a></td>
+                    <td class="text-center"><a href="<?= ROOT_DIREC ?>/businesses/view/<?= $group->business_id ?>"><?= h($group->business->name) ?></a></td>
+                    <td class="text-center"><?= h($group->company->name) ?></td>
+                    <td class="text-center"><?= h(date('F d Y', strtotime($group->effective_date))) ?></td>
                     <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
-                    <td class="text-center"><?= number_format($total, 2, ".", ",") ?></td>
+                    <td class="text-center"><?= h(number_format($total, 2, ".", ",")) ?></td>
                 <?php endif; ?>
                 <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/groupings/edit/<?= $group->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <?php if(empty($group->employees)) : ?>
-                        <a href="<?= ROOT_DIREC ?>/groupings/delete/<?= $group->id ?>" onclick="return confirm('Are you sure you would like to delete the group <?= $group->grouping_number ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <a href="<?= ROOT_DIREC ?>/groupings/delete/<?= $group->id ?>" onclick="return confirm('Are you sure you would like to delete the group <?= h($group->grouping_number) ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                         <?php endif; ?>
                     </td>
                 <?php endif; ?>

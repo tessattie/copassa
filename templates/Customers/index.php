@@ -57,10 +57,10 @@
             <?php if($condition) : ?>
                 <tr>
 
-                    <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $customer->id ?>"><?= $customer->name ?></a></td>
+                    <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $customer->id ?>"><?= h($customer->name) ?></a></td>
 
                     <?php if(!empty($customer->country_id)) : ?>
-                        <td class="text-center"><?= substr($customer->country->name,0,5) ?></td>
+                        <td class="text-center"><?= h(substr($customer->country->name,0,5)) ?></td>
                     <?php else : ?>
                         <td class="text-center">N/A</td>
                     <?php endif; ?>
@@ -68,32 +68,32 @@
                     
 
                     <?php if(!empty($customer->cell_phone)) : ?>
-                        <td class="text-center">+(<?= $customer->cell_area_code ?>)-<?= $customer->cell_phone ?></td>
+                        <td class="text-center">+(<?= h($customer->cell_area_code) ?>)-<?= h($customer->cell_phone) ?></td>
                     <?php else : ?>
                         <td class="text-center">-</td>
                     <?php endif; ?>
 
-                    <td class="text-center"><?= $customer->email ?></td>
+                    <td class="text-center"><?= h($customer->email) ?></td>
                     <?php if(!empty($customer->dob)) : ?>
-                        <td class="text-center"><?= date("M d Y", strtotime($dob)) ?></td>
+                        <td class="text-center"><?= h(date("M d Y", strtotime($dob))) ?></td>
                     <?php else : ?>
                         <td class="text-center"></td>
                     <?php endif; ?>
 
                     <?php if(!empty($age)) : ?>
-                        <td class="text-center"><?= $age ?></td>
+                        <td class="text-center"><?= h($age) ?></td>
                     <?php else : ?>
                         <td class="text-center"></td>
                     <?php endif; ?>
                     <?php if($customer->status == 1) : ?>
-                        <td class="text-center"><span class="label label-success"><?= $status[$customer->status] ?></span></td>
+                        <td class="text-center"><span class="label label-success"><?= h($status[$customer->status]) ?></span></td>
                     <?php else : ?>
-                        <td class="text-center"><span class="label label-danger"><?= $status[$customer->status] ?></span></td>
+                        <td class="text-center"><span class="label label-danger"><?= h($status[$customer->status]) ?></span></td>
                     <?php endif; ?>
                     <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                     <td class="text-right"><a href="<?= ROOT_DIREC ?>/customers/edit/<?= $customer->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <?php if(count($customer->policies) == 0) : ?>
-                    <a href="<?= ROOT_DIREC ?>/customers/delete/<?= $customer->id ?>" onclick="return confirm('Are you sure you would like to delete the customer <?= $customer->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                    <a href="<?= ROOT_DIREC ?>/customers/delete/<?= $customer->id ?>" onclick="return confirm('Are you sure you would like to delete the customer <?= h($customer->name) ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                 <?php endif; ?>
                     </td>
                 <?php endif; ?>

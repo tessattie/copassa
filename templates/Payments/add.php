@@ -40,14 +40,14 @@ $rates = array(1 => "HTG", 2 => "USD");
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-center"><?= $policy->policy_number ?></td>
-                                <td class="text-center"><?= $policy->customer->name ?></td>
-                                <td class="text-center"><?= $modes[$policy->mode] ?></td>
-                                <td class="text-center"><?= number_format($policy->premium,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= number_format($policy->fee,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
-                                <td class="text-center"><?= date("M d Y", strtotime($policy->last_renewal)) ?></td>
-                                <td class="text-center"><?= date("M d Y", strtotime($policy->next_renewal)) ?></td>
+                                <td class="text-center"><?= h($policy->policy_number) ?></td>
+                                <td class="text-center"><?= h($policy->customer->name) ?></td>
+                                <td class="text-center"><?= h($modes[$policy->mode]) ?></td>
+                                <td class="text-center"><?= h(number_format($policy->premium,2,".",",")) ?></td>
+                                <td class="text-center"><?= h(number_format($policy->fee,2,".",",")) ?></td>
+                                <td class="text-center"><?= h(date("M d Y", strtotime($policy->effective_date))) ?></td>
+                                <td class="text-center"><?= h(date("M d Y", strtotime($policy->last_renewal))) ?></td>
+                                <td class="text-center"><?= h(date("M d Y", strtotime($policy->next_renewal))) ?></td>
                             </tr>
                         </tbody>
                     </table>

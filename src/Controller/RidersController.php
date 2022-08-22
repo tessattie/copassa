@@ -84,6 +84,11 @@ class RidersController extends AppController
         $rider = $this->Riders->get($id, [
             'contain' => [],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $rider->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $rider = $this->Riders->patchEntity($rider, $this->request->getData());
             if ($this->Riders->save($rider)) {
@@ -93,7 +98,6 @@ class RidersController extends AppController
             }
             $this->Flash->error(__('The rider could not be saved. Please, try again.'));
         }
-        $users = $this->Riders->Users->find('list', ['limit' => 200]);
         $this->set(compact('rider', 'users'));
     }
 
@@ -111,6 +115,10 @@ class RidersController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $rider = $this->Riders->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $rider->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->Riders->delete($rider)) {
             $this->Flash->success(__('The rider has been deleted.'));
         } else {

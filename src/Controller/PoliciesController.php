@@ -186,6 +186,11 @@ class PoliciesController extends AppController
         $policy = $this->Policies->get($id, [
             'contain' => ['Companies', 'Options', 'Customers' => ['Countries', 'Agents'], 'Users', 'Payments', 'Dependants', 'Prenewals', 'Claims' => ['ClaimsTypes'], 'PoliciesRiders' => ['Riders']],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $policy->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $riders = $this->Riders->find("all");
         $dependant = $this->Policies->Dependants->newEmptyEntity();
 
@@ -243,6 +248,11 @@ class PoliciesController extends AppController
             $this->loadModel("Newborns");
             // update newborn status
             $newborn = $this->Newborns->get($this->request->getData()['newborn_id']);
+
+            if($this->Auth->user()['tenant_id'] != $newborn->tenant_id){
+                return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+            }
+
             $newborn->status = 2; 
             $this->Newborns->save($newborn); 
 
@@ -278,6 +288,9 @@ class PoliciesController extends AppController
         $policy = $this->Policies->get($id, [
             'contain' => [],
         ]);
+        if($this->Auth->user()['tenant_id'] != $policy->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $old_data = json_encode($policy);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
@@ -332,6 +345,9 @@ class PoliciesController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $policy = $this->Policies->get($id);
+        if($this->Auth->user()['tenant_id'] != $policy->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->Policies->delete($policy)) {
             $this->Flash->success(__('The policy has been deleted.'));
         } else {
@@ -1081,35 +1097,6 @@ class PoliciesController extends AppController
                 }
         }
         return $companies;
-    }
-
-
-    public function update(){
-        $this->savelog(200, "Accessed policies update page", 1, 3, "", "");
-
-        if($this->request->is(['patch', 'put', 'post'])){
-            // debug($this->request->getData()); die();
-            $data = $this->request->getData();
-            foreach($data['policy_id'] as $i => $id){
-                $policy = $this->Policies->get($id); 
-                $policy->last_premium = $data['last_premium'][$i]; 
-                $policy->premium = $data['premium'][$i];
-                $policy->last_renewal = $data['last_renewal'][$i];
-                $policy->next_renewal = $data['next_renewal'][$i];
-                $this->Policies->save($policy);
-            }
-
-            unset($this->request->getData()['last_renewal']);
-            unset($this->request->getData()['next_renewal']);
-            unset($this->request->getData()['last_premium']);
-            unset($this->request->getData()['premium']);
-            unset($this->request->getData()['policy_id']);
-        }
-        
-        $companies = $this->Policies->Companies->find("all");
-        $policies = $this->Policies->find("all", array("conditions" => array("Policies.tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("Policies.company_id ASC")))->contain(['Companies', 'Options', 'Customers', 'Users']);
-
-        $this->set(compact('policies', 'companies'));
     }
 
 

@@ -34,14 +34,14 @@
             <tbody> 
         <?php foreach($users as $user) : ?>
                 <tr>
-                    <td><?= $user->name ?></td>
-                    <td class="text-center"><?= $user->username ?></td>
-                    <td class="text-center"><?= $user->email ?></td>
-                    <td class="text-center"><?= $user->role->name ?></td>
+                    <td><?= h($user->name) ?></td>
+                    <td class="text-center"><?= h($user->username) ?></td>
+                    <td class="text-center"><?= h($user->email) ?></td>
+                    <td class="text-center"><?= h($user->role->name) ?></td>
                     <?php if($user->status == 1) : ?>
-                        <td class="text-center">  <span class="label label-success"> <?= $status[$user->status] ?></span></td>
+                        <td class="text-center">  <span class="label label-success"> <?= h($status[$user->status]) ?></span></td>
                     <?php else : ?>
-                        <td class="text-center">  <span class="label label-danger"> <?= $status[$user->status] ?></span></td>
+                        <td class="text-center">  <span class="label label-danger"> <?= h($status[$user->status]) ?></span></td>
                     <?php endif; ?>
                     <td class="text-center"><?= $user->created ?></td>
                     <td class="text-right"><a href="<?= ROOT_DIREC ?>/users/edit/<?= $user->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>

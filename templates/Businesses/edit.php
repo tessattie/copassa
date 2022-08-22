@@ -13,14 +13,14 @@
             Corporate Groups
         </a></li>
         <li>Edit</li>
-        <li><?= $business->name ?></li>
+        <li><?= h($business->name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Corporate Group : <?= $business->name ?>
+            Edit Corporate Group : <?= h($business->name) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/businesses"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

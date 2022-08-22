@@ -14,15 +14,15 @@
             Options
         </a></li>
         <li>Edit</li>
-        <li><?= $option->company->name ?></li>
-        <li><?= $option->name ?></li>
+        <li><?= h($option->company->name) ?></li>
+        <li><?= h($option->name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Option : <?= $option->company->name ?> - <?= $option->name ?>
+            Edit Option : <?= h($option->company->name ?> - <?= $option->name) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/companies/edit/<?= $option->company->id ?>"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

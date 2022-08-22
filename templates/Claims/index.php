@@ -46,17 +46,17 @@
                 }
             ?>
             <tr>
-                <td><?= $claim->policy->policy_number ?></td>
-                <td class="text-center"><?= $claim->policy->customer->name ?></td>
+                <td><?= h($claim->policy->policy_number) ?></td>
+                <td class="text-center"><?= h($claim->policy->customer->name) ?></td>
                 <?php if(!empty($claim->dependant_id)) : ?>
-                    <td class="text-center"><?= $claim->dependant->name ?></td>
+                    <td class="text-center"><?= h($claim->dependant->name) ?></td>
                 <?php else : ?>
                     <td class="text-center"></td>
                 <?php endif; ?>
-                <td class="text-center"><?= $claim->title ?></td>
-                <td class="text-center"><?= $claim->description ?></td>
-                <td class="text-center"><?= number_format($total, 2, ".", ",") ?></td>
-                <td class="text-center"><?= date("M d Y", strtotime($claim->created)) ?></td>
+                <td class="text-center"><?= h($claim->title) ?></td>
+                <td class="text-center"><?= h($claim->description) ?></td>
+                <td class="text-center"><?= h(number_format($total, 2, ".", ",")) ?></td>
+                <td class="text-center"><?= h(date("M d Y", strtotime($claim->created))) ?></td>
                 <?php if($claim->status == 1): ?>
                     <td class="text-center"><span class="label label-warning">Open</span></td>
                 <?php else : ?>

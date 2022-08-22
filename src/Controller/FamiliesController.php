@@ -76,6 +76,10 @@ class FamiliesController extends AppController
             'contain' => ['Employees'],
         ]);
 
+        if($this->Auth->user()['tenant_id'] != $family->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $this->set(compact('family'));
     }
 
@@ -119,6 +123,11 @@ class FamiliesController extends AppController
         $family = $this->Families->get($id, [
             'contain' => ['Employees'],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $family->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $family = $this->Families->patchEntity($family, $this->request->getData());
             if ($this->Families->save($family)) {
@@ -148,6 +157,11 @@ class FamiliesController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $family = $this->Families->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $family->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Families->delete($family)) {
             $this->Flash->success(__('The family member has been deleted.'));
         } else {

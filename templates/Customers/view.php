@@ -46,7 +46,7 @@ if(!empty($customer->dob)){
                         <?php if(!empty($customer->agent)) : ?>
                         <tr>
                             <th><?= __('Agent') ?></th>
-                            <td class="text-right"><?= $customer->agent->name ?></td>
+                            <td class="text-right"><?= h($customer->agent->name) ?></td>
                         </tr>
                         <?php endif; ?>
                         <tr>
@@ -56,19 +56,19 @@ if(!empty($customer->dob)){
                         <?php if(!empty($customer->home_phone)) : ?>
                         <tr>
                             <th><?= __('Home Phone') ?></th>
-                            <td class="text-right"><?= $customer->home_area_code." ". h($customer->home_phone) ?></td>
+                            <td class="text-right"><?= h($customer->home_area_code)." ". h($customer->home_phone) ?></td>
                         </tr>
                         <?php endif; ?>
                         <?php if(!empty($customer->cell_phone)) : ?>
                         <tr>
                             <th><?= __('Cell Phone') ?></th>
-                            <td class="text-right"><?= $customer->cell_area_code." ". h($customer->cell_phone) ?></td>
+                            <td class="text-right"><?= h($customer->cell_area_code)." ". h($customer->cell_phone) ?></td>
                         </tr>
                         <?php endif; ?>
                         <?php if(!empty($customer->other_phone)) : ?>
                         <tr>
                             <th><?= __('Other Phone') ?></th>
-                            <td class="text-right"><?= $customer->other_area_code." ". h($customer->other_phone) ?></td>
+                            <td class="text-right"><?= h($customer->other_area_code)." ". h($customer->other_phone) ?></td>
                         </tr>
                         <?php endif; ?>
                         <tr>
@@ -78,24 +78,24 @@ if(!empty($customer->dob)){
                         <?php if(!empty($customer->dob)) : ?>
                             <tr>
                                 <th>Date of Birth</th>
-                                <td class="text-right"><?= date("M d Y", strtotime($customer->dob)) ?></td>
+                                <td class="text-right"><?= h(date("M d Y", strtotime($customer->dob))) ?></td>
                             </tr>
                             <tr>
                                 <th>Age</th>
-                                <td class="text-right"><?= $age ?></td>
+                                <td class="text-right"><?= h($age) ?></td>
                             </tr>
                         <?php endif; ?>
                         <tr>
                             <th><?= __('Created By') ?></th>
-                            <td class="text-right"><?= $customer->user->name ?></td>
+                            <td class="text-right"><?= h($customer->user->name) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Created') ?></th>
-                            <td class="text-right"><?= date("M d Y", strtotime($customer->created)) ?></td>
+                            <td class="text-right"><?= h(date("M d Y", strtotime($customer->created))) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Last Modified') ?></th>
-                            <td class="text-right"><?= date("M d Y", strtotime($customer->modified)) ?></td>
+                            <td class="text-right"><?= h(date("M d Y", strtotime($customer->modified))) ?></td>
                         </tr>
 
                     </table>
@@ -136,15 +136,15 @@ if(!empty($customer->dob)){
                             <?php foreach($customer->policies as $policy) : ?>
 
                                 <tr>
-                                <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
-                                <td class="text-center"><?= $company_types[$policy->company->type] ?></td>
-                                <td class="text-center"><?= $policy->company->name ?></td>
-                                <td class="text-center"><?= $policy->option->name ?></td>
-                                <td class="text-center"><?= number_format($policy->premium,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= number_format($policy->fee,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= number_format($policy->deductible,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= $modes[$policy->mode] ?></td>
-                                <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
+                                <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= h($policy->policy_number) ?></a></td>
+                                <td class="text-center"><?= h($company_types[$policy->company->type]) ?></td>
+                                <td class="text-center"><?= h($policy->company->name) ?></td>
+                                <td class="text-center"><?= h($policy->option->name) ?></td>
+                                <td class="text-center"><?= h(number_format($policy->premium,2,".",",")) ?> USD</td>
+                                <td class="text-center"><?= h(number_format($policy->fee,2,".",",")) ?> USD</td>
+                                <td class="text-center"><?= h(number_format($policy->deductible,2,".",",")) ?> USD</td>
+                                <td class="text-center"><?= h($modes[$policy->mode]) ?></td>
+                                <td class="text-center"><?= h(date("M d Y", strtotime($policy->effective_date))) ?></td>
                       
                                 <td class="text-center">
                                     <?php if(!empty($policy->certificate)) : ?>
@@ -181,8 +181,8 @@ if(!empty($customer->dob)){
         <tbody>
             <?php foreach($customer->policies as $p) : ?>
                 <tr>
-                    <td class="text-center"><?= $p->policy_number ?></td>
-                    <td class="text-center"><?= $p->exclusions ?></td>
+                    <td class="text-center"><?= h($p->policy_number) ?></td>
+                    <td class="text-center"><?= h($p->exclusions) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -213,10 +213,10 @@ if(!empty($customer->dob)){
 
                     <div class="row">
                             <div class="col-xs-8">
-                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $customer->name . " - " . $policy->policy_number ?></p>
-                        <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= $claim->title ?></p>
-                        <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= $claim->description ?></p>
-                        <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= number_format($total, 2, ".", ",") ?></p>
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= h($customer->name . " - " . $policy->policy_number) ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= h($claim->title) ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= h($claim->description) ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= h(number_format($total, 2, ".", ",")) ?></p>
                             </div>
                             <div class="col-xs-4" class="text-right">
                                 <a class="btn btn-info" target="_blank" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="float:right;margin-top:40px"><span class="fa fa-eye"></span></a>
@@ -238,9 +238,9 @@ if(!empty($customer->dob)){
                 <div class="panel-body articles-container" style="height: 384px; overflow-y:scroll">       
                     <?php foreach($customer->notes as $n) : ?>
                         <p class="bg-info" style="padding:10px">
-                            <label>Created By :</label> <?= $n->user->name ?><br>
-                            <label>Date :</label> <?= date("M d Y H:i", strtotime($n->created)) ?><br><br>
-                            <?= $n->comment ?>
+                            <label>Created By :</label> <?= h($n->user->name) ?><br>
+                            <label>Date :</label> <?= h(date("M d Y H:i", strtotime($n->created))) ?><br><br>
+                            <?= h($n->comment) ?>
                         </p>
                     <?php endforeach; ?>
                 </div>
@@ -250,12 +250,9 @@ if(!empty($customer->dob)){
             
         </div>
     </div>
-    
-
-    
 
 
-    <div class="modal fade" id="newclaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="newclaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -284,8 +281,6 @@ if(!empty($customer->dob)){
     </div>
   </div>
 </div>
-
-
     
 </div>
 

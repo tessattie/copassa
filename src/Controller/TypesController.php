@@ -100,6 +100,10 @@ class TypesController extends AppController
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
         $type = $this->Types->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $type->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->request->is(['patch', 'post', 'put'])) {
             $type = $this->Types->patchEntity($type, $this->request->getData());
             if ($this->Types->save($type)) {
@@ -126,6 +130,11 @@ class TypesController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $type = $this->Types->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $type->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Types->delete($type)) {
             $this->Flash->success(__('The type has been deleted.'));
         } else {

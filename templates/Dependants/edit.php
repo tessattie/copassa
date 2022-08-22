@@ -21,14 +21,14 @@
             Dependants
         </a></li>
         <li>Edit</li>
-        <li><?= $dependant->name ?></li>
+        <li><?= h($dependant->name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit : <?= $dependant->name ?>
+            Edit : <?= h($dependant->name) ?>
             <ul class="pull-right panel-settings panel-button-tab-right">
                 <li class="dropdown"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $dependant->policy_id ?>">
                     <em class="fa fa-arrow-left"></em>

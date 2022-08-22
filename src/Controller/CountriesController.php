@@ -95,6 +95,11 @@ class CountriesController extends AppController
         $country = $this->Countries->get($id, [
             'contain' => ['CountriesAgents'],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $country->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $country = $this->Countries->patchEntity($country, $this->request->getData());
             // debug($this->request->getData());die();
@@ -137,6 +142,11 @@ class CountriesController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $country = $this->Countries->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $country->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Countries->delete($country)) {
             $this->Flash->success(__('The country has been deleted.'));
         } else {

@@ -33,12 +33,12 @@
         <?php foreach($newborns as $newborn) : ?>
           <?php if($newborn->policy->customer->country_id == $filter_country || empty($filter_country)) : ?>
             <tr>
-                <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $newborn->policy->id ?>"><?= $newborn->policy->policy_number ?></a></td>
-                <td class="text-center"><?= $newborn->policy->customer->name ?></td>
-                <td class="text-center"><?= $newborn->policy->customer->country->name ?></td>
-                <td class="text-center"><?= $newborn->policy->company->name . " / ".  $newborn->policy->option->name ?></td>
-                <td class="text-center"><?= date("M d Y", strtotime($newborn->due_date)) ?></td>
-                <td class="text-center"><?= $newborn->user->name ?></td>   
+                <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $newborn->policy->id ?>"><?= h($newborn->policy->policy_number) ?></a></td>
+                <td class="text-center"><?= h($newborn->policy->customer->name) ?></td>
+                <td class="text-center"><?= h($newborn->policy->customer->country->name) ?></td>
+                <td class="text-center"><?= h($newborn->policy->company->name . " / ".  $newborn->policy->option->name) ?></td>
+                <td class="text-center"><?= h(date("M d Y", strtotime($newborn->due_date))) ?></td>
+                <td class="text-center"><?= h($newborn->user->name) ?></td>   
                 <?php if($user_connected['role_id'] != 2 || $auths[31]) : ?>             
                 <td class="text-right">
                     <a href="<?= ROOT_DIREC ?>/newborns/delete/<?= $newborn->id ?>" class="btn btn-danger" style="float:right;margin-left:5px" onclick="return confirm('Are you sure you would like to delete this reminder?')">Delete</a>

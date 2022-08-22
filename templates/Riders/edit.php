@@ -14,14 +14,14 @@
             Riders
         </a></li>
         <li>Edit</li>
-        <li><?= $rider->name ?></li>
+        <li><?= h($rider->name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Rider <?= $rider->name ?>
+            Edit Rider <?= h($rider->name) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/riders"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

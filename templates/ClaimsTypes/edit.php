@@ -13,14 +13,14 @@
             Claim Details
         </a></li>
         <li>Edit</li>
-        <li class="active"><?= $claimsType->title ?></li>
+        <li class="active"><?= h($claimsType->title) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Claim Detail : <?= $claimsType->title ?>
+            Edit Claim Detail : <?= h($claimsType->title) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/claims/view/<?= $claimsType->claim_id ?>"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

@@ -98,6 +98,11 @@ class NewbornsController extends AppController
         $newborn = $this->Newborns->get($id, [
             'contain' => [],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $newborn->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $newborn = $this->Newborns->patchEntity($newborn, $this->request->getData());
             if ($this->Newborns->save($newborn)) {
@@ -126,6 +131,11 @@ class NewbornsController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $newborn = $this->Newborns->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $newborn->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $this->Newborns->delete($newborn);
 
         return $this->redirect(['action' => 'index']);

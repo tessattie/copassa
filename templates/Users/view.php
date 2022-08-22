@@ -41,14 +41,14 @@
                         </tr>
                         <tr>
                             <th><?= __('Subscription') ?></th>
-                            <td class="text-right"><?= $subscription_plans[$plan_type] ?></td>
+                            <td class="text-right"><?= h($subscription_plans[$plan_type]) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Status') ?></th>
                             <?php if($user->status == 1) : ?>
-                                <td class="text-right">  <span class="label label-success"> <?= $status[$user->status] ?></span></td>
+                                <td class="text-right">  <span class="label label-success"> <?= h($status[$user->status]) ?></span></td>
                             <?php else : ?>
-                                <td class="text-right">  <span class="label label-danger"> <?= $status[$user->status] ?></span></td>
+                                <td class="text-right">  <span class="label label-danger"> <?= h($status[$user->status]) ?></span></td>
                             <?php endif; ?>
                         </tr>
                     </table>

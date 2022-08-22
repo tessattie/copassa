@@ -86,19 +86,19 @@
                         }
                     ?>
                 <tr <?= $style ?>>
-                    <td><?= $employee->membership_number ?></td>
-                    <td class="text-center"><?= $family->last_name ?></td>
-                    <td class="text-center"><?= $family->first_name ?></td>
+                    <td><?= h($employee->membership_number) ?></td>
+                    <td class="text-center"><?= h($family->last_name) ?></td>
+                    <td class="text-center"><?= h($family->first_name) ?></td>
                     <?php if($dob != "N/A") : ?>
-                    <td class="text-center"><?= date('M d Y', strtotime($dob)) ?></td>
+                    <td class="text-center"><?= h(date('M d Y', strtotime($dob))) ?></td>
                 <?php  else : ?>
                     <td class="text-center">N/A</td>
                 <?php   endif; ?>
-                    <td class="text-center"><?= $age ?></td>
-                    <td class="text-center"><?= $genders[$family->gender] ?></td>
-                    <td class="text-center"><?= $family->country ?></td>
-                    <td class="text-center"><?= $relationships[$family->relationship ] ?></td>
-                    <td class="text-right"><?= number_format($family->premium, 2, ".", ",") ?></td>
+                    <td class="text-center"><?= h($age) ?></td>
+                    <td class="text-center"><?= h($genders[$family->gender]) ?></td>
+                    <td class="text-center"><?= h($family->country) ?></td>
+                    <td class="text-center"><?= h($relationships[$family->relationship ]) ?></td>
+                    <td class="text-right"><?= h(number_format($family->premium, 2, ".", ",")) ?></td>
                 </tr>
                 
             <?php endforeach; ?>

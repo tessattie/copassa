@@ -14,8 +14,8 @@ $summary_cancelations = 0;
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/Renewals">Renewals</a></li>
         <li>View</li>
-        <li><?= $renewal->business->name ?></li>
-        <li><?= $renewal->year ?></li>
+        <li><?= h($renewal->business->name) ?></li>
+        <li><?= h($renewal->year) ?></li>
         <a href="<?= ROOT_DIREC ?>/renewals/exportexcel/<?= $renewal->id ?>" style="float: right;background: black;color: white;padding: 4px 8px;margin-top:-5px">Excel</a>
         
     </ol>
@@ -29,7 +29,7 @@ $summary_cancelations = 0;
         <!-- <div class="panel-body articles-container">        -->
             <ul class="nav nav-tabs">
                 <?php foreach($groups as $group) : ?>
-                    <li><a href="#group_<?= $group->id ?>" data-toggle="tab"><?= $group->grouping_number ?></a></li>
+                    <li><a href="#group_<?= $group->id ?>" data-toggle="tab"><?= h($group->grouping_number) ?></a></li>
                 <?php endforeach; ?>
                 <li style="float:right" class="active"><a href="#summary" data-toggle="tab">Summary</a></li>
                 <li style="float:right"><a href="#transactions" data-toggle="tab">Transactions</a></li>
@@ -78,15 +78,15 @@ $summary_cancelations = 0;
                                         $membership_number = $transaction->employee->membership_number;
                                     ?>
                                 <tr style="background:<?= $background ?>">
-                                    <td><?= $transaction->employee->membership_number ?></td>
+                                    <td><?= h($transaction->employee->membership_number) ?></td>
                                     
-                                    <td class="text-center"><?= $transaction->family->last_name ?></td>
+                                    <td class="text-center"><?= h($transaction->family->last_name) ?></td>
 
-                                    <td class="text-center"><?= $transaction->family->first_name ?></td>
-                                    <td class="text-center"><?= date('m/d/Y', strtotime($dob)) ?></td>
-                                    <td class="text-center"><?= $age ?></td>
-                                    <td class="text-center"><?= $genders[$transaction->family->gender] ?></td>
-                                    <td class="text-center"><?= $relationships[$transaction->family->relationship ] ?></td>
+                                    <td class="text-center"><?= h($transaction->family->first_name) ?></td>
+                                    <td class="text-center"><?= h(date('m/d/Y', strtotime($dob))) ?></td>
+                                    <td class="text-center"><?= h($age) ?></td>
+                                    <td class="text-center"><?= h($genders[$transaction->family->gender]) ?></td>
+                                    <td class="text-center"><?= h($relationships[$transaction->family->relationship ]) ?></td>
                                     <?php if($transaction->type == 1) : ?>
                                         <td class="text-center"><span class="label label-warning">PREMIUM</span></td>
                                     <?php elseif($transaction->type == 2) : ?>
@@ -98,7 +98,7 @@ $summary_cancelations = 0;
                                     <?php endif; ?>
 
                                     <?php if($transaction->debit > 0) :  ?>
-                                        <td class="text-right" style="font-weight:bold"><?= number_format($transaction->debit,2,".",",") ?></td>
+                                        <td class="text-right" style="font-weight:bold"><?= h(number_format($transaction->debit,2,".",",")) ?></td>
                                     <?php else :  ?>
                                         <td class="text-right" style="color:green;font-weight:bold"></td>
                                     <?php endif; ?>
@@ -143,21 +143,21 @@ $summary_cancelations = 0;
                             <?php if($transaction->type != 1) : ?>
                                 <?php $total_credit = $total_credit + $transaction->credit; $total_debit = $total_debit + $transaction->debit; ?>
                                 <tr>
-                                    <td><?= date('m/d/Y', strtotime($transaction->created)) ?></td>
+                                    <td><?= h(date('m/d/Y', strtotime($transaction->created))) ?></td>
                                     <?php if(!empty($transaction->employee)) : ?>
-                                        <td class="text-center"><?= $transaction->employee->membership_number ?></td>
+                                        <td class="text-center"><?= h($transaction->employee->membership_number) ?></td>
                                     <?php else : ?>
                                         <td class="text-center">-</td>
                                     <?php endif; ?>
 
                                     <?php if(!empty($transaction->employee)) : ?>
-                                        <td class="text-center"><?= $transaction->employee->first_name. " ".$transaction->employee->last_name ?></td>
+                                        <td class="text-center"><?= h($transaction->employee->first_name. " ".$transaction->employee->last_name) ?></td>
                                     <?php else : ?>
                                         <td class="text-center">-</td>
                                     <?php endif; ?>
 
                                     <?php if(!empty($transaction->family)) : ?>
-                                        <td class="text-center"><?= $transaction->family->first_name." ".$transaction->family->last_name ?></td>
+                                        <td class="text-center"><?= h($transaction->family->first_name." ".$transaction->family->last_name) ?></td>
                                     <?php else : ?>
                                         <td class="text-center">-</td>
                                     <?php endif; ?>
@@ -176,13 +176,13 @@ $summary_cancelations = 0;
                                     <?php endif; ?>
 
                                     <?php if($transaction->debit > 0) :  ?>
-                                        <td class="text-center" style="font-weight:bold;color:red"><?= number_format($transaction->debit,2,".",",") ?></td>
+                                        <td class="text-center" style="font-weight:bold;color:red"><?= h(number_format($transaction->debit,2,".",",")) ?></td>
                                     <?php else :  ?>
                                         <td class="text-center" style="color:green;font-weight:bold"></td>
                                     <?php endif; ?>
 
                                      <?php if($transaction->credit > 0) :  ?>
-                                        <td class="text-center" style="font-weight:bold;color:green"><?= number_format($transaction->credit,2,".",",") ?></td>
+                                        <td class="text-center" style="font-weight:bold;color:green"><?= h(number_format($transaction->credit,2,".",",")) ?></td>
                                     <?php else :  ?>
                                         <td class="text-center" style="color:green;font-weight:bold"></td>
                                     <?php endif; ?>
@@ -194,7 +194,7 @@ $summary_cancelations = 0;
                                     <?php endif; ?>
 
 
-                                    <td class="text-center"><?= $transaction->memo ?></td>
+                                    <td class="text-center"><?= h($transaction->memo) ?></td>
                                     
                                     <td class="text-right">
                                         <?php if($transaction->status == 1) : ?>
@@ -227,36 +227,36 @@ $summary_cancelations = 0;
                                 <tbody>
                                     <tr>
                                         <th>Company</th>
-                                        <td class="text-right"><?= $renewal->business->name ?></td>
+                                        <td class="text-right"><?= h($renewal->business->name) ?></td>
                                     </tr>
                                     <tr>
                                         <th>Created</th>
-                                        <td class="text-right"><?= date('F d Y',strtotime($renewal->created)) ?></td>
+                                        <td class="text-right"><?= h(date('F d Y',strtotime($renewal->created))) ?></td>
                                     </tr>
                                     <tr>
                                         <th>Renewal Year</th>
-                                        <td class="text-right"><?= $renewal->year ?></td>
+                                        <td class="text-right"><?= h($renewal->year) ?></td>
                                     </tr>
                                     <tr>
                                         <th>Groups</th>
-                                        <td class="text-right"><span class="label label-warning"><?= count($renewal->business->groupings) ?></span></td>
+                                        <td class="text-right"><span class="label label-warning"><?= h(count($renewal->business->groupings)) ?></span></td>
                                     </tr>
                                     <tr>
                                         <th>Premium</th>
-                                        <td class="text-right"><?= number_format($summary_due, 2, ".", ",") ?></td>
+                                        <td class="text-right"><?= h(number_format($summary_due, 2, ".", ",")) ?></td>
                                     </tr>
                                     <tr>
                                         <th>Payments / Refunds</th>
-                                        <td class="text-right"><?= number_format($summary_payments, 2, ".", ",") ?></td>
+                                        <td class="text-right"><?= h(number_format($summary_payments, 2, ".", ",")) ?></td>
                                     </tr>
                                     <tr>
                                         <th>Cancelations</th>
-                                        <td class="text-right"><?= number_format($summary_cancelations, 2, ".", ",") ?></td>
+                                        <td class="text-right"><?= h(number_format($summary_cancelations, 2, ".", ",")) ?></td>
                                     </tr>
                                     <tr>
                                         <th>Balance</th>
                                         <?php $balance = $summary_due - $summary_payments - $summary_cancelations ?>
-                                        <td class="text-right"><?= number_format($balance, 2, ".", ",") ?></td>
+                                        <td class="text-right"><?= h(number_format($balance, 2, ".", ",")) ?></td>
                                     </tr>
                                 </tbody>
                             </table>

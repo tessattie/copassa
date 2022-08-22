@@ -42,20 +42,20 @@
             <?php foreach($companies as $company) : ?>
                 <?php if($company->country_id == $filter_country || empty($filter_country)) : ?>
                 <tr>
-                    <td><?= $company->name ?></td>
-                    <td class="text-center"><?= $company_types[$company->type] ?></td>
-                    <td class="text-center"><?= $company->address ?></td>
-                    <td class="text-center"><?= $company->phone ?></td>
-                    <td class="text-center"><?= $company->email ?></td>
-                    <td class="text-center"><span class="label label-warning"><?= count($company->options) ?></span></td>
+                    <td><?= h($company->name) ?></td>
+                    <td class="text-center"><?= h($company_types[$company->type]) ?></td>
+                    <td class="text-center"><?= h($company->address) ?></td>
+                    <td class="text-center"><?= h($company->phone) ?></td>
+                    <td class="text-center"><?= h($company->email) ?></td>
+                    <td class="text-center"><span class="label label-warning"><?= h(count($company->options)) ?></span></td>
                     <?php if($user_connected['role_id'] != 2  || $auths[23] || $auths[24]) : ?>
-                    <td class="text-center"><span class="label label-info"><?= count($company->policies) ?></span></td>
+                    <td class="text-center"><span class="label label-info"><?= h(count($company->policies)) ?></span></td>
                     <?php endif; ?>
                     <?php if($user_connected['role_id'] != 2 || $auths[12]) : ?>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/companies/edit/<?= $company->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <?php if(count($company->options) == 0 && count($company->policies) == 0) : ?>
-                        <a href="<?= ROOT_DIREC ?>/companies/delete/<?= $company->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= $company->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <a href="<?= ROOT_DIREC ?>/companies/delete/<?= $company->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= h($company->name) ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                         <?php endif; ?>
                     </td>
                 <?php endif; ?>

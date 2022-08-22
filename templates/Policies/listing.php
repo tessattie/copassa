@@ -99,30 +99,30 @@
             <tbody> 
                 <?php foreach($policies as $policy) : ?>
                     <tr>
-                        <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
-                        <td class="text-center"><?= $policy->customer->name ?></td>
+                        <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= h($policy->policy_number) ?></a></td>
+                        <td class="text-center"><?= h($policy->customer->name) ?></td>
                         
                         <?php if(!empty($policy->company)) : ?>
                             <?php if(!empty($policy->option)) : ?>
-                            <td class="text-center"><?= $policy->company->name . " / ".  $policy->option->name ?></td>
+                            <td class="text-center"><?= h($policy->company->name . " / ".  $policy->option->name) ?></td>
                             <?php else : ?>
-                                <td class="text-center"><?= $policy->company->name ?></td>
+                                <td class="text-center"><?= h($policy->company->name) ?></td>
                             <?php endif; ?>
                         <?php else : ?>
                             <?php if(!empty($policy->option)) : ?>
-                            <td class="text-center"><?= $policy->option->name ?></td>
+                            <td class="text-center"><?= h($policy->option->name) ?></td>
                             <?php else : ?>
                                 <td class="text-center"></td>
                             <?php endif; ?>
                         <?php endif; ?>
                         
-                        <td class="text-center"><?= number_format($policy->premium,2,".",",") ?></td>
-                        <td class="text-center"><?= $modes[$policy->mode] ?></td>
-                        <td class="text-right"><?= date('M d Y', strtotime($policy->effective_date)) ?></td>
-                        <td class="text-center"><?= substr($policy->customer->country->name, 0, 5) ?></td>
+                        <td class="text-center"><?= h(number_format($policy->premium,2,".",",")) ?></td>
+                        <td class="text-center"><?= h($modes[$policy->mode]) ?></td>
+                        <td class="text-right"><?= h(date('M d Y', strtotime($policy->effective_date))) ?></td>
+                        <td class="text-center"><?= h(substr($policy->customer->country->name, 0, 5)) ?></td>
                         <?php if(!empty($policy->customer->agent)) : ?>
 
-                            <td class="text-center"><?= $policy->customer->agent->name ?></td>
+                            <td class="text-center"><?= h($policy->customer->agent->name) ?></td>
                         <?php else : ?>
                             <td></td>
                         <?php endif; ?>

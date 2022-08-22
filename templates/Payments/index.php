@@ -30,7 +30,7 @@
                 <tbody>
                     <?php foreach($policies as $pp) : ?>
                         <tr>
-                            <th><a href="<?= ROOT_DIREC ?>/payments/index/<?= $pp->id ?>"><?= $pp->policy_number . " - " . $pp->customer->name . " - " . $company_types[$pp->company->type] ?></a></th>
+                            <th><a href="<?= ROOT_DIREC ?>/payments/index/<?= $pp->id ?>"><?= h($pp->policy_number . " - " . $pp->customer->name . " - " . $company_types[$pp->company->type]) ?></a></th>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -41,7 +41,7 @@
     <div class="col-md-8">
         <div class="panel panel-default articles">
         <div class="panel-heading">
-            Payments <?= (!empty($policy_id)) ? " : POLICY ".$policy->policy_number." - ".$policy->customer->name : "" ?>
+            Payments <?= (!empty($policy_id)) ? " : POLICY ". h($policy->policy_number." - ".$policy->customer->name) : "" ?>
             <?php if(!empty($policy_id)) : ?>
             <ul class="pull-right panel-settings panel-button-tab-right">
                             <li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
@@ -80,9 +80,9 @@
                 <?php foreach($payments as $p) : ?>
                     <tr>
                         <td><?= 4000+$p->id ?></td>
-                        <td class="text-center"><?= number_format($p->amount, 2, ".", ",")." ".$p->rate->name;  ?></td>
-                        <td class="text-center"><?= date('d M Y', strtotime($p->created)); ?></td>
-                        <td class="text-center"><?= $p->memo ?></td>
+                        <td class="text-center"><?= h(number_format($p->amount, 2, ".", ",")." ".$p->rate->name);  ?></td>
+                        <td class="text-center"><?= h(date('d M Y', strtotime($p->created))); ?></td>
+                        <td class="text-center"><?= h($p->memo) ?></td>
                         <?php if($p->status == 1) : ?>
                             <td class="text-center"><span class="label label-success">YES</span></td>
                         <?php else : ?>

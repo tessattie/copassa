@@ -16,7 +16,7 @@
       </div>
       <?= $this->Form->create($filee, ['enctype' => 'multipart/form-data']) ?>
       <div class="modal-body">
-        <p>Active Folder : <?= $active_folder->name ?></p>
+        <p>Active Folder : <?= h($active_folder->name) ?></p>
         <hr>    
         
     <fieldset>
@@ -53,7 +53,7 @@
       </div>
       <?= $this->Form->create($folderr) ?>
       <div class="modal-body">
-        <p>Active Folder : <?= $active_folder->name ?></p>
+        <p>Active Folder : <?= h($active_folder->name) ?></p>
         <hr>    
         
     <fieldset>
@@ -96,7 +96,7 @@
                             <li class="list-group-item d-flex <?= $active ?>" style="padding-left:<?= $p  + ($i)*17 ?>px!important">
                         <?php endif; ?>
                                 <p class="float-left" style="margin-right:3px;margin-bottom:0px">
-                                    <i class="fa fa-folder" style="vertical-align: middle;color:orange"></i><a href="<?= ROOT_DIREC ?>/folders/show/<?= $id ?>" style="vertical-align: middle;color:black;margin-left:3px"><span> <?= str_replace("_", "", $name) ?></span></a>
+                                    <i class="fa fa-folder" style="vertical-align: middle;color:orange"></i><a href="<?= ROOT_DIREC ?>/folders/show/<?= $id ?>" style="vertical-align: middle;color:black;margin-left:3px"><span> <?= h(str_replace("_", "", $name)) ?></span></a>
                                 </p>
                                 
                             </li>
@@ -114,7 +114,7 @@
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb ml-1">
                                 <?php   foreach ($breadcrumbs as $b) : ?>
-                                    <li class="breadcrumb-item"><a href="<?= ROOT_DIREC ?>/folders/show/<?= $b->id ?>"><?= $b->name ?></a></li>
+                                    <li class="breadcrumb-item"><a href="<?= ROOT_DIREC ?>/folders/show/<?= $b->id ?>"><?= h($b->name) ?></a></li>
                                 <?php   endforeach ; ?>
                                 <?php if($auths[44]) : ?>
                                 <button class="btn btn-primary"  data-toggle="modal" data-target="#newFile" style="height: 30px;
@@ -151,7 +151,7 @@
                             <span class="fa fa-folder" style="font-size:30px;color:orange"></span>
                             <div class="card-body">
                                 <h4 class="card-title"><?= $folder->name ?></h4>
-                                <p class="card-text"><small class="text-muted">Last updated <?= $folder->modified ?></small></p>
+                                <p class="card-text"><small class="text-muted">Last updated <?= h($folder->modified) ?></small></p>
 
                             </div></a>
                             <?php if($auths[44]) : ?>
@@ -174,7 +174,7 @@
                             <img class="card-img-top img-fluid" src="<?= ROOT_DIREC ?>/img/<?= $extensions[$file->extension] ?>" style="width:30px;height:30px" alt="Card image cap" />
                             <div class="card-body">
                                 <h4 class="card-title"><?= $file->name ?></h4>
-                                <p class="card-text"><small class="text-muted">Last updated <?= $file->modified ?></small></p>
+                                <p class="card-text"><small class="text-muted">Last updated <?= h($file->modified) ?></small></p>
                                 
                             </div></a>
                             <?php if($auths[44]) : ?>

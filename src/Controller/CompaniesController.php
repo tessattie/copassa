@@ -100,6 +100,11 @@ class CompaniesController extends AppController
         $company = $this->Companies->get($id, [
             'contain' => ['Options' => ['Users', 'Policies']],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $company->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $old_data = json_encode($company);
         $option = $this->Companies->Options->newEmptyEntity();
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -128,6 +133,11 @@ class CompaniesController extends AppController
     {
         $this->request->allowMethod(['post', 'delete', 'get']);
         $company = $this->Companies->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $company->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Companies->delete($company)) {
             $this->Flash->success(__('The company has been deleted.'));
         } else {

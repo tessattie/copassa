@@ -73,6 +73,10 @@ class DependantsController extends AppController
         $dependant = $this->Dependants->get($id, [
             'contain' => [],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $dependant->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->request->is(['patch', 'post', 'put'])) {
             $dependant = $this->Dependants->patchEntity($dependant, $this->request->getData());
             if ($this->Dependants->save($dependant)) {
@@ -99,6 +103,11 @@ class DependantsController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $dependant = $this->Dependants->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $dependant->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $policy_id = $dependant->policy_id;
         if ($this->Dependants->delete($dependant)) {
             $this->Flash->success(__('The dependant has been deleted.'));

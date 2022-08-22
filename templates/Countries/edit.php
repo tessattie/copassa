@@ -14,7 +14,7 @@
             Countries
         </a></li>
         <li>Edit</li>
-        <li><?= substr($country->name, 0, 15) ?>...</li>
+        <li><?= h(substr($country->name, 0, 15)) ?>...</li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
@@ -25,7 +25,7 @@
             <?= $this->Form->create($country) ?>
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Edit Country : <?= $country->name ?>
+                    Edit Country : <?= h($country->name) ?>
                     <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/countries"><em class="fa fa-arrow-left"></em></a>
                 </div>
             <div class="panel-body articles-container">       
@@ -58,7 +58,7 @@
                                     }
                                 ?>
                                 <tr>
-                                    <td><?= $agent->name ?></td>
+                                    <td><?= h($agent->name) ?></td>
                                     <td class="text-right">
                                         <?= $this->Form->checkbox('agents._ids.'.$i, array("value" => $agent->id, 'checked' => $checked)) ?>
                                     </td>

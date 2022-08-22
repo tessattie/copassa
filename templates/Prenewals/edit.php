@@ -16,14 +16,14 @@
             Renewals
         </a></li>
         <li class="active">Edit</li>
-        <li class="active">#<?= $prenewal->policy->policy_number ?></li>
+        <li class="active">#<?= h($prenewal->policy->policy_number) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Renewal for policy #<?= $prenewal->policy->policy_number ?>
+            Edit Renewal for policy #<?= h($prenewal->policy->policy_number) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/prenewals/index/<?= $prenewal->policy_id ?>"><em class="fa fa-arrow-left"></em></a>
         </div>
         <div class="panel-body articles-container">       

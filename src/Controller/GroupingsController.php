@@ -80,6 +80,10 @@ class GroupingsController extends AppController
             'contain' => ['Businesses', 'Companies', 'Employees' => ['Families', 'Groupings' => ['Companies']]],
         ]);
 
+        if($this->Auth->user()['tenant_id'] != $grouping->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $this->set(compact('grouping'));
     }
 
@@ -159,6 +163,11 @@ class GroupingsController extends AppController
         $grouping = $this->Groupings->get($id, [
             'contain' => [],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $grouping->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $grouping = $this->Groupings->patchEntity($grouping, $this->request->getData());
             if ($this->Groupings->save($grouping)) {
@@ -187,6 +196,11 @@ class GroupingsController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $grouping = $this->Groupings->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $grouping->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Groupings->delete($grouping)) {
             $this->Flash->success(__('The group has been deleted.'));
         } else {

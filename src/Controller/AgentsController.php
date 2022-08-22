@@ -91,9 +91,15 @@ class AgentsController extends AppController
         if(!$this->authorize()){
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
+
         $agent = $this->Agents->get($id, [
             'contain' => ['CountriesAgents'],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $agent->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             // debug($this->request->getData()); die();
             $agent = $this->Agents->patchEntity($agent, $this->request->getData());
@@ -136,6 +142,11 @@ class AgentsController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $agent = $this->Agents->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $agent->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+        
         if ($this->Agents->delete($agent)) {
             $this->Flash->success(__('The agent has been deleted.'));
         } else {

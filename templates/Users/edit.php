@@ -13,14 +13,14 @@
         <li><a href="<?= ROOT_DIREC ?>/users">
             Users
         </a></li>
-        <li class="active">Edit <?= $user->name ?></li>
+        <li class="active">Edit <?= h($user->name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit User : <?= $user->name ?>
+            Edit User : <?= h($user->name) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/users"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

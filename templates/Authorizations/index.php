@@ -26,7 +26,7 @@ $types = array(1 => "Reminders", 2 => "Reports", 3 => "Insurance Companies", 4 =
                         <?php else : ?>
                             <tr>
                         <?php endif; ?>
-                    <td><a style="color:black" href="<?= ROOT_DIREC ?>/authorizations/index/<?= $user->id ?>"><?= $user->name ?></a></td>
+                    <td><a style="color:black" href="<?= ROOT_DIREC ?>/authorizations/index/<?= $user->id ?>"><?= h($user->name) ?></a></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -50,7 +50,7 @@ $types = array(1 => "Reminders", 2 => "Reports", 3 => "Insurance Companies", 4 =
                     <?php $type = $authorization->type; ?>
                 <?php endif; ?>
                 <tr>
-                    <td><?= $authorization->name ?></td>
+                    <td><?= h($authorization->name) ?></td>
                     <td class="text-center">
                         <?php $condition = false; if(!empty($user_authorizations)) : ?>
                             <?php  

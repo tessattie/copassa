@@ -38,13 +38,13 @@ $rates = array(1 => "HTG", 2 => "USD");
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-center"><?= $payment->policy->policy_number ?></td>
-                                <td class="text-center"><?= $payment->customer->name ?></td>
-                                <td class="text-center"><?= $modes[$payment->policy->mode] ?></td>
-                                <td class="text-center"><?= number_format($payment->policy->premium,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= number_format($payment->policy->fee,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= date("M d Y", strtotime($payment->policy->effective_date)) ?></td>
-                                <td class="text-center"><?= date("M d Y", strtotime($payment->policy->paid_until)) ?></td>
+                                <td class="text-center"><?= h($payment->policy->policy_number) ?></td>
+                                <td class="text-center"><?= h($payment->customer->name) ?></td>
+                                <td class="text-center"><?= h($modes[$payment->policy->mode]) ?></td>
+                                <td class="text-center"><?= h(number_format($payment->policy->premium,2,".",",")) ?></td>
+                                <td class="text-center"><?= h(number_format($payment->policy->fee,2,".",",")) ?></td>
+                                <td class="text-center"><?= h(date("M d Y", strtotime($payment->policy->effective_date))) ?></td>
+                                <td class="text-center"><?= h(date("M d Y", strtotime($payment->policy->paid_until))) ?></td>
                             </tr>
                         </tbody>
                     </table>

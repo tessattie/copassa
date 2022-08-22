@@ -36,14 +36,14 @@
         <?php foreach($pendings as $pending) : ?>
           <?php if($pending->country_id == $filter_country || empty($filter_country)) : ?>
             <tr>
-                <td class="text-left"><?= $pending->name ?></td>
-                <td class="text-center"><?= $pending->company->name ?></td>
-                <td class="text-center"><?= $pending->option->name ?></td>
-                <td class="text-center"><?= $pending->country->name ?></td>
-                <td class="text-center"><?= $pending->dependants ?></td>
-                <td class="text-center"><?= date("M d Y", strtotime($pending->created)) ?></td>
-                <td class="text-center"><?= $pending->user->name ?></td>  
-                <td class="text-center"><?= date("M d Y", strtotime($pending->last_contact_date)) ?></td> 
+                <td class="text-left"><?= h($pending->name) ?></td>
+                <td class="text-center"><?= h($pending->company->name) ?></td>
+                <td class="text-center"><?= h($pending->option->name) ?></td>
+                <td class="text-center"><?= h($pending->country->name) ?></td>
+                <td class="text-center"><?= h($pending->dependants) ?></td>
+                <td class="text-center"><?= h(date("M d Y", strtotime($pending->created))) ?></td>
+                <td class="text-center"><?= h($pending->user->name) ?></td>  
+                <td class="text-center"><?= h(date("M d Y", strtotime($pending->last_contact_date))) ?></td> 
                 <?php if($pending->status == 1) : ?>   
                 <td class="text-center"><span class="label label-success">Pending</span></td>  
                 <?php elseif($pending->status == 2) : ?>    

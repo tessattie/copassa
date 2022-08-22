@@ -23,7 +23,7 @@ $paiduntil = $yesterday->format('Y-m-d');
             <em class="fa fa-home"></em>
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/policies">Policies</a></li>
-        <li><?= $policy->policy_number ?> - <?= $policy->customer->name ?></li>
+        <li><?= h($policy->policy_number) ?> - <?= h($policy->customer->name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
@@ -32,7 +32,7 @@ $paiduntil = $yesterday->format('Y-m-d');
         <div class="col-md-9">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Policy : <?= $policy->policy_number ?> <?= (!empty($policy->plan)) ? " - ".$plans[$policy->plan] : "" ?>
+                    Policy : <?= h($policy->policy_number) ?> <?= (!empty($policy->plan)) ? " - ".h($plans[$policy->plan]) : "" ?>
                     <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                     <a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a>
                 <?php endif; ?>
@@ -41,72 +41,72 @@ $paiduntil = $yesterday->format('Y-m-d');
                    <table class="table table-striped">
                     <tr>
                         <th><?= __('Company') ?></th>
-                            <td class="text-right"><?= $policy->company->name ?></td>
+                            <td class="text-right"><?= h($policy->company->name) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Option') ?></th>
-                            <td class="text-right"><?= $policy->option->name. " - " . $policy->option->option_name ?></td>
+                            <td class="text-right"><?= h($policy->option->name. " - " . $policy->option->option_name) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Type') ?></th>
-                            <td class="text-right"><?= $company_types[$policy->company->type] ?></td>
+                            <td class="text-right"><?= h($company_types[$policy->company->type]) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Policy Number') ?></th>
-                            <td class="text-right"><?= $policy->policy_number ?></td>
+                            <td class="text-right"><?= h($policy->policy_number) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Policy Holder') ?></th>
-                            <td class="text-right"><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
+                            <td class="text-right"><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= h($policy->customer->name) ?></a></td>
                         </tr>
                         <?php if(!empty($policy->customer->country)) : ?>
                         <tr>
                             <th><?= __('Country') ?></th>
-                            <td class="text-right"><?= $policy->customer->country->name ?></td>
+                            <td class="text-right"><?= h($policy->customer->country->name) ?></td>
                         </tr>
                         <?php endif; ?>
                         <?php if(!empty($policy->customer->agent)) : ?>
                         <tr>
                             <th><?= __('Agent') ?></th>
-                            <td class="text-right"><?= $policy->customer->agent->name ?></td>
+                            <td class="text-right"><?= h($policy->customer->agent->name) ?></td>
                         </tr>
                         <?php endif; ?>
                         <tr>
                             <th><?= __('Passport Number') ?></th>
-                            <td class="text-right"><?= $policy->passport_number ?></td>
+                            <td class="text-right"><?= h($policy->passport_number) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Effective Date') ?></th>
-                            <td class="text-right"><?= date('M d Y', strtotime($policy->effective_date)) ?></td>
+                            <td class="text-right"><?= h(date('M d Y', strtotime($policy->effective_date))) ?></td>
                         </tr>
                         
                         <tr>
                             <th><?= __('Outside USA Deductible') ?></th>
-                            <td class="text-right"><?= number_format($policy->deductible) ?> USD</td>
+                            <td class="text-right"><?= h(number_format($policy->deductible)) ?> USD</td>
                         </tr>
                         <tr>
                             <th><?= __('Inside USA Deductible') ?></th>
-                            <td class="text-right"><?= number_format($policy->usa_deductible) ?> USD</td>
+                            <td class="text-right"><?= h(number_format($policy->usa_deductible)) ?> USD</td>
                         </tr>
                         <tr>
                             <th><?= __('Max Coverage') ?></th>
-                            <td class="text-right"><?= number_format($policy->max_coverage) ?> USD</td>
+                            <td class="text-right"><?= h(number_format($policy->max_coverage)) ?> USD</td>
                         </tr>
                         <tr>
                             <th><?= __('Payment Mode') ?></th>
-                            <td class="text-right"><?= $modes[$policy->mode] ?></td>
+                            <td class="text-right"><?= h($modes[$policy->mode]) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Premium') ?></th>
-                            <td class="text-right"><?= $this->Number->format($policy->premium) ?> USD</td>
+                            <td class="text-right"><?= h($this->Number->format($policy->premium)) ?> USD</td>
                         </tr>
                         <tr>
                             <th><?= __('Paid Until') ?></th>
-                            <td class="text-right"><?= date('M d Y', strtotime($policy->paid_until)) ?></td>
+                            <td class="text-right"><?= h(date('M d Y', strtotime($policy->paid_until))) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Fee') ?></th>
-                            <td class="text-right"><?= $this->Number->format($policy->fee) ?> USD</td>
+                            <td class="text-right"><?= h($this->Number->format($policy->fee)) ?> USD</td>
                         </tr>
                         
                         
@@ -175,22 +175,22 @@ $paiduntil = $yesterday->format('Y-m-d');
                                 
                             ?>
                                 <tr>
-                                    <td class="text-center"><?= $dep->name ?></td>
-                                    <td class="text-center"><?= $relations[$dep->relation] ?></td>
+                                    <td class="text-center"><?= h($dep->name) ?></td>
+                                    <td class="text-center"><?= h($relations[$dep->relation]) ?></td>
                                     <?php if(!empty($dep->dob)) : ?>
-                                        <td class="text-center"><?= $dob ?></td>
-                                    <td class="text-center"><?= $age ?></td>
+                                        <td class="text-center"><?= h($dob) ?></td>
+                                    <td class="text-center"><?= h($age) ?></td>
                                     <?php else : ?>
                                         <td></td>
                                         <td></td>
                                     <?php endif; ?>
                                     
-                                    <td class="text-center"><?= $sexe[$dep->sexe]; ?></td>
-                                    <td class="text-center"><?= $dep->limitations ?></td>
+                                    <td class="text-center"><?= h($sexe[$dep->sexe]); ?></td>
+                                    <td class="text-center"><?= h($dep->limitations) ?></td>
                                     <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
                                     <td class="text-center">
                                         <a href="<?= ROOT_DIREC ?>/dependants/edit/<?= $dep->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
-                                        <a href="<?= ROOT_DIREC ?>/dependants/delete/<?= $dep->id ?>" onclick="return confirm('Are you sure you would like to delete the dependant <?= $dep->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                                        <a href="<?= ROOT_DIREC ?>/dependants/delete/<?= $dep->id ?>" onclick="return confirm('Are you sure you would like to delete the dependant <?= h($dep->name) ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                                     </td>
                                 <?php endif; ?>
                                 </tr>
@@ -226,9 +226,9 @@ $paiduntil = $yesterday->format('Y-m-d');
             <?php if(!empty($policy->prenewals)) : ?>
                 <?php foreach($policy->prenewals as $renewal) : ?>
                     <tr>
-                        <td><?= date('F d Y', strtotime($renewal->renewal_date)); ?></td>
-                        <td class="text-center"><?= number_format($renewal->premium, 2, ".", ",") ?></td>
-                        <td class="text-center"><?= number_format($renewal->fee, 2, ".", ",") ?></td>
+                        <td><?= h(date('F d Y', strtotime($renewal->renewal_date))); ?></td>
+                        <td class="text-center"><?= h(number_format($renewal->premium, 2, ".", ",")) ?></td>
+                        <td class="text-center"><?= h(number_format($renewal->fee, 2, ".", ",")) ?></td>
                         <?php if($renewal->status == 1) : ?>
                             <td class="text-center"><span class="label label-info">Upcomming</span></td>
                         <?php elseif($renewal->status == 3) : ?>
@@ -243,7 +243,7 @@ $paiduntil = $yesterday->format('Y-m-d');
                             <td class="text-center"><span class="label label-danger">Canceled</span></td>
                         <?php endif; ?>
                         <?php if(!empty($renewal->payment_date)) : ?>
-                        <td class="text-center"><?= date('F d Y', strtotime($renewal->payment_date)); ?></td>
+                        <td class="text-center"><?= h(date('F d Y', strtotime($renewal->payment_date))); ?></td>
                         <?php else : ?>
                         <td></td>
                     <?php endif; ?>
@@ -279,10 +279,10 @@ $paiduntil = $yesterday->format('Y-m-d');
                             <?php foreach($riders as $rider) : ?>
                                 <tr>
                                     <?php if(in_array($rider->id, $policy_riders)) : ?>
-                                        <td><strong><?= $rider->name ?></strong></td>
+                                        <td><strong><?= h($rider->name) ?></strong></td>
                                         
                                     <?php else : ?>
-                                        <td><?= $rider->name ?></td>
+                                        <td><?= h($rider->name) ?></td>
                                     <?php endif; ?>
                                     <?php if($user_connected['role_id'] != 2  || $auths[50]) : ?>
                                     <td><input type="checkbox" value = "<?= $rider->id ?>" name="has_rider[]" <?= (in_array($rider->id, $policy_riders)) ? "checked" : "" ?>></td>
@@ -306,7 +306,7 @@ $paiduntil = $yesterday->format('Y-m-d');
                     Exclusions
                 </div>
                 <div class="panel-body articles-container">
-                    <p><?= $policy->exclusions ?></p>
+                    <p><?= h($policy->exclusions) ?></p>
                 </div>
             </div>
             <?php if($plan_type > 1) : ?>
@@ -326,10 +326,10 @@ $paiduntil = $yesterday->format('Y-m-d');
 
                     <div class="row">
                             <div class="col-xs-8">
-                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= $policy->customer->name . " - " . $policy->policy_number ?></p>
-                        <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= $claim->title ?></p>
-                        <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= $claim->description ?></p>
-                        <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= number_format($total, 2, ".", ",") ?></p>
+                                <p style="color:black"><span class="fa fa-user" style="margin-right:12px"></span> <?= h($policy->customer->name . " - " . $policy->policy_number) ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-file" style="margin-right:10px"></span> <strong>Diagnosis : </strong> <?= h($claim->title) ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-bars" style="margin-right:10px"></span> <strong>Description : </strong> <?= h($claim->description) ?></p>
+                        <p style="color:black;margin-top:10px"><span class="fa fa-dollar" style="margin-right:10px"></span> <strong>Total Due : </strong> <?= h(number_format($total, 2, ".", ",")) ?></p>
                             </div>
                             <div class="col-xs-4" class="text-right">
                                 <a class="btn btn-info" target="_blank" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>" style="float:right;margin-top:40px"><span class="fa fa-eye"></span></a>

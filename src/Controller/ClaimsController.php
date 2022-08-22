@@ -87,6 +87,10 @@ class ClaimsController extends AppController
             'contain' => ['Policies' => ['Customers', 'Companies', 'Options'], 'Dependants', 'Users', 'ClaimsTypes' => ['Types', 'Users', 'sort' => ['ClaimsTypes.created ASC']]],
         ]);
 
+        if($this->Auth->user()['tenant_id'] != $claim->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $claims_types = $this->Claims->ClaimsTypes->Types->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
 
         $this->set(compact('claim', 'claims_types'));
@@ -130,6 +134,10 @@ class ClaimsController extends AppController
         $claim = $this->Claims->get($claim_id, [
             'contain' => ['Policies' => ['Customers', 'Companies', 'Options'], 'Dependants', 'Users', 'ClaimsTypes' => ['Types', 'Users', 'sort' => ['ClaimsTypes.created ASC']]],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $claim->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
 
         $age = "N/A";
         if(!empty($claim->policy->customer->dob)){
@@ -369,6 +377,10 @@ class ClaimsController extends AppController
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
         $claim = $this->Claims->get($id, ['contain' => ['Policies']]);
+
+        if($this->Auth->user()['tenant_id'] != $claim->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->request->is(['patch', 'post', 'put'])) {
             $claim = $this->Claims->patchEntity($claim, $this->request->getData());
             if ($this->Claims->save($claim)) {
@@ -398,6 +410,11 @@ class ClaimsController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $claim = $this->Claims->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $claim->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Claims->delete($claim)) {
             $this->Flash->success(__('The claim has been deleted.'));
         } else {

@@ -16,14 +16,14 @@
             Settings
         </a></li>
         <li class="active">Edit</li>
-        <li class="active"><?= $type->name ?></li>
+        <li class="active"><?= h($type->name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Setting : <?= $type->name ?>
+            Edit Setting : <?= h($type->name) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/types"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

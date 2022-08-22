@@ -46,6 +46,11 @@ class NotesController extends AppController
         $this->request->allowMethod(['post', 'delete', 'get']);
 
         $note = $this->Notes->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $note->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $customer_id = $note->customer_id;
 
         $this->Notes->delete($note);

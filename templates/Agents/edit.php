@@ -13,7 +13,7 @@
             Agents
         </a></li>
         <li>Edit</li>
-        <li><?= $agent->name ?></li>
+        <li><?= h($agent->name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
@@ -24,7 +24,7 @@
             <?= $this->Form->create($agent) ?>
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Edit Agent : <?= $agent->name ?>
+                    Edit Agent : <?= h($agent->name) ?>
                     <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/agents"><em class="fa fa-arrow-left"></em></a>
                 </div>
             <div class="panel-body articles-container">       
@@ -54,7 +54,7 @@
                                     }
                                 ?>
                                 <tr>
-                                    <td><?= $country->name ?></td>
+                                    <td><?= h($country->name) ?></td>
                                     <td class="text-right">
                                         <?= $this->Form->checkbox('countries._ids.'.$i, array("value" => $country->id, 'checked' => $checked)) ?>
                                     </td>

@@ -99,6 +99,9 @@ class PendingsController extends AppController
         $pending = $this->Pendings->get($id, [
             'contain' => [],
         ]);
+        if($this->Auth->user()['tenant_id'] != $pending->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->request->is(['patch', 'post', 'put'])) {
             $pending = $this->Pendings->patchEntity($pending, $this->request->getData());
             if ($this->Pendings->save($pending)) {
@@ -132,6 +135,9 @@ class PendingsController extends AppController
             $pending = $this->Pendings->get($this->request->getData()['pending_id'], [
                 'contain' => [],
             ]);
+            if($this->Auth->user()['tenant_id'] != $pending->tenant_id){
+                return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+            }
             $pending->status = $this->request->getData()['status'];
             $pending->last_contact_date = $this->request->getData()['last_contact_date'];
             if ($this->Pendings->save($pending)) {
@@ -159,6 +165,9 @@ class PendingsController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $pending = $this->Pendings->get($id);
+        if($this->Auth->user()['tenant_id'] != $pending->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->Pendings->delete($pending)) {
             $this->Flash->success(__('The pending new business has been deleted.'));
         } else {

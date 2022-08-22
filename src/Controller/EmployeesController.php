@@ -378,6 +378,10 @@ class EmployeesController extends AppController
             'contain' => ['Businesses', 'Groupings', 'Families'],
         ]);
 
+        if($this->Auth->user()['tenant_id'] != $employee->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $this->set(compact('employee'));
     }
 
@@ -456,6 +460,11 @@ class EmployeesController extends AppController
         $employee = $this->Employees->get($id, [
             'contain' => [],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $employee->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $employee = $this->Employees->patchEntity($employee, $this->request->getData());
             if ($this->Employees->save($employee)) {
@@ -484,6 +493,10 @@ class EmployeesController extends AppController
         }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $employee = $this->Employees->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $employee->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $families = $this->Employees->Families->find("all", array("conditions" => array('employee_id' => $employee->id)));
         foreach($families as $family){
             $this->Employees->Families->delete($family);

@@ -40,13 +40,13 @@
             <tbody> 
             <?php foreach($employees as $employee) : ?>
                 <tr>
-                    <td><a href="<?= ROOT_DIREC ?>/employees/view/<?= $employee->id ?>"><?= $employee->first_name." ".$employee->last_name ?></a></td>
-                    <td class="text-center"><a href="<?= ROOT_DIREC ?>/businesses/view/<?= $employee->grouping->business_id ?>"><?= $employee->business->name ?></a></td>
-                    <td class="text-center"><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $employee->grouping_id ?>"><?= $employee->grouping->grouping_number ?></a></td>
-                    <td class="text-center"><?= $employee->grouping->company->name ?></td>
-                    <td class="text-center"><?= $company_types[$employee->grouping->company->type] ?></td>
-                    <td class="text-center"><?= $employee->membership_number ?></td>
-                    <td class="text-center"><?= number_format($employee->deductible, 2, ".", ",") ?></td>
+                    <td><a href="<?= ROOT_DIREC ?>/employees/view/<?= $employee->id ?>"><?= h($employee->first_name." ".$employee->last_name) ?></a></td>
+                    <td class="text-center"><a href="<?= ROOT_DIREC ?>/businesses/view/<?= $employee->grouping->business_id ?>"><?= h($employee->business->name) ?></a></td>
+                    <td class="text-center"><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $employee->grouping_id ?>"><?= h($employee->grouping->grouping_number) ?></a></td>
+                    <td class="text-center"><?= h($employee->grouping->company->name) ?></td>
+                    <td class="text-center"><?= h($company_types[$employee->grouping->company->type]) ?></td>
+                    <td class="text-center"><?= h($employee->membership_number) ?></td>
+                    <td class="text-center"><?= h(number_format($employee->deductible, 2, ".", ",")) ?></td>
                     <?php if($employee->status == 1) : ?>
                         <td class="text-center"><span class="label label-success">Active</span></td>
                     <?php else : ?>
@@ -56,7 +56,7 @@
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/employees/edit/<?= $employee->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <?php if(empty($employee->transactions)) : ?>
-                        <a href="<?= ROOT_DIREC ?>/employees/delete/<?= $employee->id ?>" onclick="return confirm('Are you sure you would like to delete the employee <?= $employee->grouping_number ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <a href="<?= ROOT_DIREC ?>/employees/delete/<?= $employee->id ?>" onclick="return confirm('Are you sure you would like to delete the employee <?= h($employee->grouping_number) ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                         <?php endif; ?>
                     </td>
                 <?php endif; ?>
@@ -74,6 +74,8 @@
     $('.datatable').DataTable({
         ordering: false
     } );
+
+
 } );</script>
 
 <style>

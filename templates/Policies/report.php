@@ -98,39 +98,39 @@
                     <tr <?= (!empty($renewal->payment_date) || $renewal->status == 2) ? "style='background:#dff0d8'" : '' ?>
 
                     <?= (empty($renewal->payment_date) && date("Y-m-d", strtotime($renewal->renewal_date)) < date('Y-m-d')) ? "style='background:#fcf8e3'" : '' ?> >
-                        <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= $policy->customer->name ?></a></td>
+                        <td><a href="<?= ROOT_DIREC ?>/customers/view/<?= $policy->customer_id ?>"><?= h($policy->customer->name) ?></a></td>
 
                         <?php if(!empty($age)) : ?>
-                            <td class="text-center"><?= $age ?></td>
+                            <td class="text-center"><?= h($age) ?></td>
                         <?php else : ?>
                             <td class="text-center"></td>
                         <?php endif; ?>
-                        <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
+                        <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= h($policy->policy_number) ?></a></td>
                         <?php if(!empty($policy->option->name)) : ?>
                             <?php if(!empty($policy->option->option_name)) : ?>
-                                <td class="text-center"><?= $policy->option->name . " - " . $policy->option->option_name ?></td>
+                                <td class="text-center"><?= h($policy->option->name . " - " . $policy->option->option_name) ?></td>
                             <?php else : ?>
-                                <td class="text-center"><?= $policy->option->name ?></td>
+                                <td class="text-center"><?= h($policy->option->name) ?></td>
                             <?php endif; ?>
                         <?php else : ?>
                             <?php if(!empty($policy->option->option_name)) : ?>
-                                <td class="text-center"><?= $policy->option->option_name ?></td>
+                                <td class="text-center"><?= h($policy->option->option_name) ?></td>
                             <?php else : ?>
                                 <td class="text-center"></td>
                             <?php endif; ?>
                         <?php endif; ?>
                         
-                        <td class="text-center"><?= $modes[$policy->mode] ?></td>
+                        <td class="text-center"><?= h($modes[$policy->mode]) ?></td>
                         <?php if(!empty($renewal->last_renewal)) : ?>
-                            <td class="text-center"><?= number_format(($renewal->last_renewal->premium+$renewal->last_renewal->fee), 2, ".", ",") ?> USD</td>
+                            <td class="text-center"><?= h(number_format(($renewal->last_renewal->premium+$renewal->last_renewal->fee), 2, ".", ",")) ?> USD</td>
                         <?php else : ?>
                             <td></td>
                         <?php endif; ?>
                         
-                        <td class="text-center"><?= number_format(($renewal->premium+$renewal->fee), 2, ".", ",") ?> USD</td>
-                        <td><?= $percentage ?></td>
-                        <td class="text-center"><?= date('M d Y', strtotime($policy->effective_date)) ?></td>
-                        <td class="text-right"><?= date('M d Y', strtotime($renewal->renewal_date)) ?></td>
+                        <td class="text-center"><?= h(number_format(($renewal->premium+$renewal->fee), 2, ".", ",")) ?> USD</td>
+                        <td><?= h($percentage) ?></td>
+                        <td class="text-center"><?= h(date('M d Y', strtotime($policy->effective_date))) ?></td>
+                        <td class="text-right"><?= h(date('M d Y', strtotime($renewal->renewal_date))) ?></td>
                     </tr>
                 <?php endif; ?>
                 <?php endif; ?>

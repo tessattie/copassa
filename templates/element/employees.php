@@ -39,14 +39,14 @@
                             $total = $total + $total_premium;
                         ?>
                     <tr>
-                        <td><a href="<?= ROOT_DIREC ?>/employees/view/<?= $employee->id ?>"><?= $employee->first_name." ".$employee->last_name ?></a></td>
-                        <td class="text-center"><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $employee->grouping_id ?>"><?= $employee->grouping->grouping_number ?></a></td>
-                        <td class="text-center"><?= $employee->membership_number ?></td>
-                        <td class="text-center"><?= number_format($employee->deductible, 2, ".", ",") ?></td>
+                        <td><a href="<?= ROOT_DIREC ?>/employees/view/<?= $employee->id ?>"><?= h($employee->first_name." ".$employee->last_name) ?></a></td>
+                        <td class="text-center"><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $employee->grouping_id ?>"><?= h($employee->grouping->grouping_number) ?></a></td>
+                        <td class="text-center"><?= h($employee->membership_number) ?></td>
+                        <td class="text-center"><?= h(number_format($employee->deductible, 2, ".", ",")) ?></td>
                         <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
-                        <td class="text-center"><?= number_format($total_premium, 2, ".", ",") ?></td>
+                        <td class="text-center"><?= h(number_format($total_premium, 2, ".", ",")) ?></td>
                     <?php endif; ?>
-                        <td class="text-center"><?= date('F d Y', strtotime($employee->effective_date)) ?></td>
+                        <td class="text-center"><?= h(date('F d Y', strtotime($employee->effective_date))) ?></td>
                         <?php if($employee->status == 1) : ?>
                             <td class="text-center"><span class="label label-success">Active</span></td>
                         <?php else : ?>
@@ -67,7 +67,7 @@
                     <tfoot> 
                         <tr> 
                             <th colspan="4">Total</th>
-                            <th class="text-center"><?= number_format($total, 2, ".", ",") ?></th>
+                            <th class="text-center"><?= h(number_format($total, 2, ".", ",")) ?></th>
                             <th></th>
                             <th></th>
                             <th></th>

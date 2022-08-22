@@ -29,14 +29,14 @@ $months = array(
             Policies
         </a></li>
         <li class="active">Edit</li>
-        <li><?= $policy->policy_number ?></li>
+        <li><?= h($policy->policy_number) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Policy : <?= $policy->policy_number ?>
+            Edit Policy : <?= h($policy->policy_number) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/policies"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

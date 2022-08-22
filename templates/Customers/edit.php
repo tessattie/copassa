@@ -13,7 +13,7 @@
             Policy Holders
         </a></li>
         <li>Edit</li>
-        <li><?= $customer->name ?></li>
+        <li><?= h($customer->name) ?></li>
     </ol>
 </div>
 
@@ -21,7 +21,7 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit <?= $customer->name ?>
+            Edit <?= h($customer->name) ?>
             
         </div>
     <div class="panel-body articles-container">       
@@ -134,17 +134,17 @@
 
                                 ?>
                                 <tr>
-                                <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= $policy->policy_number ?></a></td>
-                                <td class="text-center"><?= $company_types[$policy->company->type] ?></td>
-                                <td class="text-center"><?= $policy->company->name ?></td>
-                                <td class="text-center"><?= $policy->option->name ?></td>
-                                <td class="text-center"><?= number_format($policy->premium,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= number_format($policy->fee,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= number_format($policy->deductible,2,".",",") ?> USD</td>
-                                <td class="text-center"><?= $modes[$policy->mode] ?></td>
-                                <td class="text-center"><?= date("M d Y", strtotime($policy->effective_date)) ?></td>
+                                <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= h($policy->policy_number) ?></a></td>
+                                <td class="text-center"><?= h($company_types[$policy->company->type]) ?></td>
+                                <td class="text-center"><?= h($policy->company->name) ?></td>
+                                <td class="text-center"><?= h($policy->option->name) ?></td>
+                                <td class="text-center"><?= h(number_format($policy->premium,2,".",",")) ?> USD</td>
+                                <td class="text-center"><?= h(number_format($policy->fee,2,".",",")) ?> USD</td>
+                                <td class="text-center"><?= h(number_format($policy->deductible,2,".",",")) ?> USD</td>
+                                <td class="text-center"><?= h($modes[$policy->mode]) ?></td>
+                                <td class="text-center"><?= h(date("M d Y", strtotime($policy->effective_date))) ?></td>
            
-                                <td class="text-center"><?= $policy->user->name ?></td>
+                                <td class="text-center"><?= h($policy->user->name) ?></td>
                                 <?php if(!empty($policy->certificate)) : ?>
                                     <td class="text-center">
                                         <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>

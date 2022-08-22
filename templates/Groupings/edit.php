@@ -13,14 +13,14 @@
             Groups
         </a></li>
         <li>Edit</li>
-        <li><?= $grouping->grouping_number ?></li>
+        <li><?= h($grouping->grouping_number) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Group : <?= $grouping->grouping_number ?>
+            Edit Group : <?= h($grouping->grouping_number) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/groupings"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

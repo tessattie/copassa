@@ -21,7 +21,7 @@ foreach($business->employees as $employee){
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/businesses">Coorporate Groups</a></li>
         <li>View</li>
-        <li><?= $business->name ?></li>
+        <li><?= h($business->name) ?></li>
     </ol>
 </div>
 <div class="container-fluid">
@@ -29,7 +29,7 @@ foreach($business->employees as $employee){
         <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-            Coorporate Group Profile : <?= $business->name ?>
+            Coorporate Group Profile : <?= h($business->name) ?>
         </div>
         <div class="panel-body articles-container">       
                 <table class = "table table-striped">
@@ -43,16 +43,16 @@ foreach($business->employees as $employee){
                     </tr>
                     <tr>
                         <th><?= __('Created') ?></th>
-                        <td class="text-right"><?= date("F d Y", strtotime($business->created)) ?></td>
+                        <td class="text-right"><?= h(date("F d Y", strtotime($business->created))) ?></td>
                     </tr>
                     <tr>
                         <th><?= __('Last Modified') ?></th>
-                        <td class="text-right"><?= date("F d Y", strtotime($business->modified)) ?></td>
+                        <td class="text-right"><?= h(date("F d Y", strtotime($business->modified))) ?></td>
                     </tr>
                     <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                     <tr>
                         <th><?= __('Total Premium') ?></th>
-                        <td class="text-right"><span class="label label-info"><?= number_format($total, 2, ".", ",") ?></span></td>
+                        <td class="text-right"><span class="label label-info"><?= h(number_format($total, 2, ".", ",")) ?></span></td>
                     </tr>
                 <?php endif; ?>
                 </table>
@@ -100,12 +100,12 @@ foreach($business->employees as $employee){
                 $real_total = $real_total + $total;
                 ?>
                 <tr>
-                    <td><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $group->id ?>"><?= $group->grouping_number ?></a></td>
-                    <td class="text-center"><?= $group->company->name ?></td>
-                    <td class="text-center"><?= $group->company->country->name ?></td>
-                    <td class="text-center"><?= date('F d Y', strtotime($group->effective_date)) ?></td>
+                    <td><a href="<?= ROOT_DIREC ?>/groupings/view/<?= $group->id ?>"><?= h($group->grouping_number) ?></a></td>
+                    <td class="text-center"><?= h($group->company->name) ?></td>
+                    <td class="text-center"><?= h($group->company->country->name) ?></td>
+                    <td class="text-center"><?= h(date('F d Y', strtotime($group->effective_date))) ?></td>
                     <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
-                    <td class="text-center"><?= number_format($total, 2, ".", ",") ?></td>
+                    <td class="text-center"><?= h(number_format($total, 2, ".", ",")) ?></td>
                 <?php endif; ?>
                     <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
                     <td class="text-right">
@@ -118,7 +118,7 @@ foreach($business->employees as $employee){
             </tbody>
             <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
             <tfoot>
-                <tr><th colspan="4">Total</th><th class="text-center"><?= number_format($real_total, 2, ".", ",") ?></th><?php if($user_connected['role_id'] != 2 || $auths[38]) : ?><th></th><?php endif; ?></tr>
+                <tr><th colspan="4">Total</th><th class="text-center"><?= h(number_format($real_total, 2, ".", ",")) ?></th><?php if($user_connected['role_id'] != 2 || $auths[38]) : ?><th></th><?php endif; ?></tr>
             </tfoot>
         <?php endif; ?>
         </table></div>

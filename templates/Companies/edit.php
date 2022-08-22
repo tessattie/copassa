@@ -11,17 +11,17 @@
             <em class="fa fa-home"></em>
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/companies">
-            Companies
+            Insurance Companies
         </a></li>
         <li>Edit</li>
-        <li><?= $company->name ?></li>
+        <li><?= h($company->name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit : <?= $company->name ?>
+            Edit : <?= h($company->name) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/companies"><em class="fa fa-arrow-left"></em></a>
         </div>
         <div class="panel-body articles-container">       
@@ -94,33 +94,33 @@
                             <tbody>
                                 <?php foreach($company->options as $option) : ?>
                                     <tr>
-                                        <td class="text-center"><?= $option->name ?></td>
-                                        <td class="text-center"><?= $option->option_name ?></td>
+                                        <td class="text-center"><?= h($option->name) ?></td>
+                                        <td class="text-center"><?= h($option->option_name) ?></td>
                                         <?php if(!empty($option->deductible)) : ?>
-                                            <td class="text-center"><?= number_format($option->deductible) ?> USD</td>
+                                            <td class="text-center"><?= h(number_format($option->deductible)) ?> USD</td>
                                         <?php else : ?>
                                             <td class="text-center"></td>
                                         <?php endif; ?>
                                         <?php if(!empty($option->usa_deductible)) : ?>
-                                            <td class="text-center"><?= number_format($option->usa_deductible) ?> USD</td>
+                                            <td class="text-center"><?= h(number_format($option->usa_deductible)) ?> USD</td>
                                         <?php else : ?>
                                             <td class="text-center"></td>
                                         <?php endif; ?>
                                         <?php if(!empty($option->max_coverage)) : ?>
-                                            <td class="text-center"><?= number_format($option->max_coverage) ?> USD</td>
+                                            <td class="text-center"><?= h(number_format($option->max_coverage)) ?> USD</td>
                                         <?php else : ?>
                                             <td class="text-center"></td>
                                         <?php endif; ?>
                                         <?php if(!empty($option->plan)) : ?>
-                                            <td class="text-center"><?= $plans[$option->plan] ?></td>
+                                            <td class="text-center"><?= h($plans[$option->plan]) ?></td>
                                             <?php else : ?>
                                                 <td></td>
                                             <?php endif; ?>
-                                        <td class="text-center"><span class="label label-info"><?= count($option->policies) ?></span></td>
+                                        <td class="text-center"><span class="label label-info"><?= h(count($option->policies)) ?></span></td>
                                         <td class="text-center">
                                             <a href="<?= ROOT_DIREC ?>/options/edit/<?= $option->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                                             <?php if(count($option->policies) == 0) : ?>
-                                            <a href="<?= ROOT_DIREC ?>/options/delete/<?= $option->id ?>" onclick="return confirm('Are you sure you would like to delete the option <?= $option->name ?>')" style="font-size:1.3em!important;margin-left:10px"><span class="fa fa-xl fa-trash color-red"></span></a></td>
+                                            <a href="<?= ROOT_DIREC ?>/options/delete/<?= $option->id ?>" onclick="return confirm('Are you sure you would like to delete the option <?= h($option->name) ?>')" style="font-size:1.3em!important;margin-left:10px"><span class="fa fa-xl fa-trash color-red"></span></a></td>
                                             <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>

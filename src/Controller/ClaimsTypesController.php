@@ -11,36 +11,6 @@ namespace App\Controller;
  */
 class ClaimsTypesController extends AppController
 {
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null|void Renders view
-     */
-    public function index()
-    {
-        $this->paginate = [
-            'contain' => ['Claims', 'Types', 'Users', 'Tenants'],
-        ];
-        $claimsTypes = $this->paginate($this->ClaimsTypes);
-
-        $this->set(compact('claimsTypes'));
-    }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Claims Type id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $claimsType = $this->ClaimsTypes->get($id, [
-            'contain' => ['Claims', 'Types', 'Users', 'Tenants'],
-        ]);
-
-        $this->set(compact('claimsType'));
-    }
 
     /**
      * Edit method

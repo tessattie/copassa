@@ -67,6 +67,9 @@ class UsersController extends AppController
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
+            if($user->role_id == 3){
+                $user->role_id = 1;
+            }
             $user->tenant_id = $this->Auth->user()['tenant_id'];
             $username_check = $this->Users->find("all", array("conditions" => array("username" => $this->request->getData()['username'])))->count();
             if($username_check  > 0){
@@ -109,9 +112,16 @@ class UsersController extends AppController
         $user = $this->Users->get($id, [
             'contain' => [],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $user->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $old_data = json_encode($user);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
+            if($user->role_id == 3){
+                $user->role_id = 1;
+            }
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
                 $this->savelog(200, "Edited user", 1, 2, $old_data, json_encode($user));
@@ -177,6 +187,10 @@ class UsersController extends AppController
         }
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $user->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->Users->delete($user)) {
             $this->Flash->success(__('The user has been deleted.'));
         } else {
@@ -191,7 +205,6 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('login');
         if($this->request->is('post')){
             $user = $this->Auth->identify();
-
             if ($user) {
                 $this->loadModel("Tenants"); $tenant= $this->Tenants->get($user['tenant_id']);
                 if($tenant->status == 1){

@@ -5,7 +5,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span></button>
-                <a class="navbar-brand" href="#" style="color:white"><span style="color:white"><?= $tenant->company ?></span> <small style="font-size: 8px;
+                <a class="navbar-brand" href="#" style="color:white"><span style="color:white"><?= h($tenant->company) ?></span> <small style="font-size: 8px;
     font-style: italic;color:orange;font-weight:bold">( Member of ARS )</small></a>
                 
                 <ul class="nav navbar-top-links navbar-right">
@@ -59,7 +59,7 @@
     <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
         <div class="profile-sidebar" style="text-align:center">
             <div class="profile-usertitle" style="margin:auto;width:100%">
-                <div class="profile-usertitle-name text-center" style="margin-top:12px;margin-bottom:10px"><?= $user_connected['name'] ?></div>
+                <div class="profile-usertitle-name text-center" style="margin-top:12px;margin-bottom:10px"><?= h($user_connected['name']) ?></div>
             </div>
             <div class="clear"></div>
         </div>

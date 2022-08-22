@@ -13,7 +13,7 @@
             Pending New Business
         </a></li>
         <li>Edit</li>
-        <li><?= $pending->name ?></li>
+        <li><?= h($pending->name) ?></li>
     </ol>
 </div>
 
@@ -21,7 +21,7 @@
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Pending New Business : <?= $pending->name ?>
+            Edit Pending New Business : <?= h($pending->name) ?>
         </div>
     <div class="panel-body articles-container">       
             <?= $this->Form->create($pending) ?>

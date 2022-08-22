@@ -85,6 +85,11 @@ class CustomersController extends AppController
         $customer = $this->Customers->get($id, [
             'contain' => ['Notes' => ['sort' => 'Notes.created DESC', 'Users'], 'Countries', 'Users', 'Payments' => ['Users', 'Rates', 'Policies'], 'Policies' => ['Companies', 'Options', 'Users', 'Claims' => ['ClaimsTypes']]],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $customer->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $note = $this->Customers->Notes->newEmptyEntity();
         $policies = $this->Customers->Policies->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'customer_id' => $id)));
 
@@ -128,6 +133,11 @@ class CustomersController extends AppController
         $customer = $this->Customers->get($id, [
             'contain' => ['Policies' => ['Users', 'Companies', 'Options']]
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $customer->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $old_data = json_encode($customer);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $customer = $this->Customers->patchEntity($customer, $this->request->getData());
@@ -163,6 +173,11 @@ class CustomersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete', 'get']);
         $customer = $this->Customers->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $customer->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Customers->delete($customer)) {
             $this->Flash->success(__('The customer has been deleted.'));
         } else {

@@ -13,14 +13,14 @@
             Claims
         </a></li>
         <li class="active">Edit</li>
-        <li class="active"><?= $claim->title ?></li>
+        <li class="active"><?= h($claim->title) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            New Claim
+            Edit Claim <?= h($claim->title) ?>
            <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/claims/view/<?= $claim->id ?>"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

@@ -30,7 +30,7 @@
                 <tbody>
                     <?php foreach($policies as $pp) : ?>
                         <tr>
-                            <th><a href="<?= ROOT_DIREC ?>/prenewals/index/<?= $pp->id ?>"><?= $pp->policy_number . " - " . $pp->customer->name . " - " . $company_types[$pp->company->type] . " - " . $modes[$pp->mode] ?></a></th>
+                            <th><a href="<?= ROOT_DIREC ?>/prenewals/index/<?= $pp->id ?>"><?= h($pp->policy_number . " - " . $pp->customer->name . " - " . $company_types[$pp->company->type] . " - " . $modes[$pp->mode]) ?></a></th>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -41,13 +41,13 @@
     <div class="col-md-9">
         <div class="panel panel-default articles">
         <div class="panel-heading">
-            Renewals <?= (!empty($policy_id)) ? " :  ".$policy->policy_number : "" ?>
+            Renewals <?= (!empty($policy_id)) ? " :  ".h($policy->policy_number) : "" ?>
             <a class="btn btn-default float-right" href="<?= ROOT_DIREC ?>/prenewals" style="float:right"><span class="fa fa-refresh"></span></a>
         </div>
     <div class="panel-body articles-container" style="height:550px;overflow-y:scroll">
         <?php if(!empty($policy_id)) : ?>
-        <small><strong>Effective Date : <?= date('F d Y', strtotime($policy->effective_date)); ?></strong></small><br> 
-        <small><strong>Mode : <?= $modes[$policy->mode]; ?></strong></small>
+        <small><strong>Effective Date : <?= h(date('F d Y', strtotime($policy->effective_date))); ?></strong></small><br> 
+        <small><strong>Mode : <?= h($modes[$policy->mode]); ?></strong></small>
         <hr>
     <?php endif; ?>
     <table class="table datatable2 table-striped">
@@ -69,10 +69,10 @@
             <?php if(!empty($renewals)) : ?>
                 <?php foreach($renewals as $renewal) : ?>
                     <tr>
-                        <td><?= date('F d Y', strtotime($renewal->renewal_date)); ?></td>
-                        <td><?= $renewal->policy->customer->name . ' - ' . $renewal->policy->policy_number ?></td>
-                        <td class="text-center"><?= number_format($renewal->premium, 2, ".", ",") ?></td>
-                        <td class="text-center"><?= number_format($renewal->fee, 2, ".", ",") ?></td>
+                        <td><?= h(date('F d Y', strtotime($renewal->renewal_date))); ?></td>
+                        <td><?= h($renewal->policy->customer->name . ' - ' . $renewal->policy->policy_number) ?></td>
+                        <td class="text-center"><?= h(number_format($renewal->premium, 2, ".", ",")) ?></td>
+                        <td class="text-center"><?= h(number_format($renewal->fee, 2, ".", ",")) ?></td>
                         <?php if($renewal->status == 1) : ?>
                             <td class="text-center"><span class="label label-info">Upcomming</span></td>
                         <?php elseif($renewal->status == 3) : ?>
@@ -87,7 +87,7 @@
                             <td class="text-center"><span class="label label-danger">Canceled</span></td>
                         <?php endif; ?>
                         <?php if(!empty($renewal->payment_date)) : ?>
-                        <td class="text-center"><?= date('F d Y', strtotime($renewal->payment_date)); ?></td>
+                        <td class="text-center"><?= h(date('F d Y', strtotime($renewal->payment_date))); ?></td>
                         <?php else : ?>
                         <td></td>
                     <?php endif; ?>

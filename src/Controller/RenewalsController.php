@@ -35,6 +35,11 @@ class RenewalsController extends AppController
     public function process($id){
         $renewal = $this->Renewals->get($id, ['contain' => ['Businesses']]);
         // debug($renewal); die();
+
+        if($this->Auth->user()['tenant_id'] != $renewal->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $this->loadModel('Employees');
         $employees = $this->Employees->find("all")->contain(['Businesses', 'Families' => ['sort' => ['relationship DESC']], 'Groupings' => ['Companies']]); 
         $employees->where(['Employees.tenant_id' => $this->Auth->user()['tenant_id']]);
@@ -76,6 +81,10 @@ class RenewalsController extends AppController
         $renewal = $this->Renewals->get($id, [
             'contain' => ['Businesses' => ['Groupings'], 'Users', 'Transactions' => ['Families', 'Employees' => ['sort' => ['Employees.type ASC']], 'sort' => ['Transactions.employee_id']]],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $renewal->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
 
         $this->loadModel('Groupings');
 
@@ -248,6 +257,11 @@ class RenewalsController extends AppController
     {
         $this->request->allowMethod(['post', 'delete', 'get']);
         $renewal = $this->Renewals->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $renewal->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Renewals->delete($renewal)) {
             $this->Flash->success(__('The renewal has been deleted.'));
         } else {

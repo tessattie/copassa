@@ -76,21 +76,6 @@ class PrenewalsController extends AppController
         $this->set(compact('policies', 'policy_id', 'policy', 'renewals'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Prenewal id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $prenewal = $this->Prenewals->get($id, [
-            'contain' => ['Policies'],
-        ]);
-
-        $this->set(compact('prenewal'));
-    }
 
     /**
      * Add method
@@ -126,6 +111,11 @@ class PrenewalsController extends AppController
         $prenewal = $this->Prenewals->get($id, [
             'contain' => ['Policies'],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $prenewal->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $prenewal = $this->Prenewals->patchEntity($prenewal, $this->request->getData());
             if ($this->Prenewals->save($prenewal)) {
@@ -148,8 +138,13 @@ class PrenewalsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
+        $this->request->allowMethod(['post', 'delete', 'get']);
         $prenewal = $this->Prenewals->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $prenewal->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Prenewals->delete($prenewal)) {
             $this->Flash->success(__('The prenewal has been deleted.'));
         } else {

@@ -12,91 +12,6 @@ namespace App\Controller;
 class TransactionsController extends AppController
 {
     /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null|void Renders view
-     */
-    public function index()
-    {
-        $this->paginate = [
-            'contain' => ['Employees', 'Businesses', 'Groupings', 'Users', 'Renewals'],
-        ];
-        $transactions = $this->paginate($this->Transactions);
-
-        $this->set(compact('transactions'));
-    }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Transaction id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $transaction = $this->Transactions->get($id, [
-            'contain' => ['Employees', 'Businesses', 'Groupings', 'Users', 'Renewals'],
-        ]);
-
-        $this->set(compact('transaction'));
-    }
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $transaction = $this->Transactions->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $transaction = $this->Transactions->patchEntity($transaction, $this->request->getData());
-            if ($this->Transactions->save($transaction)) {
-                $this->Flash->success(__('The transaction has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The transaction could not be saved. Please, try again.'));
-        }
-        $employees = $this->Transactions->Employees->find('list', ['limit' => 200]);
-        $businesses = $this->Transactions->Businesses->find('list', ['limit' => 200]);
-        $groups = $this->Transactions->Groupings->find('list', ['limit' => 200]);
-        $users = $this->Transactions->Users->find('list', ['limit' => 200]);
-        $renewals = $this->Transactions->Renewals->find('list', ['limit' => 200]);
-        $this->set(compact('transaction', 'employees', 'businesses', 'groups', 'users', 'renewals'));
-    }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Transaction id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $transaction = $this->Transactions->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $transaction = $this->Transactions->patchEntity($transaction, $this->request->getData());
-            if ($this->Transactions->save($transaction)) {
-                $this->Flash->success(__('The transaction has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The transaction could not be saved. Please, try again.'));
-        }
-        $employees = $this->Transactions->Employees->find('list', ['limit' => 200]);
-        $businesses = $this->Transactions->Businesses->find('list', ['limit' => 200]);
-        $groups = $this->Transactions->Groupings->find('list', ['limit' => 200]);
-        $users = $this->Transactions->Users->find('list', ['limit' => 200]);
-        $renewals = $this->Transactions->Renewals->find('list', ['limit' => 200]);
-        $this->set(compact('transaction', 'employees', 'businesses', 'groups', 'users', 'renewals'));
-    }
-
-    /**
      * Delete method
      *
      * @param string|null $id Transaction id.
@@ -107,6 +22,11 @@ class TransactionsController extends AppController
     {
         $this->request->allowMethod(['post', 'delete', 'get']);
         $transaction = $this->Transactions->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $transaction->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         $renewal_id = $transaction->renewal_id;
         $this->Transactions->delete($transaction);
         return $this->redirect(['controller' => 'renewals', 'action' => 'view', $renewal_id]);
@@ -114,6 +34,11 @@ class TransactionsController extends AppController
 
     public function cancel($id){
         $transaction = $this->Transactions->get($id); 
+
+        if($this->Auth->user()['tenant_id'] != $transaction->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if($transaction){
             $new = $this->Transactions->newEmptyEntity();
             $new->type = 3;

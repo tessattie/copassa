@@ -22,7 +22,7 @@ foreach($grouping->employees as $employee){
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/groupings">Groups</a></li>
         <li>View</li>
-        <li><?= $grouping->grouping_number ?></li>
+        <li><?= h($grouping->grouping_number) ?></li>
     </ol>
 </div>
 <div class="container-fluid">
@@ -30,7 +30,7 @@ foreach($grouping->employees as $employee){
         <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-            Group Profile : <?= $grouping->grouping_number ?>
+            Group Profile : <?= h($grouping->grouping_number) ?>
         </div>
         <div class="panel-body articles-container">       
                <table class="table table-striped">
@@ -44,20 +44,20 @@ foreach($grouping->employees as $employee){
                 </tr>
                 <tr>
                     <th><?= __('Insurance') ?></th>
-                    <td class="text-right"><?= $grouping->company->name ?></td>
+                    <td class="text-right"><?= h($grouping->company->name) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Created Date') ?></th>
-                    <td class="text-right"><?= date('F d Y',strtotime($grouping->effective_date)) ?></td>
+                    <td class="text-right"><?= h(date('F d Y',strtotime($grouping->effective_date))) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Last Modified') ?></th>
-                    <td class="text-right"><?= date('F d Y',strtotime($grouping->modified)) ?></td>
+                    <td class="text-right"><?= h(date('F d Y',strtotime($grouping->modified))) ?></td>
                 </tr>
                 <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
                 <tr>
                     <th><?= __('Total') ?></th>
-                    <td class="text-right"><span class="label label-info"><?= number_format($total, 2, ".", ",") ?></span></td>
+                    <td class="text-right"><span class="label label-info"><?= h(number_format($total, 2, ".", ",")) ?></span></td>
                 </tr>
             <?php endif; ?>
             </table>

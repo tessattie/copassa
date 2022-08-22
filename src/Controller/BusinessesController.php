@@ -46,9 +46,7 @@ class BusinessesController extends AppController
             return false;
 
         }else{
-
             return true;
-
         }
     }
 
@@ -59,6 +57,9 @@ class BusinessesController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $businesses = $this->Businesses->find("all", array("conditions" => array("Businesses.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Renewals', 'Groupings' => ['Employees' => ['Families']]]);
 
         $this->set(compact('businesses'));
@@ -73,9 +74,16 @@ class BusinessesController extends AppController
      */
     public function view($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $business = $this->Businesses->get($id, [
             'contain' => ['Employees' => ['Groupings' => ['Companies'], 'Families'], 'Groupings' => ['Employees' => ['Families'], 'Companies' => ['Countries']]],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $business->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
 
         $companies = $this->Businesses->Groupings->Companies->find('list', array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
 
@@ -91,6 +99,9 @@ class BusinessesController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $business = $this->Businesses->newEmptyEntity();
         if ($this->request->is('post')) {
             $business = $this->Businesses->patchEntity($business, $this->request->getData());
@@ -112,6 +123,9 @@ class BusinessesController extends AppController
      */
     public function addgroup()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $group = $this->Businesses->Groupings->newEmptyEntity();
         if ($this->request->is('post')) {
             $group = $this->Businesses->Groupings->patchEntity($group, $this->request->getData());
@@ -131,6 +145,9 @@ class BusinessesController extends AppController
      */
     public function addemployee()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employee = $this->Businesses->Groupings->Employees->newEmptyEntity();
         if ($this->request->is('post')) {
             $employee = $this->Businesses->Groupings->Employees->patchEntity($employee, $this->request->getData());
@@ -165,9 +182,17 @@ class BusinessesController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $business = $this->Businesses->get($id, [
             'contain' => [],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $business->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $business = $this->Businesses->patchEntity($business, $this->request->getData());
             if ($this->Businesses->save($business)) {
@@ -189,8 +214,16 @@ class BusinessesController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $business = $this->Businesses->get($id);
+
+        if($this->Auth->user()['tenant_id'] != $business->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->Businesses->delete($business)) {
             $this->Flash->success(__('The business has been deleted.'));
         } else {

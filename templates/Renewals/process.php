@@ -49,15 +49,15 @@
                         }
                     ?>
                 <tr <?= $style ?>>
-                    <td><?= $employee->membership_number ?></td>
-                    <td class="text-center"><?= $family->last_name ?></td>
-                    <td class="text-center"><?= $family->first_name ?></td>
-                    <td class="text-center"><?= date('m/d/Y', strtotime($dob)) ?></td>
-                    <td class="text-center"><?= $age ?></td>
-                    <td class="text-center"><?= number_format($family->premium, 2, ".", ",") ?></td>
-                    <td class="text-center"><?= $genders[$family->gender] ?></td>
-                    <td class="text-center"><?= $family->country ?></td>
-                    <td class="text-center"><?= $relationships[$family->relationship ] ?></td>
+                    <td><?= h($employee->membership_number) ?></td>
+                    <td class="text-center"><?= h($family->last_name) ?></td>
+                    <td class="text-center"><?= h($family->first_name) ?></td>
+                    <td class="text-center"><?= h(date('m/d/Y', strtotime($dob))) ?></td>
+                    <td class="text-center"><?= h($age) ?></td>
+                    <td class="text-center"><?= h(number_format($family->premium, 2, ".", ",")) ?></td>
+                    <td class="text-center"><?= h($genders[$family->gender]) ?></td>
+                    <td class="text-center"><?= h($family->country) ?></td>
+                    <td class="text-center"><?= h($relationships[$family->relationship ]) ?></td>
                     <td class="text-right"><input type="checkbox" name="family_id[]" value="<?= $family->id ?>" checked></td>
                 </tr>
                 

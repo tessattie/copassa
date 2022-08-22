@@ -52,17 +52,17 @@
                     }
                 ?>
                 <tr>
-                    <td><a href="<?= ROOT_DIREC ?>/businesses/view/<?= $business->id ?>"><?= $business->business_number ?></a></td>
-                    <td class="text-center"><?= $business->name ?></td>
-                    <td class="text-center"><?= count($business->groupings) ?></td>
+                    <td><a href="<?= ROOT_DIREC ?>/businesses/view/<?= $business->id ?>"><?= h($business->business_number) ?></a></td>
+                    <td class="text-center"><?= h($business->name) ?></td>
+                    <td class="text-center"><?= h(count($business->groupings)) ?></td>
                     <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
-                    <td class="text-center"><?= number_format($total, 2, ".", ",") ?></td>
+                    <td class="text-center"><?= h(number_format($total, 2, ".", ",")) ?></td>
                 <?php endif; ?>
                 <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/businesses/edit/<?= $business->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                         <?php if(empty($business->groupings) && empty($business->renewals)) : ?>
-                        <a href="<?= ROOT_DIREC ?>/businesses/delete/<?= $business->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= $business->name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <a href="<?= ROOT_DIREC ?>/businesses/delete/<?= $business->id ?>" onclick="return confirm('Are you sure you would like to delete the company <?= h($business->name) ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                         <?php endif; ?>
                     </td>
                 <?php endif; ?>

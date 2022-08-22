@@ -19,8 +19,8 @@ if(!empty($claim->policy->customer->dob)){
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/claims">Claims</a></li>
         <li>View</li>
-        <li><?= $claim->policy->policy_number ?></li>
-        <li><?= $claim->title ?></li>
+        <li><?= h($claim->policy->policy_number) ?></li>
+        <li><?= h($claim->title) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
@@ -29,7 +29,7 @@ if(!empty($claim->policy->customer->dob)){
         <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-                    Claim : <?= $claim->title ?> 
+                    Claim : <?= h($claim->title) ?> 
                     <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
                         <a href="<?= ROOT_DIREC ?>/claims/edit/<?= $claim->id ?>" style="float:right"><button class="btn btn-warning">Edit</button></a>
                     <?php endif; ?>
@@ -42,69 +42,69 @@ if(!empty($claim->policy->customer->dob)){
                    <table class="table table-striped">
                     <tr>
                         <th><?= __('Policy Holder') ?></th>
-                            <td class="text-right"><?= $claim->policy->customer->name ?></td>
+                            <td class="text-right"><?= h($claim->policy->customer->name) ?></td>
                         </tr>
                         <?php  if(!empty($claim->dependant_id)) : ?>
                             <th><?= __('Dependant') ?></th>
-                            <td class="text-right"><?= $claim->dependant->name ?></td>
+                            <td class="text-right"><?= h($claim->dependant->name) ?></td>
                         </tr>
                         <?php   endif; ?>
                         <tr>
 
                             <th><?= __('Policy Number') ?></th>
-                            <td class="text-right"><?= $claim->policy->policy_number ?></td>
+                            <td class="text-right"><?= h($claim->policy->policy_number) ?></td>
                         </tr>
                         <?php if(!empty($claim->policy->customer->dob)) : ?>
                             <?php $dob = $claim->policy->customer->dob->year."-".$claim->policy->customer->dob->month."-".$claim->policy->customer->dob->day; ?>
                             <tr>
                                 <th>Date of Birth</th>
-                                <td class="text-right"><?= date("M d Y", strtotime($dob)) ?></td>
+                                <td class="text-right"><?= h(date("M d Y", strtotime($dob))) ?></td>
                             </tr>
                             <tr>
                                 <th>Age</th>
-                                <td class="text-right"><?= $age ?></td>
+                                <td class="text-right"><?= h($age) ?></td>
                             </tr>
                         <?php endif; ?>
                         <tr>
                             
                             <th><?= __('Company') ?></th>
-                            <td class="text-right"><?= $claim->policy->company->name ?></td>
+                            <td class="text-right"><?= h($claim->policy->company->name) ?></td>
                         </tr>
                         <tr>
                             
                             <th><?= __('Option') ?></th>
-                            <td class="text-right"><?= $claim->policy->option->name ?></td>
+                            <td class="text-right"><?= h($claim->policy->option->name) ?></td>
                         </tr>
                         <tr>
                             
                             <th><?= __('Outside USA Deductible') ?></th>
-                            <td class="text-right"><?= number_format($claim->policy->deductible, 2, ".", ",") ?></td>
+                            <td class="text-right"><?= h(number_format($claim->policy->deductible, 2, ".", ",")) ?></td>
                         </tr>
                         <tr>
                             
                             <th><?= __('USA Deductible') ?></th>
-                            <td class="text-right"><?= number_format($claim->policy->usa_deductible, 2, ".", ",") ?></td>
+                            <td class="text-right"><?= h(number_format($claim->policy->usa_deductible, 2, ".", ",")) ?></td>
                         </tr>
                         <tr>
                             
                             <th><?= __('Max Coverage') ?></th>
-                            <td class="text-right"><?= number_format($claim->policy->max_coverage, 2, ".", ",") ?></td>
+                            <td class="text-right"><?= h(number_format($claim->policy->max_coverage, 2, ".", ",")) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Diagnosis') ?></th>
-                            <td class="text-right"><?= $claim->title ?></td>
+                            <td class="text-right"><?= h($claim->title) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Description') ?></th>
-                            <td class="text-right"><?= $claim->description ?></td>
+                            <td class="text-right"><?= h($claim->description) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Created By') ?></th>
-                            <td class="text-right"><?= $claim->user->name ?></td>
+                            <td class="text-right"><?= h($claim->user->name) ?></td>
                         </tr>
                         <tr>
                             <th><?= __('Created') ?></th>
-                            <td class="text-right"><?= date('M d Y', strtotime($claim->created)) ?></td>
+                            <td class="text-right"><?= h(date('M d Y', strtotime($claim->created))) ?></td>
                         </tr>
                         
                         <tr>
@@ -151,33 +151,33 @@ if(!empty($claim->policy->customer->dob)){
                 <tbody>
                     <?php $total=0; foreach($claim->claims_types as $ct) : ?>
                     <?php $total = $total + $ct->amount ?>
-                        <tr style="background:<?= $ct->type->color ?>">
-                            <td><strong><?= $ct->title ?></strong><br><?= $ct->description ?></td>
+                        <tr style="background:<?= h($ct->type->color) ?>">
+                            <td><strong><?= h($ct->title) ?></strong><br><?= h($ct->description) ?></td>
                             <?php if(!empty($ct->attachment)) : ?> 
                                 <td class="text-center"><?= $this->Html->link('View', '/img/claims/'.$ct->attachment ,array('download'=> $ct->attachment)); ?></td>
                             <?php else : ?>
                                 <td class="text-center"></td>
                             <?php endif; ?>
-                            <td class="text-center"><?= number_format($ct->amount, 2, ".", ",") ?></td>
+                            <td class="text-center"><?= h(number_format($ct->amount, 2, ".", ",")) ?></td>
                             <?php if(!empty($ct->received_date)) : ?>
-                                <td class="text-center"><?= date('M d Y', strtotime($ct->received_date)) ?></td>
+                                <td class="text-center"><?= h(date('M d Y', strtotime($ct->received_date))) ?></td>
                             <?php else : ?>
                                 <td class="text-center"></td>
                             <?php endif; ?>
 
                             <?php if(!empty($ct->service_date)) : ?>
-                                <td class="text-center"><?= date('M d Y', strtotime($ct->service_date)) ?></td>
+                                <td class="text-center"><?= h(date('M d Y', strtotime($ct->service_date))) ?></td>
                             <?php else : ?>
                                 <td class="text-center"></td>
                             <?php endif; ?>
 
                             <?php if(!empty($ct->processed_date)) : ?>
-                                <td class="text-center"><?= date('M d Y', strtotime($ct->processed_date)) ?></td>
+                                <td class="text-center"><?= h(date('M d Y', strtotime($ct->processed_date))) ?></td>
                             <?php else : ?>
                                 <td class="text-center"></td>
                             <?php endif; ?>
-                            <td class="text-center"><?= $ct->user->name ?></td>
-                            <td class="text-center"><?= $ct->type->name ?></td>
+                            <td class="text-center"><?= h($ct->user->name) ?></td>
+                            <td class="text-center"><?= h($ct->type->name) ?></td>
                             <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
                             <td class="text-right"><a href="<?= ROOT_DIREC ?>/ClaimsTypes/edit/<?= $ct->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
                                 <a href="<?= ROOT_DIREC ?>/ClaimsTypes/delete/<?= $ct->id ?>" onclick="return confirm('Are you sure you would like to delete this detail')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a></td>

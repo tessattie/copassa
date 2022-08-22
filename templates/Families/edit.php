@@ -9,18 +9,18 @@
         <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
             <em class="fa fa-home"></em>
         </a></li>
-        <li><a href="<?= ROOT_DIREC ?>/groupings">
+        <li><a href="<?= ROOT_DIREC ?>/families">
             Family Members
         </a></li>
         <li>Edit</li>
-        <li class="active"><?= $family->first_name." ".$family->last_name ?></li>
+        <li class="active"><?= h($family->first_name." ".$family->last_name) ?></li>
     </ol>
 </div>
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="panel panel-default articles">
         <div class="panel-heading">
-            Edit Family Member : <?= $family->first_name." ".$family->last_name ?>
+            Edit Family Member : <?= h($family->first_name." ".$family->last_name) ?>
             <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/families"><em class="fa fa-arrow-left"></em></a>
         </div>
     <div class="panel-body articles-container">       

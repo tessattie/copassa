@@ -45,22 +45,22 @@
         <?php foreach($companies as $company) : ?>
             <?php if(count($company->options) > 1) : ?>
                 <tr>
-                    <td rowspan="<?= count($company->options) ?>"><?= $company->name ?></td>
+                    <td rowspan="<?= count($company->options) ?>"><?= h($company->name) ?></td>
                 </tr>
                 <?php foreach($company->options as $option) : ?>
                     <tr>
-                        <td class="text-center"><?= $company_types[$company->type] ?></td>
-                        <td class="text-center"><?= $option->name ?></td>
+                        <td class="text-center"><?= h($company_types[$company->type]) ?></td>
+                        <td class="text-center"><?= h($option->name) ?></td>
                     </tr>
                 <?php endforeach; ?>
                 
                 <?php else : ?>
                     <tr>
-                    <td><?= $company->name ?></td>
-                    <td class="text-center"><?= $company_types[$company->type] ?></td>
+                    <td><?= h($company->name ?></td>
+                    <td class="text-center"><?= h($company_types[$company->type]) ?></td>
                 
                 <?php foreach($company->options as $option) : ?>
-                        <td class="text-center"><?= $option->name ?></td>
+                        <td class="text-center"><?= h($option->name) ?></td>
                 <?php endforeach; ?>
                 </tr>
                 <?php endif; ?>

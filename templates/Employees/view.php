@@ -11,7 +11,7 @@
         </a></li>
         <li><a href="<?= ROOT_DIREC ?>/employees">Employees</a></li>
         <li>View</li>
-        <li><?= $employee->first_name. " ". $employee->last_name ?></li>
+        <li><?= h($employee->first_name. " ". $employee->last_name) ?></li>
     </ol>
 </div>
 <div class="container-fluid">
@@ -19,13 +19,13 @@
         <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
-            Employee Profile : <?= $employee->first_name. " ". $employee->last_name ?>
+            Employee Profile : <?= h($employee->first_name. " ". $employee->last_name) ?>
         </div>
         <div class="panel-body articles-container">       
             <table class="table table-striped">
                 <tr>
                     <th><?= __('Full Name') ?></th>
-                    <td class="text-right"><?= $employee->first_name. " ". $employee->last_name ?></td>
+                    <td class="text-right"><?= h($employee->first_name. " ". $employee->last_name) ?></td>
                 </tr>
                 <tr>
 
@@ -43,15 +43,15 @@
                 </tr>
                 <tr>
                     <th><?= __('Deductible') ?></th>
-                    <td class="text-right"><?= $this->Number->format($employee->deductible) ?></td>
+                    <td class="text-right"><?= h($this->Number->format($employee->deductible)) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Created') ?></th>
-                    <td class="text-right"><?= date("F d Y", strtotime($employee->created)) ?></td>
+                    <td class="text-right"><?= h(date("F d Y", strtotime($employee->created))) ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Last Modified') ?></th>
-                    <td class="text-right"><?= date("F d Y", strtotime($employee->modified)) ?></td>
+                    <td class="text-right"><?= h(date("F d Y", strtotime($employee->modified))) ?></td>
                 </tr>
             </table>
             </div>
@@ -96,13 +96,13 @@
             }
              ?>
                 <tr>
-                    <td><?= $family->first_name." ".$family->last_name ?></td>
-                    <td class="text-center"><?= $relationships[$family->relationship] ?></td>
-                    <td class="text-center"><?= $genders[$family->gender] ?></td>
-                    <td class="text-center"><?= date("F d Y", strtotime($family->dob->i18nFormat('yyyy-MM-dd'))) ?></td>
-                    <td class="text-center"><?= $family->country ?></td>
+                    <td><?= h($family->first_name." ".$family->last_name) ?></td>
+                    <td class="text-center"><?= h($relationships[$family->relationship]) ?></td>
+                    <td class="text-center"><?= h($genders[$family->gender]) ?></td>
+                    <td class="text-center"><?= h(date("F d Y", strtotime($family->dob->i18nFormat('yyyy-MM-dd')))) ?></td>
+                    <td class="text-center"><?= h($family->country) ?></td>
                     <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
-                    <td class="text-center"><?= number_format($family->premium,2,".",",") ?></td>
+                    <td class="text-center"><?= h(number_format($family->premium,2,".",",")) ?></td>
                 <?php endif; ?>
                     <?php if($family->status == 1) : ?>
                         <td class="text-center"><span class="label label-success">Active</span></td>
@@ -112,7 +112,7 @@
                     <?php if($user_connected['role_id'] != 2 || $auths[38]) : ?>
                     <td class="text-right">
                         <a href="<?= ROOT_DIREC ?>/families/edit/<?= $family->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
-                        <a href="<?= ROOT_DIREC ?>/families/delete/<?= $family->id ?>" onclick="return confirm('Are you sure you would like to delete the family member <?= $family->first_name." ".$family->last_name ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <a href="<?= ROOT_DIREC ?>/families/delete/<?= $family->id ?>" onclick="return confirm('Are you sure you would like to delete the family member <?= h($family->first_name." ".$family->last_name) ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                     </td>
                 <?php endif; ?>
                 </tr>
@@ -120,7 +120,7 @@
             </tbody>
             <?php if($user_connected['role_id'] != 2 || $auths[37]) : ?>
             <tfoot>
-                <tr><th colspan="5">Total</th><th class="text-center"><?= number_format($total, 2, ".", ",") ?> USD</th><th></th><?php if($user_connected['role_id'] != 2 || $auths[38]) : ?><th></th><?php endif; ?></tr>
+                <tr><th colspan="5">Total</th><th class="text-center"><?= h(number_format($total, 2, ".", ",")) ?> USD</th><th></th><?php if($user_connected['role_id'] != 2 || $auths[38]) : ?><th></th><?php endif; ?></tr>
             </tfoot>
         <?php endif; ?>
         </table>
