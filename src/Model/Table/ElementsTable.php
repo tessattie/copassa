@@ -67,15 +67,54 @@ class ElementsTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*", "<", "=", ">", "[", "]", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
         $validator
             ->scalar('title')
             ->maxLength('title', 255)
             ->allowEmptyString('title');
 
+        $validator->add('title', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*", "<", "=", ">", "[", "]", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The title is not valid'
+        ]);
+
         $validator
             ->scalar('subtitle')
             ->maxLength('subtitle', 255)
             ->allowEmptyString('subtitle');
+
+        $validator->add('subtitle', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*", "<", "=", ">", "[", "]", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The subtitle is not valid'
+        ]);
 
         $validator
             ->scalar('video')
@@ -91,6 +130,19 @@ class ElementsTable extends Table
             ->scalar('text')
             ->maxLength('text', 255)
             ->allowEmptyString('text');
+
+        $validator->add('text', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*", "<", "=", ">", "[", "]", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The text is not valid'
+        ]);
 
         $validator
             ->integer('position')

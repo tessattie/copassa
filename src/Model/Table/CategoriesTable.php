@@ -66,17 +66,56 @@ class CategoriesTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*", "<", ">", "[", "]", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
         $validator
             ->scalar('title')
             ->maxLength('title', 255)
             ->requirePresence('title', 'create')
             ->notEmptyString('title');
 
+        $validator->add('title', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*", "<", "=", ">", "[", "]", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The title is not valid'
+        ]);
+
         $validator
             ->scalar('subtitle')
             ->maxLength('subtitle', 255)
             ->requirePresence('subtitle', 'create')
             ->notEmptyString('subtitle');
+
+        $validator->add('subtitle', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*", "<", "=", ">", "[", "]", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The subtitle is not valid'
+        ]);
 
         $validator
             ->integer('position')

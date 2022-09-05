@@ -76,6 +76,7 @@ class ClaimsTypesTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
+
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
@@ -86,9 +87,37 @@ class ClaimsTypesTable extends Table
             ->requirePresence('title', 'create')
             ->notEmptyString('title');
 
+        $validator->add('title', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The title is not valid'
+        ]);
+
+
+
         $validator
             ->scalar('description')
             ->allowEmptyString('description');
+
+        $validator->add('description', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The description is not valid'
+        ]);
 
         $validator
             ->allowEmptyString('attachment');

@@ -55,7 +55,6 @@
                         <td class="text-center"></td>
                     <?php endif; ?>
                 <?php endif; ?>
-                
                 <td class="text-center"><?= h(number_format($policy->premium,2,".",",")) ?></td>
                 <td class="text-center"><?= h($modes[$policy->mode]) ?></td>
                 <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>

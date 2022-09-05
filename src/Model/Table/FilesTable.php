@@ -11,8 +11,9 @@ use Cake\Validation\Validator;
 /**
  * Files Model
  *
+ * @property \App\Model\Table\FoldersTable&\Cake\ORM\Association\BelongsTo $Folders
  * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\FoldersTable&\Cake\ORM\Association\BelongsToMany $Folders
+ * @property \App\Model\Table\TenantsTable&\Cake\ORM\Association\BelongsTo $Tenants
  *
  * @method \App\Model\Entity\File newEmptyEntity()
  * @method \App\Model\Entity\File newEntity(array $data, array $options = [])
@@ -48,16 +49,30 @@ class FilesTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('Folders', [
+            'foreignKey' => 'folder_id',
+            'joinType' => 'INNER',
+        ]);
+
+        $this->belongsTo('Policies', [
+            'foreignKey' => 'policy_id',
+            'joinType' => 'LEFT',
+        ]);
+
+        $this->belongsTo('Renewals', [
+            'foreignKey' => 'renewal_id',
+            'joinType' => 'LEFT',
+        ]);
+
+        $this->belongsTo('Claims', [
+            'foreignKey' => 'claim_id',
+            'joinType' => 'LEFT',
+        ]);
+
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
-        $this->belongsToMany('Folders', [
-            'foreignKey' => 'file_id',
-            'targetForeignKey' => 'folder_id',
-            'joinTable' => 'folders_files',
-        ]);
-
         $this->belongsTo('Tenants', [
             'foreignKey' => 'tenant_id',
             'joinType' => 'INNER',
@@ -82,20 +97,42 @@ class FilesTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>",  "</script>", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
+
         $validator
             ->scalar('location')
             ->maxLength('location', 255)
             ->allowEmptyString('location');
 
         $validator
-            ->scalar('extension')
-            ->maxLength('extension', 255)
-            ->allowEmptyString('extension');
-
-        $validator
             ->scalar('description')
             ->maxLength('description', 255)
             ->allowEmptyString('description');
+
+        $validator->add('description', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>",  "</script>", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The description is not valid'
+        ]);
 
         return $validator;
     }
@@ -109,7 +146,9 @@ class FilesTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
+        $rules->add($rules->existsIn(['folder_id'], 'Folders'), ['errorField' => 'folder_id']);
         $rules->add($rules->existsIn(['user_id'], 'Users'), ['errorField' => 'user_id']);
+        $rules->add($rules->existsIn(['tenant_id'], 'Tenants'), ['errorField' => 'tenant_id']);
 
         return $rules;
     }

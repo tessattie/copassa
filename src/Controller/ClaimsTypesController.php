@@ -26,22 +26,37 @@ class ClaimsTypesController extends AppController
             'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
+
             $data = $this->request->getData();
-            $attachment = $this->request->getData('attachment');
-            $name = $attachment->getClientFilename();
-            $type = $attachment->getClientMediaType();
-            if (!empty($name)) {
+            $this->loadModel('Folders');
+            $folder = $this->Folders->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'is_claims' => 2)))->first()->id;
+            $uploaded_file = $this->request->getData('attachment');
+            $name = $uploaded_file->getClientFilename();
+            $extension = pathinfo($name, PATHINFO_EXTENSION);
+            $document_name = rand(1000,500000).".".$extension;
+            $type = $uploaded_file->getClientMediaType();
+            $path = $uploaded_file->getStream()->getMetadata('uri');
+
+            if(!empty($name)){
                 if ($attachment->getSize() > 0 && $attachment->getError() == 0) {
-                    $extension = pathinfo($name, PATHINFO_EXTENSION);
-                    $targetPath = WWW_ROOT. 'img'. DS . 'claims'. DS. $claimsType->id.".".$extension;
-                    $attachment->moveTo($targetPath); 
-                    $data['attachment'] = $claimsType->id.".".$extension;
+                    $data['attachment'] = $this->upload_s3_file($path, $document_name, "/claims/");
+                    $file = $this->Folders->Files->newEmptyEntity(); 
+                    $file->user_id = $this->Auth->user()['id']; 
+                    $file->tenant_id = $this->Auth->user()['tenant_id'];
+                    $file->location = $data['attachment'];
+                    $file->name = $data['title'];
+                    $file->folder_id = $folder;
+                    $file->description = $data['description'];
+                    $file->claim_id = $data['claim_id'];
+                    $this->Folders->Files->save($file);
                 }else{
-                        $data['attachment'] = $claimsType->attachment;
+                    $data['attachment'] = $claimsType->attachment;
                 }
+                
             }else{
                 $data['attachment'] = $claimsType->attachment;
             }
+            
             $claimsType = $this->ClaimsTypes->patchEntity($claimsType, $data);
             if ($this->ClaimsTypes->save($claimsType)) {
                 $this->Flash->success(__('The claims type has been saved.'));

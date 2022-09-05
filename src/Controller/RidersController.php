@@ -38,7 +38,7 @@ class RidersController extends AppController
         if(!$this->authorize()){
             return $this->redirect(['action' => 'authorization']);
         }
-        $riders = $this->Riders->find("all", array("conditions" => array("Riders.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Users']);
+        $riders = $this->Riders->find("all", array("conditions" => array("Riders.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['PoliciesRiders']);
         $this->set(compact('riders'));
     }
 
@@ -98,7 +98,7 @@ class RidersController extends AppController
             }
             $this->Flash->error(__('The rider could not be saved. Please, try again.'));
         }
-        $this->set(compact('rider', 'users'));
+        $this->set(compact('rider'));
     }
 
     /**

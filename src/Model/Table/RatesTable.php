@@ -66,6 +66,21 @@ class RatesTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "$", "%", "&", "*", "/", ":", ";", "<", "=", ">", "?", "[", "]", "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
+
+
         $validator
             ->numeric('amount')
             ->requirePresence('amount', 'create')

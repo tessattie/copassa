@@ -84,16 +84,17 @@ class ClaimsController extends AppController
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
         $claim = $this->Claims->get($id, [
-            'contain' => ['Policies' => ['Customers', 'Companies', 'Options'], 'Dependants', 'Users', 'ClaimsTypes' => ['Types', 'Users', 'sort' => ['ClaimsTypes.created ASC']]],
+            'contain' => ['Policies' => ['Customers', 'Companies', 'Options'], 'Dependants', 'Files' => ['Users'], 'Users', 'ClaimsTypes' => ['Types', 'Users', 'sort' => ['ClaimsTypes.created ASC']]],
         ]);
 
         if($this->Auth->user()['tenant_id'] != $claim->tenant_id){
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
-
+        $this->loadModel("Folders");
         $claims_types = $this->Claims->ClaimsTypes->Types->find('list', ['order' => ['name ASC'], 'conditions' => ['tenant_id' => $this->Auth->user()['tenant_id']]]);
+        $folder_id = $this->Folders->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'is_claims' => 2)))->first()->id;
 
-        $this->set(compact('claim', 'claims_types'));
+        $this->set(compact('claim', 'claims_types', 'folder_id'));
     }
 
     /**
@@ -290,12 +291,27 @@ class ClaimsController extends AppController
         $claimsType = $this->Claims->ClaimsTypes->newEmptyEntity();
         if ($this->request->is(['post', 'patch', 'put'])) {
             $data = $this->request->getData();
+            $this->loadModel('Folders');
+            $folder = $this->Folders->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'is_claims' => 2)))->first()->id;
+            $uploaded_file = $this->request->getData('attachment');
+            $name = $uploaded_file->getClientFilename();
+            $extension = pathinfo($name, PATHINFO_EXTENSION);
+            $document_name = rand(1000,500000).".".$extension;
+            $type = $uploaded_file->getClientMediaType();
+            $path = $uploaded_file->getStream()->getMetadata('uri');
 
-            $attachment = $this->request->getData('attachment');
-            $name = $attachment->getClientFilename();
-            $type = $attachment->getClientMediaType();
-            $data['attachment'] = '';
-
+            if(!empty($name)){
+                $data['attachment'] = $this->upload_s3_file($path, $document_name, "/claims/");
+                $file = $this->Folders->Files->newEmptyEntity(); 
+                $file->user_id = $this->Auth->user()['id']; 
+                $file->tenant_id = $this->Auth->user()['tenant_id'];
+                $file->location = $data['attachment'];
+                $file->name = $data['title'];
+                $file->folder_id = $folder;
+                $file->description = $data['description'];
+                $file->claim_id = $data['claim_id'];
+                $this->Folders->Files->save($file);
+            }
 
             
             $claimsType = $this->Claims->ClaimsTypes->patchEntity($claimsType, $data);
@@ -304,19 +320,6 @@ class ClaimsController extends AppController
 
             if ($ident = $this->Claims->ClaimsTypes->save($claimsType)) {
                 $ct = $this->Claims->ClaimsTypes->get($ident['id']);
-                // save attachment 
-
-                $targetPath = WWW_ROOT. 'img'. DS . 'claims'. DS. $ct->id.".".$type;
-                if (!empty($name)) {
-                    if ($attachment->getSize() > 0 && $attachment->getError() == 0) {
-                        $extension = pathinfo($name, PATHINFO_EXTENSION);
-                        $targetPath = WWW_ROOT. 'img'. DS . 'claims'. DS. $ct->id.".".$extension;
-                        $attachment->moveTo($targetPath); 
-                        $ct->attachment = $ct->id.".".$extension;
-                    }
-                }else{
-                    $data['attachment'] = '';
-                }
 
                 $this->Claims->ClaimsTypes->save($ct);
 
@@ -337,6 +340,11 @@ class ClaimsController extends AppController
         $this->loadModel("Types");
         $types = $this->Types->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'is_deductible' => 1) ));
         $claim = $this->Claims->get($claim_id, ['contain' => ['Policies']]);
+
+        if($this->Auth->user()['tenant_id'] != $claim->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+        
         $type_id = 0; 
         foreach($types as $type){
             $type_id = $type->id;

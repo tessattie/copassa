@@ -75,7 +75,7 @@ $months = array(
                     <div class="col-md-2"><?= $this->Form->control('max_coverage', array('class' => 'form-control', "value" => 0, 'placeholder' => 'deductible')); ?>
                     </div>
                 </div>
-                <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Renewals</h4>
+                <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Payments</h4>
                 <div class="row">
                   <div class="col-md-3"><?= $this->Form->control('mode', array('class' => 'form-control', 'options' => $modes, "label" => "Mode", "multiple" => false, 'required' => true, 'style' => "height:46px", 'empty' => "-- Choose --")); ?>
                     </div>
@@ -85,16 +85,9 @@ $months = array(
                     </div>
                 </div>
 
-                <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Certificate / Exclusions</h4>
+                <h4 style="padding: 10px;text-align: center;background: #f3f3f3;margin-bottom: 33px;;margin-top:30px">Exclusions</h4>
                 <div class="row" style="margin-top:10px">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="exampleInputFile">Certificate</label>
-                        <input type="file" id="exampleInputFile" name="certificate">
-                        <p class="help-block">Upload Policy Certificate here.</p>
-                      </div>
-                    </div>
-                    <div class="col-md-6"><?= $this->Form->control('exclusions', array("type" => "text", 'class' => 'form-control', "label" => "Exclusions", "placeholder" => "Exclusions")); ?>
+                    <div class="col-md-12"><?= $this->Form->control('exclusions', array("type" => "text", 'class' => 'form-control', "label" => "Exclusions", "placeholder" => "Exclusions")); ?>
                     </div>
                 </div> 
 

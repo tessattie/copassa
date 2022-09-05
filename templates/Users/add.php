@@ -30,7 +30,8 @@
                 <div class="col-md-4"><?= $this->Form->control('email', array('class' => 'form-control', "label" => "Email *", "placeholder" => "Email")); ?></div>
                 <div class="col-md-3"><?= $this->Form->control('role_id', array('class' => 'form-control', 'options' => $roles, "label" => "Access *", "value" => 2, "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div>
                     
-                </div>  
+                </div> 
+                <hr> 
                 <div class="row" style="margin-top:15px">
                 <div class="col-md-4"><?= $this->Form->control('username', array('class' => 'form-control', "label" => "Username *", "placeholder" => "Username")); ?></div>
                 <div class="col-md-4"><?= $this->Form->control('password', array('class' => 'form-control', "type" => "text", "label" => "Password *", "placeholder" => "Password")); ?></div>

@@ -191,6 +191,10 @@ class UsersController extends AppController
         if($this->Auth->user()['tenant_id'] != $user->tenant_id){
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
+
+        if($this->Auth->user()['tenant_id'] != $user->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->Users->delete($user)) {
             $this->Flash->success(__('The user has been deleted.'));
         } else {

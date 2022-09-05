@@ -80,6 +80,19 @@ class NotesTable extends Table
             ->requirePresence('comment', 'create')
             ->notEmptyString('comment');
 
+        $validator->add('comment', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>",  "</script>", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The comment is not valid'
+        ]);
+
         return $validator;
     }
 

@@ -78,6 +78,7 @@ class CompaniesTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
+
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
@@ -87,6 +88,45 @@ class CompaniesTable extends Table
             ->maxLength('name', 255)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
+
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
+        $validator->add('phone', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The phone is not valid'
+        ]);
+
+        $validator->add('address', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "</script>", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The address is not valid'
+        ]);
 
         $validator
             ->requirePresence('type', 'create')

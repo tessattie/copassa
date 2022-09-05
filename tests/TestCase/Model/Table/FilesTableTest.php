@@ -25,8 +25,9 @@ class FilesTableTest extends TestCase
      */
     protected $fixtures = [
         'app.Files',
-        'app.Users',
         'app.Folders',
+        'app.Users',
+        'app.Tenants',
     ];
 
     /**

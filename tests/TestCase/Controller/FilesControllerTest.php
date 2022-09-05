@@ -23,9 +23,9 @@ class FilesControllerTest extends TestCase
      */
     protected $fixtures = [
         'app.Files',
-        'app.Users',
         'app.Folders',
-        'app.FoldersFiles',
+        'app.Users',
+        'app.Tenants',
     ];
 
     /**

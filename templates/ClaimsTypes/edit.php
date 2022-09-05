@@ -35,20 +35,6 @@
             <hr>
             <div class="row">
                 <div class="col-md-6"><?= $this->Form->control('type_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $claims_types, "label" => "Type", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="exampleInputFile">Attachment<?php if(!empty($claimsType->attachment)) : ?>
-                                <small class="text-center"><?= $this->Html->link(' (View Current)', '/img/claims/'.$claimsType->attachment ,array('download'=> $claimsType->attachment)); ?></small>
-                            <?php else : ?>
-                                <small class="text-center"></small>
-                            <?php endif; ?></label>
-                    <input type="file" id="exampleInputFile" name="attachment">
-                    <p class="help-block">Upload Attachment here.</p>
-                  </div>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
                 <div class="col-md-6"><?= $this->Form->control('amount', array('class' => 'form-control', "label" => "Amount *", "placeholder" => "Amount")); ?></div>
             </div>
             <hr>

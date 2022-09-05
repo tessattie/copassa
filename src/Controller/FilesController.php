@@ -1,152 +1,195 @@
 <?php
-namespace App\Controller;
+declare(strict_types=1);
 
-use App\Controller\AppController;
+namespace App\Controller;
+use Aws\S3\S3Client;
+use Aws\Exception\AwsException;
 
 /**
  * Files Controller
  *
  * @property \App\Model\Table\FilesTable $Files
- *
  * @method \App\Model\Entity\File[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class FilesController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[43] || $this->authorizations[44])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[44]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[44]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[44]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
-     * @return \Cake\Http\Response|null
+     * @return \Cake\Http\Response|null|void Renders view
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users'], 
-        ];
-        $files = $this->Files->find("all", array('order' => array('Files.created DESC')))->contain(['Users']);
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+        $files = $this->Files->find("all", array("conditions" => array("Files.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Folders', 'Policies', 'Claims']);
 
-        $this->set(compact('files'));
+        $folder_id = '';
+
+        if($this->request->is(['patch', 'put', 'post'])){
+            if(!empty($this->request->getData()['folder_id'])){
+                $folder_id = $this->request->getData()['folder_id'];
+                $files->where(['Files.folder_id' => $folder_id]);
+            }
+        }
+        
+        $folders = $this->Files->Folders->find("list", array("order" => array('Folders.name ASC'), "conditions" => array("Folders.tenant_id" => $this->Auth->user()['tenant_id'])));
+
+        $this->set(compact('files', 'folders', 'folder_id'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id File id.
-     * @return \Cake\Http\Response|null
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $file = $this->Files->get($id, [
-            'contain' => ['Users', 'Folders']
-        ]);
-
-        $this->set('file', $file);
-    }
 
     /**
      * Add method
      *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $file = $this->Files->newEmptyEntity();
         if ($this->request->is('post')) {
-            // debug($this->request->getData());
-            if(!empty($this->request->getData()['location']['tmp_name'])){
-               $file = $this->Files->patchEntity($file, $this->request->getData());
-               $file->location = '';
-               $file->user_id = $this->Auth->user()['id'];
-                if ($id = $this->Files->save($file)) {
-                    $loca = $this->checkFile($this->request->getData()['location'], $id['id'], $id['extension']);
-                    $newFile = $this->Files->get($id['id']);
-                    $newFile->location = $loca;
-                    $this->Files->save($newFile);
-                    $this->Flash->success(__('The file has been saved.'));
+            
+            $folder = $this->Files->Folders->get($this->request->getData()['folder_id']);
+            $uploaded_file = $this->request->getData('file');
+            $name = $uploaded_file->getClientFilename();
+            $extension = pathinfo($name, PATHINFO_EXTENSION);
+            $document_name = rand(1000,500000).".".$extension;
+            $type = $uploaded_file->getClientMediaType();
+            $path = $uploaded_file->getStream()->getMetadata('uri');
 
-                    return $this->redirect(['action' => 'index']);
-                } 
+            $file = $this->Files->patchEntity($file, $this->request->getData());
+            $file->location = $this->upload_s3_file($path, $document_name, "/".$folder->name."/");
+
+            $file->tenant_id = $this->Auth->user()['tenant_id'];
+            $file->user_id = $this->Auth->user()['id'];
+            if ($this->Files->save($file)) {
+                $this->Flash->success(__('The file has been saved.'));
             }
-            $this->Flash->error(__('The file could not be saved. Please, try again.'));
         }
-        $users = $this->Files->Users->find('list', ['limit' => 200]);
-        $folders = $this->Files->Folders->find('treeList', []);
-        $this->set(compact('file', 'users', 'folders'));
+
+        return $this->redirect($this->referer());
     }
 
     /**
      * Edit method
      *
      * @param string|null $id File id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
+     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $file = $this->Files->get($id, [
-            'contain' => ['Folders']
+            'contain' => [],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $file->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->request->is(['patch', 'post', 'put'])) {
-
-            if(empty($this->request->getData()['location']['tmp_name'])){
-                unset($this->request->getData()['location']);
-            }
-
             $file = $this->Files->patchEntity($file, $this->request->getData());
-
-            if(!empty($this->request->getData()['location']['tmp_name'])){
-                $loca = $this->checkFile($this->request->getData()['location'], $file->id, $file->extension);
-                $file->location = $loca;
-            }
-                       
-            if ($id = $this->Files->save($file)) {
+            if ($this->Files->save($file)) {
                 $this->Flash->success(__('The file has been saved.'));
 
                 return $this->redirect(['action' => 'index']);
-            } 
-            
+            }
             $this->Flash->error(__('The file could not be saved. Please, try again.'));
         }
-        $users = $this->Files->Users->find('list', ['limit' => 200]);
-        $folders = $this->Files->Folders->find('treeList', []);
-        $this->set(compact('file', 'users', 'folders'));
+        $folders = $this->Files->Folders->find('list', ['conditions' => ['Folders.tenant_id' => $this->Auth->user()['tenant_id']], 'order' => ['name ASC']]);
+        $this->set(compact('file', 'folders'));
     }
 
     /**
      * Delete method
      *
      * @param string|null $id File id.
-     * @return \Cake\Http\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null|void Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null, $folder)
+    public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $file = $this->Files->get($id);
-        if ($this->Files->delete($file)) {
-            $this->Flash->success(__('The file has been deleted.'));
-        } else {
-            $this->Flash->error(__('The file could not be deleted. Please, try again.'));
-        }
-            return $this->redirect(["controller" => "folders", 'action' => "show", $folder]);
-    }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id File id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete2($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete', 'get']);
-        $file = $this->Files->get($id);
+        if($this->Auth->user()['tenant_id'] != $file->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+        
         if ($this->Files->delete($file)) {
             $this->Flash->success(__('The file has been deleted.'));
         } else {
             $this->Flash->error(__('The file could not be deleted. Please, try again.'));
         }
+
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function download(){
+        $key = 'AKIARDN5TTMS72EFD65R'; 
+        $secret = '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';
+        $s3Client = new S3Client([
+            'region' => 'us-east-1',
+            'version' => '2006-03-01',
+            'http'    => [
+                'verify' => false     
+            ],
+            'credentials' => [
+                'key' => $key,
+                'secret' => $secret,
+            ]
+        ]);
+
+        $bucket = 'arsfiles';
+
+        $cmd = $s3Client->getCommand('GetObject', [
+            'Bucket' => $bucket,
+            'Key' => $this->request->getData()['location']
+        ]);
+
+        $request = $s3Client->createPresignedRequest($cmd, '+20 minutes');
+
+        // Get the actual presigned-url
+        $presignedUrl = (string)$request->getUri();
+        echo $presignedUrl; 
+        die();
     }
 }

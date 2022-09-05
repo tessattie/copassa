@@ -102,11 +102,37 @@ class UsersTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "</script>", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
         $validator
             ->scalar('username')
             ->maxLength('username', 255)
             ->requirePresence('username', 'create')
             ->notEmptyString('username');
+
+        $validator->add('username', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "</script>", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The username is not valid'
+        ]);
 
         $validator
             ->scalar('password')
@@ -115,6 +141,7 @@ class UsersTable extends Table
             ->notEmptyString('password');
 
         $validator
+            ->integer('status')
             ->requirePresence('status', 'create')
             ->notEmptyString('status');
 

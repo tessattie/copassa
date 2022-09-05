@@ -27,8 +27,8 @@
                     <td><?= h($file->location) ?></td>
                 </tr>
                 <tr>
-                    <th><?= __('Extension') ?></th>
-                    <td><?= h($file->extension) ?></td>
+                    <th><?= __('Folder') ?></th>
+                    <td><?= $file->has('folder') ? $this->Html->link($file->folder->name, ['controller' => 'Folders', 'action' => 'view', $file->folder->id]) : '' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('User') ?></th>
@@ -37,6 +37,10 @@
                 <tr>
                     <th><?= __('Description') ?></th>
                     <td><?= h($file->description) ?></td>
+                </tr>
+                <tr>
+                    <th><?= __('Tenant') ?></th>
+                    <td><?= $file->has('tenant') ? $this->Html->link($file->tenant->id, ['controller' => 'Tenants', 'action' => 'view', $file->tenant->id]) : '' ?></td>
                 </tr>
                 <tr>
                     <th><?= __('Id') ?></th>
@@ -51,43 +55,6 @@
                     <td><?= h($file->modified) ?></td>
                 </tr>
             </table>
-            <div class="related">
-                <h4><?= __('Related Folders') ?></h4>
-                <?php if (!empty($file->folders)) : ?>
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th><?= __('Id') ?></th>
-                            <th><?= __('Name') ?></th>
-                            <th><?= __('Parent Id') ?></th>
-                            <th><?= __('Lft') ?></th>
-                            <th><?= __('Rght') ?></th>
-                            <th><?= __('Created') ?></th>
-                            <th><?= __('Modified') ?></th>
-                            <th><?= __('User Id') ?></th>
-                            <th class="actions"><?= __('Actions') ?></th>
-                        </tr>
-                        <?php foreach ($file->folders as $folders) : ?>
-                        <tr>
-                            <td><?= h($folders->id) ?></td>
-                            <td><?= h($folders->name) ?></td>
-                            <td><?= h($folders->parent_id) ?></td>
-                            <td><?= h($folders->lft) ?></td>
-                            <td><?= h($folders->rght) ?></td>
-                            <td><?= h($folders->created) ?></td>
-                            <td><?= h($folders->modified) ?></td>
-                            <td><?= h($folders->user_id) ?></td>
-                            <td class="actions">
-                                <?= $this->Html->link(__('View'), ['controller' => 'Folders', 'action' => 'view', $folders->id]) ?>
-                                <?= $this->Html->link(__('Edit'), ['controller' => 'Folders', 'action' => 'edit', $folders->id]) ?>
-                                <?= $this->Form->postLink(__('Delete'), ['controller' => 'Folders', 'action' => 'delete', $folders->id], ['confirm' => __('Are you sure you want to delete # {0}?', $folders->id)]) ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </table>
-                </div>
-                <?php endif; ?>
-            </div>
         </div>
     </div>
 </div>

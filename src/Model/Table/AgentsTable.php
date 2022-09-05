@@ -61,6 +61,7 @@ class AgentsTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
+
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
@@ -71,10 +72,36 @@ class AgentsTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context) {
+                $not_allowed = array("<script>", "#", "</script>", "$", "%", "&", "()", "*", "+", "<", "=", ">", "?", "[", "]", "(", ")", "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
         $validator
             ->scalar('phone')
             ->maxLength('phone', 255)
             ->allowEmptyString('phone');
+
+        $validator->add('phone', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "$", "%", "&", "*", ",", ".", "/", ":", ";", "<", "=", ">", "?", "[", "]", "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The phone is not valid'
+        ]);
 
         $validator
             ->email('email')

@@ -80,6 +80,10 @@ class PoliciesTable extends Table
             'foreignKey' => 'policy_id',
         ]);
 
+        $this->hasMany('Files', [
+            'foreignKey' => 'policy_id',
+        ]);
+
         $this->hasMany('Prenewals', [
             'foreignKey' => 'policy_id',
         ]);
@@ -109,6 +113,7 @@ class PoliciesTable extends Table
             ->notEmptyString('policy_number');
 
         $validator
+            ->integer('mode')
             ->requirePresence('mode', 'create')
             ->notEmptyString('mode');
 
@@ -130,21 +135,6 @@ class PoliciesTable extends Table
         $validator
             ->numeric('fee')
             ->notEmptyString('fee');
-
-        $validator
-            ->notEmptyString('active');
-
-        $validator
-            ->notEmptyString('lapse');
-
-        $validator
-            ->notEmptyString('pending');
-
-        $validator
-            ->notEmptyString('grace_period');
-
-        $validator
-            ->notEmptyString('canceled');
 
         return $validator;
     }

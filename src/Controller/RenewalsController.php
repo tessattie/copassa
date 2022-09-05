@@ -19,6 +19,55 @@ use PHPExcel_Writer_Excel7;
  */
 class RenewalsController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'index' && ($this->authorizations[40] || $this->authorizations[42])){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'add' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'addemployee' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'addfamily' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'addtransaction' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'edit' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'process' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'view' && ($this->authorizations[40] || $this->authorizations[42])){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Index method
      *
@@ -26,6 +75,9 @@ class RenewalsController extends AppController
      */
     public function index()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $businesses = $this->Renewals->Businesses->find("list", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id']), "order" => array("name ASC")));
         $renewals = $this->Renewals->find("all", array("conditions" => array("Renewals.tenant_id" => $this->Auth->user()['tenant_id'])))->contain(['Businesses', 'Transactions']);
 
@@ -33,6 +85,9 @@ class RenewalsController extends AppController
     }
 
     public function process($id){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $renewal = $this->Renewals->get($id, ['contain' => ['Businesses']]);
         // debug($renewal); die();
 
@@ -78,6 +133,9 @@ class RenewalsController extends AppController
      */
     public function view($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $renewal = $this->Renewals->get($id, [
             'contain' => ['Businesses' => ['Groupings'], 'Users', 'Transactions' => ['Families', 'Employees' => ['sort' => ['Employees.type ASC']], 'sort' => ['Transactions.employee_id']]],
         ]);
@@ -104,6 +162,9 @@ class RenewalsController extends AppController
      */
     public function add()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if ($this->request->is('post')) {
             $renewal = $this->Renewals->newEmptyEntity();
             $renewal = $this->Renewals->patchEntity($renewal, $this->request->getData());
@@ -118,6 +179,9 @@ class RenewalsController extends AppController
 
     public function addemployee()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $employee = $this->Renewals->Businesses->Groupings->Employees->newEmptyEntity();
         if ($this->request->is('post')) {
             $employee = $this->Renewals->Businesses->Groupings->Employees->patchEntity($employee, $this->request->getData());
@@ -176,6 +240,9 @@ class RenewalsController extends AppController
 
     public function addfamily()
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->loadModel("Employees");
         $family = $this->Employees->Families->newEmptyEntity();
         if ($this->request->is('post')) {
@@ -228,9 +295,17 @@ class RenewalsController extends AppController
      */
     public function edit($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $renewal = $this->Renewals->get($id, [
             'contain' => [],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $renewal->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $renewal = $this->Renewals->patchEntity($renewal, $this->request->getData());
             if ($this->Renewals->save($renewal)) {
@@ -255,6 +330,9 @@ class RenewalsController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $renewal = $this->Renewals->get($id);
 
@@ -272,8 +350,16 @@ class RenewalsController extends AppController
     }
 
     public function addtransaction(){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if($this->request->is(['patch', 'put', 'post'])){
             $renewal = $this->Renewals->get($this->request->getData()['renewal_id']);
+
+            if($this->Auth->user()['tenant_id'] != $renewal->tenant_id){
+                return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+            }
+
             $this->loadModel('Transactions');
             $transaction = $this->Transactions->newEmptyEntity();
             if(!empty($this->request->getData()['employee_id'])){
@@ -312,8 +398,16 @@ class RenewalsController extends AppController
     }
 
     public function confirmtransaction(){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         if($this->request->is(['patch', 'put', 'post'])){
             $transaction = $this->Renewals->Transactions->get($this->request->getData()['transaction_id']);
+
+            if($this->Auth->user()['tenant_id'] != $transaction->tenant_id){
+                return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+            }
+
             $transaction->status = 2;
             $transaction->credit = $this->request->getData()['credit'];
             $transaction->debit = $this->request->getData()['debit'];
@@ -326,9 +420,16 @@ class RenewalsController extends AppController
 
 
     public function exportexcel($renewal_id){
+        if(!$this->authorize()){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
         $renewal = $this->Renewals->get($renewal_id, [
             'contain' => ['Businesses' => ['Groupings'], 'Users', 'Transactions' => ['Families', 'Employees' => ['sort' => ['Employees.type ASC']], 'sort' => ['Transactions.employee_id']]],
         ]);
+
+        if($this->Auth->user()['tenant_id'] != $renewal->tenant_id){
+            return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+        }
 
         $this->loadModel('Groupings');
 

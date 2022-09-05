@@ -17,7 +17,9 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Renewals
+            <?php if($user_connected['role_id'] != 2 || $auths[42]) : ?>
             <button class="btn btn-warning float-right" data-toggle="modal" data-target="#newrenewal" style="float:right">New Renewal</button>
+        <?php endif; ?>
         </div>
     <div class="panel-body articles-container">
         <div class="table-responsive">

@@ -72,6 +72,7 @@ class BusinessesTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
+
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
@@ -82,11 +83,38 @@ class BusinessesTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "[", "]", "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
+
         $validator
             ->scalar('business_number')
             ->maxLength('business_number', 255)
             ->requirePresence('business_number', 'create')
             ->notEmptyString('business_number');
+
+        $validator->add('business_number', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "</script>", "<", "=", ">", "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The business_number is not valid'
+        ]);
 
         return $validator;
     }

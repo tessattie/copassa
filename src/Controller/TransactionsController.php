@@ -11,6 +11,27 @@ namespace App\Controller;
  */
 class TransactionsController extends AppController
 {
+
+    public function authorize(){
+        if($this->Auth->user()['role_id'] == 2){
+
+            if($this->request->getParam('action') == 'delete' && $this->authorizations[42]){
+                return true;
+            }
+
+            if($this->request->getParam('action') == 'cancel' && $this->authorizations[42]){
+                return true;
+            }
+
+            return false;
+
+        }else{
+
+            return true;
+
+        }
+    }
+
     /**
      * Delete method
      *
@@ -20,6 +41,9 @@ class TransactionsController extends AppController
      */
     public function delete($id = null)
     {
+        if(!$this->authorize()){
+            return $this->redirect(['action' => 'authorization']);
+        }
         $this->request->allowMethod(['post', 'delete', 'get']);
         $transaction = $this->Transactions->get($id);
 
@@ -33,6 +57,9 @@ class TransactionsController extends AppController
     }
 
     public function cancel($id){
+        if(!$this->authorize()){
+            return $this->redirect(['action' => 'authorization']);
+        }
         $transaction = $this->Transactions->get($id); 
 
         if($this->Auth->user()['tenant_id'] != $transaction->tenant_id){

@@ -17,7 +17,7 @@
     <div class="panel panel-default articles">
         <div class="panel-heading">
             Riders
-            <?php if($user_connected['role_id'] != 2 || ($authorizations[50])) : ?>
+            <?php if($user_connected['role_id'] != 2 || ($auths[50])) : ?>
             <a href="<?= ROOT_DIREC ?>/riders/add" style="float:right"><button class="btn btn-warning">Add</button></a>
             <?php endif; ?>
         </div>
@@ -26,7 +26,7 @@
             <table class="table table-stripped datatable">
                 <thead> 
                     <th>Name</th>
-                    <?php if($user_connected['role_id'] != 2 || ($authorizations[50])) : ?>
+                    <?php if($user_connected['role_id'] != 2 || ($auths[50])) : ?>
                     <th class="text-center"></th>
                     <?php endif; ?>
                 </thead>
@@ -34,9 +34,11 @@
         <?php foreach($riders as $rider) : ?>
             <tr>
                 <td><?= h($rider->name) ?></td>
-                <?php if($user_connected['role_id'] != 2 || ($authorizations[50])) : ?>
+                <?php if($user_connected['role_id'] != 2 || ($auths[50])) : ?>
                 <td class="text-right"><a href="<?= ROOT_DIREC ?>/riders/edit/<?= $rider->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                    <?php   if(count($rider->policies_riders) == 0) : ?>
                 <a href="<?= ROOT_DIREC ?>/riders/delete/<?= $rider->id ?>" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+            <?php   endif; ?>
                 </td>
                 <?php endif; ?>
             </tr>

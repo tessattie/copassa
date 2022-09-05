@@ -41,7 +41,7 @@
                 <div class="panel-heading">
                     Countries
                 </div>
-                <div class="panel-body articles-container" style="height:400px;overflow-y:scroll">       
+                <div class="panel-body articles-container" style="max-height:400px;overflow-y:scroll">       
                     <table class="table">
                         <tbody>
                             <?php $i=0; foreach($countries as $country) : ?>

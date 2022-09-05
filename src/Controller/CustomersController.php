@@ -117,7 +117,7 @@ class CustomersController extends AppController
             $this->savelog(500, "Tempted to create policy holder", 0, 1, "", json_encode($customer));
             $this->Flash->error(__('The policy holder could not be saved. Please, try again.'));
         }
-        $countries = $this->Countries->find("list", array("order" => array("name ASC")));
+        $countries = $this->Countries->find("list", array("order" => array("name ASC"), "conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'])));
         $this->set(compact('customer', 'countries'));
     }
 

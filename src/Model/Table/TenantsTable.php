@@ -135,6 +135,19 @@ class TenantsTable extends Table
             ->requirePresence('full_name', 'create')
             ->notEmptyString('full_name');
 
+        $validator->add('full_name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "</script>", "<", "=", ">", "?", "[", "]", "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
         $validator
             ->email('email')
             ->requirePresence('email', 'create')
@@ -158,7 +171,21 @@ class TenantsTable extends Table
             ->requirePresence('company', 'create')
             ->notEmptyString('company');
 
+        $validator->add('company', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "<", "=", ">", "?", "[", "]", "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The company name is not valid'
+        ]);
+
         $validator
+            ->integer('status')
             ->notEmptyString('status');
 
         return $validator;

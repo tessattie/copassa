@@ -78,6 +78,22 @@ class DependantsTable extends Table
         $validator
             ->allowEmptyString('relation');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*",  "^", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
+        $validator
+        ->integer('relation');
+
         $validator
             ->date('dob')
             ->allowEmptyDate('dob');

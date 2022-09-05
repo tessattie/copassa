@@ -53,7 +53,6 @@ class User extends Entity
         'options' => true,
         'payments' => true,
         'policies' => true,
-        'tenant_id' => true,
         'token' => true, 
         'token_expiry' => true, 
         'email' => true

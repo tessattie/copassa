@@ -108,21 +108,6 @@ $paiduntil = $yesterday->format('Y-m-d');
                             <th><?= __('Fee') ?></th>
                             <td class="text-right"><?= h($this->Number->format($policy->fee)) ?> USD</td>
                         </tr>
-                        
-                        
-                        <tr>
-                            <th><?= __('Certificate') ?></th>
-                            <?php if(!empty($policy->certificate)) : ?>
-                                <td class="text-right"><?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?></td>
-                            <?php else : ?>
-                                <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
-                                    <td class="text-right"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>">Upload</a></td>
-                                <?php else : ?>
-                                    <td></td>
-                                <?php endif; ?>
-                            <?php endif; ?>
-                            
-                        </tr>
                     </table>
                 </div>
                 
@@ -144,10 +129,10 @@ $paiduntil = $yesterday->format('Y-m-d');
 
                 <div class="panel-body articles-container">
                     <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-striped datatable">
                         <thead>
                             <tr>
-                                <th class="text-center">Name</th>
+                                <th class="text-left">Name</th>
                                 <th class="text-center">Relation</th>
                                 <th class="text-center">DOB</th>
                                 <th class="text-center">Age</th>
@@ -175,7 +160,7 @@ $paiduntil = $yesterday->format('Y-m-d');
                                 
                             ?>
                                 <tr>
-                                    <td class="text-center"><?= h($dep->name) ?></td>
+                                    <td class="text-left"><?= h($dep->name) ?></td>
                                     <td class="text-center"><?= h($relations[$dep->relation]) ?></td>
                                     <?php if(!empty($dep->dob)) : ?>
                                         <td class="text-center"><?= h($dob) ?></td>
@@ -260,6 +245,7 @@ $paiduntil = $yesterday->format('Y-m-d');
             </div>
         </div>
     </div>
+
         </div>
         <div class="col-md-3">
 
@@ -311,7 +297,7 @@ $paiduntil = $yesterday->format('Y-m-d');
             </div>
             <?php if($plan_type > 1) : ?>
             <?php if($user_connected['role_id'] != 2  || $auths[52]  || $auths[53]  || $auths[55]) : ?>
-            <div class="panel panel-teal">
+            <div class="panel panel-default">
             <div class="panel-heading">
                 CLaims <?php if($user_connected['role_id'] != 2  || $auths[53]) : ?><button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#newclaim"><span class="fa fa-plus"></span></button><?php endif; ?>
                 </div>
@@ -341,10 +327,75 @@ $paiduntil = $yesterday->format('Y-m-d');
         </div>
     <?php endif; ?>
 <?php endif; ?>
+
+<div class="panel panel-default">
+            <div class="panel-heading">
+                Files 
+                <?php if($user_connected['role_id'] != 2 || $auths[24]) : ?>
+                <button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#new_file"><span class="fa fa-plus"></span></button>
+                <?php endif; ?>
+                </div>
+            <div class="panel-body" style="max-height:365px;overflow-y:scroll;background:white">
+                        <?php foreach($policy->files as $file) : ?>
+
+                    <div class="row">
+                            <div class="col-xs-12">
+                                <p style="color:black">
+                                    <a href="#" class="download_file"> <input type="hidden" class="location" value="<?= $file->location ?>"><?= h($file->name) ?></a><br>
+                                    <?= h($file->description) ?><br>
+                                    <strong>Added :</strong> <?= h(date('M d Y', strtotime($file->created))) ?><br>
+                                    <strong>By :</strong> <?= h($file->user->name) ?>
+                                </p>
+                            </div>
+                        </div>
+                        <hr>
+                        <?php endforeach; ?>
+            </div>
+        </div>
         </div>
     </div>
 
     
+</div>
+
+
+
+<div class="modal fade" id="new_file" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New File</h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => '/policies/addfile', 'type' => 'file')) ?>
+      <div class="modal-body">
+            <div class="row"><?= $this->Form->control('folder_id', array('type' => 'hidden','value' => $folder_id)); ?> <?= $this->Form->control('policy_id', array('type' => 'hidden','value' => $policy->id)); ?> 
+                <div class="col-md-12"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "File Name")); ?></div>
+
+            </div>
+
+            <hr>
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description")); ?></div>
+            </div>
+            <hr>
+            <div class="row" style="margin-top:10px">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="exampleInputFile">File</label>
+                        <input type="file" id="exampleInputFile" name="file">
+                        <p class="help-block">Upload File here.</p>
+                      </div>
+                    </div>
+                    </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Add</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
 </div>
 
 
@@ -414,3 +465,38 @@ $paiduntil = $yesterday->format('Y-m-d');
     </div>
   </div>
 </div>
+
+<?php 
+    echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
+?>
+
+<script type="text/javascript">$(document).ready( function () {
+
+    $(".download_file").click(function(){
+        var location = $(this).find(".location").val(); 
+        var token =  $('input[name="_csrfToken"]').val();
+            var company = $(this).val();
+            $.ajax({
+                 url : ROOT_DIREC+'/files/download',
+                 type : 'POST',
+                 data : {location : location},
+                 headers : {
+                    'X-CSRF-Token': token 
+                 },
+                 success : function(data, statut){
+                      var win = window.open(data, '_blank');
+                      if (win) {
+                            win.focus();
+                        } else {
+                            alert('Please allow popups for this website');
+                        }
+                 },
+                 error : function(resultat, statut, erreur){
+                  console.log(erreur)
+                 }, 
+                 complete : function(resultat, statut){
+                    console.log(resultat)
+                 }
+            });
+    })
+} );</script>

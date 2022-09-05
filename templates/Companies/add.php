@@ -31,9 +31,9 @@
                 </div>
                 <hr>
                 <div class="row">
-                    <div class="col-md-4"><?= $this->Form->control('address', array('class' => 'form-control', "label" => "Address", "placeholder" => "Address")); ?></div>
-                    <div class="col-md-4"><?= $this->Form->control('phone', array('class' => 'form-control', "placeholder" => 'Phone', "label" => "Phone")); ?></div>
-                    <div class="col-md-4"><?= $this->Form->control('email', array('class' => 'form-control', "placeholder" => 'Email', "label" => "Email")); ?></div>   
+                    <div class="col-md-4"><?= $this->Form->control('address', array('class' => 'form-control', "label" => "Address", "placeholder" => "Address", "required" => false)); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('phone', array('class' => 'form-control', "placeholder" => 'Phone', "label" => "Phone", "required" => false)); ?></div>
+                    <div class="col-md-4"><?= $this->Form->control('email', array('class' => 'form-control', "placeholder" => 'Email', "label" => "Email", "required" => false)); ?></div>   
                 </div>
                 <div class="row">
                     <div class="col-md-12"><?= $this->Form->button(__('Add'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>

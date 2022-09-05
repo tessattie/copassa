@@ -4,53 +4,94 @@
  * @var \App\Model\Entity\Folder[]|\Cake\Collection\CollectionInterface $folders
  */
 ?>
+<div class="row" style="margin-bottom:15px">
+    <ol class="breadcrumb">
+        <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
+            <em class="fa fa-home"></em>
+        </a></li>
+        <li class="active">Folders</li>
+    </ol>
+</div>
+<?= $this->Flash->render() ?>
+<div class="container-fluid"> 
+    <div class="panel panel-default articles">
+        <div class="panel-heading">
+            Folders
+            <?php if($user_connected['role_id'] != 2 || $auths[44]) : ?>
+            <button class="btn btn-warning" style="float:right" data-toggle="modal" data-target="#new_folder">New</button>
+            <?php endif; ?>
+        </div>
+    <div class="panel-body articles-container">
+        <div class="table-responsive">
+            <table class="table table-stripped datatable">
+                <thead> 
+                    <th>Name</th>
+                    <?php if($user_connected['role_id'] != 2 || $auths[44]) : ?>
+                    <th></th>
+                <?php endif; ?>
+                </thead>
+            <tbody> 
+            <?php foreach($folders as $folder) : ?>
+                <tr>
+                    <td><?= h($folder->name) ?></td>
+                    <?php if($user_connected['role_id'] != 2 || $auths[44]) : ?>
+                    <td class="text-right">
 
-<section>
+                        <a href="<?= ROOT_DIREC ?>/folders/edit/<?= $folder->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
+                        <?php if(empty($folder->files) && $folder->is_claims != 2 && $folder->is_policies != 2) : ?>
+                        <a href="<?= ROOT_DIREC ?>/folders/delete/<?= $folder->id ?>" onclick="return confirm('Are you sure you would like to delete the folder <?= h($folder->name) ?>')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
+                        <?php endif; ?>
+                    </td>
+                <?php  endif; ?>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table></div>
+            <!--End .article-->
+        </div>
+        
+    </div>
+</div><!--End .articles-->
 
-                    <!-- Begin Users Profile -->
-                    <div class="card">
-                        <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h3 style="padding-bottom:10px">Répertoires</h3>
-                            </div>
-                        </div>
-                  
-                                    <a href="<?= ROOT_DIREC ?>/folders/add" style="color:white"><button type="button" class="btn btn-primary" style="float:right;margin-top:-52px">
-                                         Nouveau Répertoire
-                                    </button></a>
-       
-                            <div class="card-dashboard">
-                                <div class="table-responsive">
-                                    <table class="table zero-configuration" id="check-slct">
-                                        <thead>
-                                            <tr class="text-uppercase">
-                                                <th class="text-left">Nom</th>
-                                                <th class="text-right">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        <?php foreach($folders as $id => $name) : ?>
-                                            <?php if($id != 1) : ?>
-                                            <?php $i = substr_count($name, '_'); $p=10; ?>
-                                            <tr>
-                                            <?php if($i <= 1) : ?>
-                                                <td style="padding-left:<?= $p ?>px!important"><?= str_replace("_", "", $name) ?></td>
-                                            <?php else : ?>
-                                                <td style="padding-left:<?= $p + $i*20 ?>px!important"><?= str_replace("_", "", $name) ?></td>
-                                            <?php endif; ?>
-                                                
-                                                 <td class="text-right"><a href="<?= ROOT_DIREC ?>/folders/edit/<?= $id ?>"><i class="m-1 feather icon-edit-2"></i></a>
+<script type="text/javascript">$(document).ready( function () {
+    $('.datatable').DataTable({
 
-                                                   <a href="<?= ROOT_DIREC ?>/folders/delete2/<?= $id ?>"><i class="feather icon-trash"></i></a></td>
-                                            </tr>
-                                        <?php endif; ?>
-                                        <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Users Profile -->
-                </section>
+    } );
+} );</script>
+
+<style>
+    .dt-button{
+        padding:5px;
+        background:black;
+        border:2px solid black;
+        border-radius:2px;;
+        color:white;
+        margin-bottom:-10px;
+    }
+    .dt-buttons{
+        margin-bottom:-25px;
+    }
+</style>
+
+
+<div class="modal fade" id="new_folder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Folder</h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => '/folders/add')) ?>
+      <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Folder Name")); ?></div>
+            </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Add</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div>

@@ -18,6 +18,8 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\EventInterface;
+use Aws\S3\S3Client;
+use Aws\Exception\AwsException;
 
 /**
  * Application Controller
@@ -80,6 +82,8 @@ class AppController extends Controller
         // define("UPLOAD_DIR", '/home/xge55gjh6t1y/public_html/admin');
         define("UPLOAD_DIR", 'C:/wamp/www/ars_admin/webroot');
 
+        define("S3_UPLOAD_DIR", 'C:/wamp/www/copassa/webroot');
+
         define("EMAIL_UPLOAD_DIR", 'C:/wamp/www/copassa/webroot');
 
         define("SHOW_UPLOAD_DIR", '/ars_admin');
@@ -127,6 +131,42 @@ class AppController extends Controller
         }
         $this->authorizations = $result;
         return $result;
+    }
+
+    public function addfile()
+    {
+        $this->loadModel("Files");
+        $file = $this->Files->newEmptyEntity();
+        if ($this->request->is('post')) {
+            
+            $folder = $this->Files->Folders->get($this->request->getData()['folder_id']);
+            $uploaded_file = $this->request->getData('file');
+            $name = $uploaded_file->getClientFilename();
+            $extension = pathinfo($name, PATHINFO_EXTENSION);
+            $document_name = rand(1000,500000).".".$extension;
+            $type = $uploaded_file->getClientMediaType();
+            $path = $uploaded_file->getStream()->getMetadata('uri');
+
+            $file = $this->Files->patchEntity($file, $this->request->getData());
+            $file->location = $this->upload_s3_file($path, $document_name, "/".$folder->name."/");
+
+            if(!empty($this->request->getData()['policy_id'])){
+                $file->policy_id = $this->request->getData()['policy_id'];
+            }
+
+            if(!empty($this->request->getData()['claim_id'])){
+                $file->claim_id = $this->request->getData()['claim_id'];
+            }
+
+            if(!empty($this->request->getData()['renewal_id'])){
+                $file->renewal_id = $this->request->getData()['renewal_id'];
+            }
+
+            $file->tenant_id = $this->Auth->user()['tenant_id'];
+            $file->user_id = $this->Auth->user()['id'];
+            $this->Files->save($file);
+        }
+        return $this->redirect($this->referer());
     }
 
     private function getPlan($tenant_id){
@@ -186,6 +226,42 @@ class AppController extends Controller
         if(empty($this->session->read("filter_country"))){
             $this->session->write("filter_country", '');
         }
+    }
+
+    protected function upload_s3_file($file_path, $file_name, $folder_name){
+        $this->loadModel('Tenants');
+        $tenant = $this->Tenants->get($this->Auth->user()['tenant_id']);
+        $this->paginate = [
+            'contain' => ['Users'], 
+        ];
+        $key = 'AKIARDN5TTMS72EFD65R'; 
+        $secret = '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';
+        $s3Client = new S3Client([
+            'region' => 'us-east-1',
+            'version' => '2006-03-01',
+            'http'    => [
+                'verify' => false     
+            ],
+            'credentials' => [
+                'key' => $key,
+                'secret' => $secret,
+            ]
+        ]);
+
+        $bucket = 'arsfiles';
+
+
+        try {
+            $result = $s3Client->putObject([
+                'Bucket' => $bucket,
+                'Key' => $tenant->bucket.$folder_name.$file_name,
+                'SourceFile' => $file_path,
+            ]);
+        } catch (S3Exception $e) {
+            echo $e->getMessage() . "\n";
+        }
+
+        return $tenant->bucket.$folder_name.$file_name;
     }
 
     public function updateSessionVariables(){

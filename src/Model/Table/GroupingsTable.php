@@ -84,6 +84,19 @@ class GroupingsTable extends Table
             ->requirePresence('grouping_number', 'create')
             ->notEmptyString('grouping_number');
 
+        $validator->add('grouping_number', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>",  "</script>", "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The group number is not valid'
+        ]);
+
         $validator
             ->date('effective_date')
             ->requirePresence('effective_date', 'create')

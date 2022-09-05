@@ -120,9 +120,11 @@ $summary_cancelations = 0;
 
                 <div class="tab-pane fade" id="transactions">
                     <div class="table-responsive">
+                        <?php if($user_connected['role_id'] != 2 || $auths[42]) : ?>
                         <button class="btn btn-info" data-toggle="modal" data-target="#new_transaction">New Transaction</button>
                         <button class="btn btn-info" data-toggle="modal" data-target="#new_employee">New Employee</button>
                         <button class="btn btn-info" data-toggle="modal" data-target="#new_family">New Family Member</button>
+                        <?php endif; ?>
                         <table class="table table-hover datatable">
                         <thead>
                             <tr>
@@ -135,7 +137,9 @@ $summary_cancelations = 0;
                                 <th class="text-center">Credit</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Memo</th>
+                                <?php if($user_connected['role_id'] != 2 || $auths[42]) : ?>
                                 <th></th>
+                            <?php   endif; ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -195,13 +199,14 @@ $summary_cancelations = 0;
 
 
                                     <td class="text-center"><?= h($transaction->memo) ?></td>
-                                    
+                                    <?php if($user_connected['role_id'] != 2 || $auths[42]) : ?>
                                     <td class="text-right">
                                         <?php if($transaction->status == 1) : ?>
                                             <a data-toggle="modal" data-target="#confirm_transaction_<?= $transaction->id ?>" style="cursor: pointer;font-size:1.3em!important;margin-left:5px;color:green"><span class="fa fa-xl fa-check color-green"></span></a>
                                         <?php endif; ?>
                                         <a href="<?= ROOT_DIREC ?>/transactions/delete/<?= $transaction->id ?>" onclick="return confirm('Are you sure you would like to delete this transaction')" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                                     </td>
+                                <?php   endif; ?>
                                 </tr>
                             <?php endif; ?>
                             <?php endforeach; ?>
@@ -214,7 +219,9 @@ $summary_cancelations = 0;
                                 <th class="text-center"><?= number_format($total_credit, 2, ".", ",") ?></th>
                                 <th></th>
                                 <th></th>
+                                <?php if($user_connected['role_id'] != 2 || $auths[42]) : ?>
                                 <th></th>
+                            <?php   endif; ?>
                             </tr>
                         </tfoot>
                     </table>

@@ -11,10 +11,9 @@ use Cake\Validation\Validator;
 /**
  * Folders Model
  *
- * @property \App\Model\Table\FoldersTable&\Cake\ORM\Association\BelongsTo $ParentFolders
  * @property \App\Model\Table\UsersTable&\Cake\ORM\Association\BelongsTo $Users
- * @property \App\Model\Table\FoldersTable&\Cake\ORM\Association\HasMany $ChildFolders
- * @property \App\Model\Table\FilesTable&\Cake\ORM\Association\BelongsToMany $Files
+ * @property \App\Model\Table\TenantsTable&\Cake\ORM\Association\BelongsTo $Tenants
+ * @property \App\Model\Table\FilesTable&\Cake\ORM\Association\HasMany $Files
  *
  * @method \App\Model\Entity\Folder newEmptyEntity()
  * @method \App\Model\Entity\Folder newEntity(array $data, array $options = [])
@@ -31,7 +30,6 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Folder[]|\Cake\Datasource\ResultSetInterface deleteManyOrFail(iterable $entities, $options = [])
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
- * @mixin \Cake\ORM\Behavior\TreeBehavior
  */
 class FoldersTable extends Table
 {
@@ -50,30 +48,17 @@ class FoldersTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-        $this->addBehavior('Tree');
 
-        $this->belongsTo('ParentFolders', [
-            'className' => 'Folders',
-            'foreignKey' => 'parent_id',
-        ]);
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
         ]);
-        $this->hasMany('ChildFolders', [
-            'className' => 'Folders',
-            'foreignKey' => 'parent_id',
-        ]);
-
         $this->belongsTo('Tenants', [
             'foreignKey' => 'tenant_id',
             'joinType' => 'INNER',
         ]);
-        
-        $this->belongsToMany('Files', [
+        $this->hasMany('Files', [
             'foreignKey' => 'folder_id',
-            'targetForeignKey' => 'file_id',
-            'joinTable' => 'folders_files',
         ]);
     }
 
@@ -95,6 +80,19 @@ class FoldersTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>",  "</script>", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
         return $validator;
     }
 
@@ -107,8 +105,8 @@ class FoldersTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn(['parent_id'], 'ParentFolders'), ['errorField' => 'parent_id']);
         $rules->add($rules->existsIn(['user_id'], 'Users'), ['errorField' => 'user_id']);
+        $rules->add($rules->existsIn(['tenant_id'], 'Tenants'), ['errorField' => 'tenant_id']);
 
         return $rules;
     }

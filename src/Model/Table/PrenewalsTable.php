@@ -51,6 +51,10 @@ class PrenewalsTable extends Table
             'foreignKey' => 'policy_id',
             'joinType' => 'INNER',
         ]);
+
+        $this->hasMany('Files', [
+            'foreignKey' => 'prenewal_id',
+        ]);
     }
 
     /**
@@ -80,9 +84,11 @@ class PrenewalsTable extends Table
             ->allowEmptyString('fee');
 
         $validator
+            ->integer('status')
             ->notEmptyString('status');
 
         $validator
+            ->integer('polucy_status')
             ->notEmptyString('policy_status');
 
         return $validator;

@@ -45,7 +45,6 @@
                     <?php endif; ?>
                     <td class="text-center"><?= $user->created ?></td>
                     <td class="text-right"><a href="<?= ROOT_DIREC ?>/users/edit/<?= $user->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a>
-                    <a href="<?= ROOT_DIREC ?>/users/delete/<?= $user->id ?>" style="font-size:1.3em!important;margin-left:5px"><span class="fa fa-xl fa-trash color-red"></span></a>
                     </td>
                 </tr>
         <?php endforeach; ?>

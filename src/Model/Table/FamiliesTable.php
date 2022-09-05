@@ -80,13 +80,40 @@ class FamiliesTable extends Table
             ->requirePresence('first_name', 'create')
             ->notEmptyString('first_name');
 
+        $validator->add('first_name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "</script>", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The first name is not valid'
+        ]);
+
         $validator
             ->scalar('last_name')
             ->maxLength('last_name', 255)
             ->requirePresence('last_name', 'create')
             ->notEmptyString('last_name');
 
+        $validator->add('last_name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "</script>",  'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The last name is not valid'
+        ]);
+
         $validator
+            ->integer('relationship')
             ->requirePresence('relationship', 'create')
             ->notEmptyString('relationship');
 

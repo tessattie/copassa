@@ -233,7 +233,20 @@
         <?php endif; ?>
             <?php if($plan_type > 2) : ?>
             <?php if($user_connected['role_id'] != 2 || ($auths[43] || $auths[44])) : ?>
-                <li class="<?= ($this->request->getParam('controller') == 'Folders') ? 'active' : '' ?>"><a href="<?= ROOT_DIREC ?>/folders/show"><em class="fa fa-folder">&nbsp;</em> Resources</a></li>
+                <li class="parent <?= ($this->request->getParam('controller') == 'Files' ||$this->request->getParam('controller') == 'Folders') ? 'active' : '' ?>"><a data-toggle="collapse" href="#sub-item-2222">
+                    <em class="fa fa-folder">&nbsp;</em> Ressources <span data-toggle="collapse" href="#sub-item-2222" class="icon pull-right"><em class="fa fa-plus"></em></span>
+                    </a>
+                    <ul class="children collapse" id="sub-item-2222">
+
+                            <li class="<?= ($this->request->getParam('controller') == 'Folders' && $this->request->getParam('action') == 'index') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/folders">
+                                <span class="fa fa-arrow-right">&nbsp;</span> Folders
+                            </a></li>
+                            <li class="<?= ($this->request->getParam('controller') == 'Files') ? 'active' : '' ?>"><a class=""  href="<?= ROOT_DIREC ?>/files">
+                                <span class="fa fa-arrow-right">&nbsp;</span> Ressources
+                            </a></li>
+
+                    </ul>
+                </li>
             <?php endif; ?>
         <?php endif; ?>
 

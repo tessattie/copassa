@@ -184,17 +184,18 @@ class PoliciesController extends AppController
         }
 
         $policy = $this->Policies->get($id, [
-            'contain' => ['Companies', 'Options', 'Customers' => ['Countries', 'Agents'], 'Users', 'Payments', 'Dependants', 'Prenewals', 'Claims' => ['ClaimsTypes'], 'PoliciesRiders' => ['Riders']],
+            'contain' => ['Companies', 'Options', 'Files' => ['Users'], 'Customers' => ['Countries', 'Agents'], 'Users', 'Payments', 'Dependants', 'Prenewals', 'Claims' => ['ClaimsTypes'], 'PoliciesRiders' => ['Riders']],
         ]);
 
         if($this->Auth->user()['tenant_id'] != $policy->tenant_id){
             return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
         }
-
+        $this->loadModel('Folders');
+        $folder_id = $this->Folders->find("all", array("conditions" => array("tenant_id" => $this->Auth->user()['tenant_id'], 'is_policies' => 2)))->first()->id;
         $riders = $this->Riders->find("all");
         $dependant = $this->Policies->Dependants->newEmptyEntity();
 
-        $this->set(compact('policy', 'dependant', 'riders'));
+        $this->set(compact('policy', 'dependant', 'riders', 'folder_id'));
     }
 
     /**
@@ -210,23 +211,14 @@ class PoliciesController extends AppController
         $policy = $this->Policies->newEmptyEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            $certificate = $this->request->getData('certificate');
-            $name = $certificate->getClientFilename();
-            $type = $certificate->getClientMediaType();
-            $targetPath = WWW_ROOT. 'img'. DS . 'certificates'. DS. $name;
-            if (!empty($name)) {
-                if ($certificate->getSize() > 0 && $certificate->getError() == 0) {
-                    $certificate->moveTo($targetPath); 
-                    $data['certificate'] = $name;
-                }
-            }else{
-                $data['certificate'] = '';
-            }
             $policy = $this->Policies->patchEntity($policy, $data);
             $policy->user_id = $this->Auth->user()['id'];
             $policy->paid_until = date("Y-m-d");
             $policy->tenant_id = $this->Auth->user()['tenant_id'];
             $customer = $this->Policies->Customers->get($policy->customer_id);
+            if($this->Auth->user()['tenant_id'] != $customer->tenant_id){
+                return $this->redirect(['controller' => 'users', 'action' => 'authorization']);
+            }
             if ($this->Policies->save($policy)) {
                 $this->savelog(200, "Created policy for customer: ".$customer->name, 1, 1, "", json_encode($policy));
                 $this->Flash->success(__('The policy has been saved.'));

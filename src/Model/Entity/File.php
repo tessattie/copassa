@@ -13,12 +13,14 @@ use Cake\ORM\Entity;
  * @property string|null $location
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
- * @property string|null $extension
+ * @property int $folder_id
  * @property int $user_id
  * @property string|null $description
+ * @property int $tenant_id
  *
+ * @property \App\Model\Entity\Folder $folder
  * @property \App\Model\Entity\User $user
- * @property \App\Model\Entity\Folder[] $folders
+ * @property \App\Model\Entity\Tenant $tenant
  */
 class File extends Entity
 {
@@ -36,11 +38,15 @@ class File extends Entity
         'location' => true,
         'created' => true,
         'modified' => true,
-        'extension' => true,
+        'folder_id' => true,
         'user_id' => true,
+        'policy_id' => true, 
+        'claim_id' => true, 
+        'renewal_id' => true,
         'description' => true,
+        'tenant_id' => true,
+        'folder' => true,
         'user' => true,
-        'folders' => true,
-        'tenant_id' => true
+        'tenant' => true,
     ];
 }

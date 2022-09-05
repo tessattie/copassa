@@ -305,9 +305,35 @@ class CustomersTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*", "<", "=", ">", "[", "]", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
+
         $validator
             ->email('email')
             ->allowEmptyString('email');
+
+        $validator->add('email', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "#", "</script>", "*", "<", "=", ">", "[", "]", "^", "{", "}", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The email is not valid'
+        ]);
 
         $validator
             ->scalar('home_area_code')
@@ -344,7 +370,21 @@ class CustomersTable extends Table
             ->maxLength('address', 255)
             ->allowEmptyString('address');
 
+        $validator->add('address', 'protect', [
+            'rule' => function ($value, $context){
+                $not_allowed = array("<script>", "</script>", "~", 'script');
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The address is not valid'
+        ]);
+
         $validator
+            ->integer('status')
             ->notEmptyString('status');
 
         return $validator;

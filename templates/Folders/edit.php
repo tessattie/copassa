@@ -4,48 +4,50 @@
  * @var \App\Model\Entity\Folder $folder
  */
 ?>
-
-
-            <div class="row">
-             <div class="col-md-4 col-md-offset-4"></div>
-                 <div class="col-md-4 col-md-offset-4">
-                    <section> 
-                        <div class="card">
-    <div class="card-body">
-    <div class="row">
-        <div class="col-md-12">
-            <h3 style="padding-bottom:10px">Editer le répertoire : <?= $folder->name ?></h3>
+<div class="row" style="margin-bottom:15px">
+    <ol class="breadcrumb">
+        <li><a href="<?= ROOT_DIREC ?>/policies/dashboard">
+            <em class="fa fa-home"></em>
+        </a></li>
+        <li><a href="<?= ROOT_DIREC ?>/folders">
+            Folders
+        </a></li>
+        <li>Edit</li>
+        <li><?= h($folder->name) ?></li>
+    </ol>
+</div>
+<?= $this->Flash->render() ?>
+<div class="container-fluid"> 
+    <div class="panel panel-default articles">
+        <div class="panel-heading">
+            Edit Folder : <?= h($folder->name) ?>
+            <a class="btn btn-info" style="float:right" href="<?= ROOT_DIREC ?>/folders"><em class="fa fa-arrow-left"></em></a>
         </div>
+    <div class="panel-body articles-container">       
+            <?= $this->Form->create($folder) ?>
+                <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "Name")); ?></div>
+                    
+                </div>
+                    
+                <div class="row">
+                    <div class="col-md-12"><?= $this->Form->button(__('Update'), array('class'=>'btn btn-success', "style"=>"margin-top:25px;float:right")) ?></div>
+                </div> 
+
+
+            <?= $this->Form->end() ?>
+        </div>
+        
     </div>
-    <?= $this->Form->create($folder) ?>
-    <fieldset>
-        <?php
-            echo $this->Form->control('name', array('label' => "Nom",'Placeholder' => "Nom du Répertoire"));
-            echo $this->Form->control('parent_id', ['options' => $parentFolders, 'value' => $folder->parent_id]);
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Valider', array('class' => "btn btn-success"))) ?>
-    <?= $this->Form->end() ?>
-</div>
-</div>
-                    </section>
-                 </div>
-             </div>       <!-- Begin Users Profile -->
+</div><!--End .articles-->
 
 
 <style type="text/css">
-    label{
-        font-weight:bold;
-        margin-right:20px!important;
-    }
-    .input {
-        margin:10px 0px 10px;
-    }
-    input, button, select, optgroup, textarea {
+    @media only screen and (max-width: 600px) {
+      .input label, #cell-phone, #home-phone, #other-phone, .col-md-4 label{
+        margin-top: 15px;
+      }
 
-    border-radius: 3px;
-    height:40px;
-    border: 1px solid #ddd;
-    padding:5px;
-}
+      
+    }
 </style>

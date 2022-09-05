@@ -114,10 +114,10 @@ if(!empty($customer->dob)){
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                    <table class="table table-bordered" style="width:2000px">
+                    <table class="table table-striped" style="width:2000px">
                         <thead>
                             <tr>
-                                <th class="text-center">#</th>
+                                <th class="text-left">#</th>
                                 <th class="text-center">Type</th>
                                 <th class="text-center">Company</th>
                                 <th class="text-center">Option</th>
@@ -126,7 +126,6 @@ if(!empty($customer->dob)){
                                 <th class="text-center">Deductible</th>
                                 <th class="text-center">Mode</th>
                                 <th class="text-center">Effective date</th>
-                                <th class="text-center">Certificate</th>
                                 <?php if($user_connected['role_id'] != 2  || $auths[24]) : ?>
                                 <th></th>
                             <?php endif; ?>
@@ -136,7 +135,7 @@ if(!empty($customer->dob)){
                             <?php foreach($customer->policies as $policy) : ?>
 
                                 <tr>
-                                <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= h($policy->policy_number) ?></a></td>
+                                <td class="text-left"><a href="<?= ROOT_DIREC ?>/policies/view/<?= $policy->id ?>"><?= h($policy->policy_number) ?></a></td>
                                 <td class="text-center"><?= h($company_types[$policy->company->type]) ?></td>
                                 <td class="text-center"><?= h($policy->company->name) ?></td>
                                 <td class="text-center"><?= h($policy->option->name) ?></td>
@@ -145,14 +144,6 @@ if(!empty($customer->dob)){
                                 <td class="text-center"><?= h(number_format($policy->deductible,2,".",",")) ?> USD</td>
                                 <td class="text-center"><?= h($modes[$policy->mode]) ?></td>
                                 <td class="text-center"><?= h(date("M d Y", strtotime($policy->effective_date))) ?></td>
-                      
-                                <td class="text-center">
-                                    <?php if(!empty($policy->certificate)) : ?>
-                                        <?= $this->Html->link('Download', '/img/certificates/'.$policy->certificate ,array('download'=> $policy->certificate)); ?>
-                                    <?php else : ?>
-                                        -
-                                    <?php endif; ?>
-                                </td>
                                 <?php if($user_connected['role_id'] != 2  || $auths[24]) : ?>
                                 <td class="text-center"><a href="<?= ROOT_DIREC ?>/policies/edit/<?= $policy->id ?>" style="font-size:1.3em!important;"><span class="fa fa-xl fa-pencil color-blue"></span></a></td>
                             <?php endif; ?>
@@ -171,18 +162,18 @@ if(!empty($customer->dob)){
             Exclusions 
     </div>
     <div class="panel-body articles-container">
-    <table class="table table-bordered">
+    <table class="table table-striped">
         <thead>
             <tr>
-                <th class="text-center">Policy</th>
-                <th class="text-center">Exclusions</th>
+                <th class="text-left">Policy</th>
+                <th class="text-right">Exclusions</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach($customer->policies as $p) : ?>
                 <tr>
-                    <td class="text-center"><?= h($p->policy_number) ?></td>
-                    <td class="text-center"><?= h($p->exclusions) ?></td>
+                    <td class="text-left"><?= h($p->policy_number) ?></td>
+                    <td class="text-right"><?= h($p->exclusions) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -194,7 +185,7 @@ if(!empty($customer->dob)){
         <div class="col-md-3">
             <?php if($plan_type > 1) : ?>
             <?php if($user_connected['role_id'] != 2  || $auths[52]  || $auths[53]  || $auths[55]) : ?>
-            <div class="panel panel-teal">
+            <div class="panel panel-default">
             <div class="panel-heading">
 
                 CLaims 
@@ -230,7 +221,7 @@ if(!empty($customer->dob)){
     <?php endif; ?>
 <?php endif; ?>
 
-            <div class="panel panel-warning articles">
+            <div class="panel panel-default articles">
                 <div class="panel-heading">
                     Notes
                     <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-default" style="float:right;padding:1px 10px 5px"><span class="fa fa-plus"></span></button>

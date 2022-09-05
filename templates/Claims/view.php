@@ -26,7 +26,7 @@ if(!empty($claim->policy->customer->dob)){
 <?= $this->Flash->render() ?>
 <div class="container-fluid"> 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-9">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
                     Claim : <?= h($claim->title) ?> 
@@ -118,12 +118,7 @@ if(!empty($claim->policy->customer->dob)){
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
 
-
-    <div class="row">
-        <div class="col-md-12">
             <div class="panel panel-default articles">
                 <div class="panel-heading">
                     <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
@@ -137,7 +132,6 @@ if(!empty($claim->policy->customer->dob)){
                      <table class="table table-stripped datatable">
                 <thead> 
                     <th>Description</th>
-                    <th class="text-center">Attachment</th>
                     <th class="text-center">Amount</th>
                     <th class="text-center">Received</th>
                     <th class="text-center">Serviced</th>
@@ -153,11 +147,6 @@ if(!empty($claim->policy->customer->dob)){
                     <?php $total = $total + $ct->amount ?>
                         <tr style="background:<?= h($ct->type->color) ?>">
                             <td><strong><?= h($ct->title) ?></strong><br><?= h($ct->description) ?></td>
-                            <?php if(!empty($ct->attachment)) : ?> 
-                                <td class="text-center"><?= $this->Html->link('View', '/img/claims/'.$ct->attachment ,array('download'=> $ct->attachment)); ?></td>
-                            <?php else : ?>
-                                <td class="text-center"></td>
-                            <?php endif; ?>
                             <td class="text-center"><?= h(number_format($ct->amount, 2, ".", ",")) ?></td>
                             <?php if(!empty($ct->received_date)) : ?>
                                 <td class="text-center"><?= h(date('M d Y', strtotime($ct->received_date))) ?></td>
@@ -188,7 +177,6 @@ if(!empty($claim->policy->customer->dob)){
                 <tfoot>
                     <tr>
                         <th>Total</th>
-                        <th></th>
                         <th class="text-center"><?= number_format($total, 2, ".", ",") ?></th>
                         <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
                         <th colspan="6"></th>
@@ -202,9 +190,76 @@ if(!empty($claim->policy->customer->dob)){
                 </div>
             </div>
         </div>
+
+        <div class="col-md-3">
+            <div class="panel panel-default">
+            <div class="panel-heading">
+                Files 
+                <?php if($user_connected['role_id'] != 2 || $auths[53]) : ?>
+                <button class="btn btn-default"  style="float:right;padding:1px 10px 5px" data-toggle="modal" data-target="#new_file"><span class="fa fa-plus"></span></button>
+            <?php endif; ?>
+                </div>
+            <div class="panel-body" style="max-height:365px;overflow-y:scroll;background:white">
+                        <?php foreach($claim->files as $file) : ?>
+
+                    <div class="row">
+                            <div class="col-xs-12">
+                                <p style="color:black">
+                                    <a href="#" class="download_file"> <input type="hidden" class="location" value="<?= $file->location ?>"><?= h($file->name) ?></a><br>
+                                    <?= h($file->description) ?><br>
+                                    <strong>Added :</strong> <?= h(date('M d Y', strtotime($file->created))) ?><br>
+                                    <strong>By :</strong> <?= h($file->user->name) ?>
+                                </p>
+                            </div>
+                        </div>
+                        <hr>
+                        <?php endforeach; ?>
+            </div>
+        </div>
+        </div>
     </div>
+
+
 </div>
 
+
+<div class="modal fade" id="new_file" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New File</h5>
+      </div>
+      <?= $this->Form->create(null, array("url" => '/policies/addfile', 'type' => 'file')) ?>
+      <div class="modal-body">
+            <div class="row"><?= $this->Form->control('folder_id', array('type' => 'hidden','value' => $folder_id)); ?> <?= $this->Form->control('policy_id', array('type' => 'hidden','value' => $claim->policy_id)); ?> <?= $this->Form->control('claim_id', array('type' => 'hidden','value' => $claim->id)); ?> 
+                <div class="col-md-12"><?= $this->Form->control('name', array('class' => 'form-control', "label" => "Name *", "placeholder" => "File Name")); ?></div>
+
+            </div>
+
+            <hr>
+            <div class="row">
+                <div class="col-md-12"><?= $this->Form->control('description', array('class' => 'form-control', "label" => "Description *", "placeholder" => "Description")); ?></div>
+            </div>
+            <hr>
+            <div class="row" style="margin-top:10px">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="exampleInputFile">File</label>
+                        <input type="file" id="exampleInputFile" name="file">
+                        <p class="help-block">Upload File here.</p>
+                      </div>
+                    </div>
+                    </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success">Add</button>
+      </div>
+      <?= $this->Form->end() ?>
+    </div>
+  </div>
+</div>
 
 
 
@@ -227,16 +282,6 @@ if(!empty($claim->policy->customer->dob)){
             <div class="row">
                 <div class="col-md-6"><?= $this->Form->control('type_id', array('class' => 'form-control', "empty" => '-- Choose --', 'options' => $claims_types, "label" => "Type", "multiple" => false, 'required' => true, 'style' => "height:46px")); ?></div> 
                 <?= $this->Form->control('claim_id', array('type' => 'hidden',"value" => $claim->id)); ?>
-                <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="exampleInputFile">Attachment</label>
-                        <input type="file" id="exampleInputFile" name="attachment">
-                        <p class="help-block">Upload Attachment here.</p>
-                      </div>
-                    </div>
-            </div>
-            <hr>
-            <div class="row">
                 <div class="col-md-6"><?= $this->Form->control('amount', array('class' => 'form-control', "label" => "Amount *", "placeholder" => "Amount", 'value' => 0)); ?></div>
             </div>
             <hr>
@@ -281,3 +326,39 @@ if(!empty($claim->policy->customer->dob)){
         vertical-align: middle!important;
     }
 </style>
+
+
+<?php 
+    echo '<script> var ROOT_DIREC = "'.ROOT_DIREC.'";</script>'
+?>
+
+<script type="text/javascript">$(document).ready( function () {
+
+    $(".download_file").click(function(){
+        var location = $(this).find(".location").val(); 
+        var token =  $('input[name="_csrfToken"]').val();
+            var company = $(this).val();
+            $.ajax({
+                 url : ROOT_DIREC+'/files/download',
+                 type : 'POST',
+                 data : {location : location},
+                 headers : {
+                    'X-CSRF-Token': token 
+                 },
+                 success : function(data, statut){
+                      var win = window.open(data, '_blank');
+                      if (win) {
+                            win.focus();
+                        } else {
+                            alert('Please allow popups for this website');
+                        }
+                 },
+                 error : function(resultat, statut, erreur){
+                  console.log(erreur)
+                 }, 
+                 complete : function(resultat, statut){
+                    console.log(resultat)
+                 }
+            });
+    })
+} );</script>

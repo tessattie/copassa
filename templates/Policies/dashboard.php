@@ -14,7 +14,7 @@
 <div class="row">
     <?php if($user_connected['role_id'] != 2 || ($auths[30] || $auths[31])) : ?>
     <div class="col-md-6">
-        <div class="panel panel-info">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 Maternity Reminders
                 </div>
@@ -40,7 +40,7 @@
     </div> 
 <?php endif; ?>
     <div class="col-md-6">
-        <div class="panel panel-warning">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 Birthdays
                 </div>
@@ -63,7 +63,7 @@
     <div class="row">
     <?php if($user_connected['role_id'] != 2 || ($auths[30] || $auths[31])) : ?>
     <div class="col-md-4">
-        <div class="panel panel-info">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 Maternity Reminders
                 </div>
@@ -89,7 +89,7 @@
     </div> 
 <?php endif; ?>
     <div class="col-md-4">
-        <div class="panel panel-warning">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 Birthdays
                 </div>
@@ -109,7 +109,7 @@
     </div> 
     <?php if($user_connected['role_id'] != 2 || ($auths[52] || $auths[53] || $auths[55])) : ?>
     <div class="col-md-4">
-        <div class="panel panel-teal">
+        <div class="panel panel-default">
             <div class="panel-heading">
                 Open CLaims
                 </div>

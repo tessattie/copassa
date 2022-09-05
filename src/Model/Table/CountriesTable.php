@@ -63,6 +63,8 @@ class CountriesTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
+        $not_allowed = array("<script>",  "</script>",  "^", "{", "}", "~", "SELECT", "INSERT", "UPDATE", "select", "insert", "update", "alter", "ALTER");
+        
         $validator
             ->integer('id')
             ->allowEmptyString('id', null, 'create');
@@ -72,6 +74,18 @@ class CountriesTable extends Table
             ->maxLength('name', 255)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
+
+        $validator->add('name', 'protect', [
+            'rule' => function ($value, $context) use ($not_allowed) {
+                foreach($not_allowed as $character){
+                    if(strpos($value, $character) !== FALSE){
+                        return false;
+                    }
+                }
+                return true;
+            },
+            'message' => 'The name is not valid'
+        ]);
 
         return $validator;
     }
